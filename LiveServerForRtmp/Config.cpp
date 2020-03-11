@@ -10,7 +10,7 @@ CConfig::CConfig(const char* config)
 	memset(m_Config, 0, m_ConfigSize);
 
 	strcpy(m_Config, config);
-	m_ItemNams.clear();
+	m_ItemObjects.clear();
 }
 
 CConfig::~CConfig()
