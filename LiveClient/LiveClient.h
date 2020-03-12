@@ -20,6 +20,7 @@ class CLiveClientApp : public CWinApp
 public:
 	CLiveClientApp();
 
+
 // ÖØÐ´
 public:
 	virtual BOOL InitInstance();
