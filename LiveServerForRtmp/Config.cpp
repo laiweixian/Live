@@ -31,6 +31,7 @@ int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType ite
 	string::size_type posStart,posEnd,posEqual;
 	ItemObject *pObject = NULL, *pTempItem = NULL;
 	void *value = NULL;
+	int valueSize  = 0;
 
 	if (m_Config == NULL)
 		return;
@@ -102,9 +103,16 @@ int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType ite
 	switch (itemType)
 	{
 	case STRING_TYPE:
-		
+		valueSize = pObject->iValue.length();
+		value = new char[valueSize];
+		memcpy(value,pObject->iValue.c_str(), valueSize);
 		break;
 	case INT_TYPE:
+		valueSize = sizeof(int);
+		value = new int;
+		
+
+
 		break;
 	case DOUBLE_TYPE:
 		break;
