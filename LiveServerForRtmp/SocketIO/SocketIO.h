@@ -1,58 +1,68 @@
 #pragma once
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include <WinSock2.h>
-#include "SocketIO/IOBase.h"
+#include "IOBase.h"
 
-#define DEFAULT_IP			"0.0.0.0"
-#define DEFAULT_PORT		0
+
 #define DEFAULT_MAX_CONN	100
 #define DEFAULT_TIME_OUT	500
 #define DEFAULT_BACK_LOG	100
 
-struct Connecter
+enum DispatchType
 {
-	int  connId;
-	SOCKET connectSock;
-	char ip[100];
-	char buff[1024];
-	int buffLen;
-	int maxBuffLen;
+	CONNECT,READ,WRITE,CLOSE,IO_ERR
 };
 
-class CSocketIO : public CIOInterface
+struct Connecter
+{
+	int ioid;
+	SOCKET sockfd;
+	char*	ip;
+
+	char receiveBuff[1024];
+	int	 receiveBuffLen;
+};
+
+
+
+class CSocketIO : public IIO
 {
 public:
-	CSocketIO();
+	CSocketIO(IIOMsg* pMsg,const char* ip,const int port,int maxConnect = DEFAULT_MAX_CONN,int timeout = DEFAULT_TIME_OUT,int backlog = DEFAULT_BACK_LOG);
 	~CSocketIO();
 
-	//CIOInterface
-	ULONG Open(const char* ip, const int port, CIOMessage* pMsg);
-	ULONG Read(const int ioId,  char* buf, const int bufLen, int *outLen) ;
-	ULONG Write(const int ioId,  char* buf, const int bufLen, int *outLen);
-	ULONG Close(const int ioId) ;
+	//IIO
+	int Open() ;
+	int Read(const int ioId, char *buff, const int buffLen) ;
+	int Write(const int ioId, char *buff, const int buffLen) ;
+	int Close(const int ioId);
 
 	//property
 	char* GetIp();
 	int GetPort();
 
-	ULONG Run();
+	ULONG ThreadHandle();
 
 private:
 	
 	ULONG InitSocket();
-	int SetSocketNonblock(SOCKET sock);
+	static int SetSocketNonblock(SOCKET sock);
+	
+	//
+	int CheckAccept();
+	int CheckReceive();
+	int Dispatch(DispatchType dType, const int ioId);
 private:
 	char m_Ip[100];
 	int  m_Port;
 	int  m_MaxConnect;
 	int  m_TimeOut;
 	int  m_Backlog;
+	IIOMsg *m_Msg;
 
-	CIOMessage *m_Message;
+	int		m_ConnectIndex;
 	SOCKET m_ListenFd;
 	vector<Connecter*> m_Connects;
 
-	//
-	int m_TatalConnect;
 };

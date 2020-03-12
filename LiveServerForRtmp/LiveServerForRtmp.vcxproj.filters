@@ -24,15 +24,6 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpApplication.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpRoom\RtmpUser\RtmpUser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpRoom\RtmpRoom.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\Rtmp.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -48,7 +39,22 @@
     <ClInclude Include="SocketIO\IOBase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
+    <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,13 +68,13 @@
     <ClCompile Include="Rtmp\Rtmp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApplication\RtmpApplicationcpp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="SocketIO\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
+    <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\Config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

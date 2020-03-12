@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdafx.h"
+#include "../stdafx.h"
 
 enum ItemType
 {
@@ -18,6 +18,7 @@ struct ItemObject
 #define NO_PARENT_ERROR	(-2)
 #define NO_ITEM_ERROR	(-3)
 #define NO_ITEM_EQUAL_ERROR	(-4)
+#define ITEM_TYPE_ERROR	(-5)
 
 
 class CConfig
@@ -27,10 +28,12 @@ private:
 public:
 	CConfig(const char* config); 
 
-	int RegisterItem(const char* parent,const char* itemName, ItemType itemType,const int itemLen ,void* dst,int *outSize);
+	int GetItem(const char* parent,const char* itemName, ItemType itemType,const int itemLen ,void* outBuff,int *outSize, ItemType *outType);
 	static void Trim(string& s);
+	
 private:
 	vector<ItemObject*> m_ItemObjects;
 	char *m_Config;
 	int	  m_ConfigSize;
 };
+		

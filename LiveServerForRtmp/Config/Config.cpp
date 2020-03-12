@@ -19,7 +19,7 @@ CConfig::~CConfig()
 	
 }
 
-int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType itemType, const int itemLen, void* dst, int *outSize)
+int CConfig::GetItem(const char* parent, const char* itemName, ItemType itemType, const int itemLen, void* outBuff, int *outSize, ItemType *outType)
 {
 	//
 	auto it = m_ItemObjects.begin();
@@ -32,6 +32,8 @@ int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType ite
 	ItemObject *pObject = NULL, *pTempItem = NULL;
 	void *value = NULL;
 	int valueSize  = 0;
+	int intValue ;
+	double doubleValue;
 
 	if (m_Config == NULL)
 		return;
@@ -108,23 +110,48 @@ int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType ite
 		memcpy(value,pObject->iValue.c_str(), valueSize);
 		break;
 	case INT_TYPE:
+		try
+		{
+			intValue = std::stoi(pObject->iValue);
+		}
+		catch (const std::exception&)
+		{
+			return ITEM_TYPE_ERROR;
+		}
+
 		valueSize = sizeof(int);
 		value = new int;
-		
-
-
+		memcpy(value,&intValue,valueSize);
 		break;
 	case DOUBLE_TYPE:
+		try
+		{
+			doubleValue = std::stod(pObject->iValue);
+		}
+		catch (const std::exception&)
+		{
+			return ITEM_TYPE_ERROR;
+		}
+
+		valueSize = sizeof(double);
+		value = new double;
+		memcpy(value,&doubleValue,valueSize);
 		break;
+
 	case BOOL_TYPE:
+		return ITEM_TYPE_ERROR;
 		break;
 	case ARRAY_TYPE:
 		break;
 	case ITEM_INVALID:
+		return ITEM_TYPE_ERROR;
 		break;
 	default:
+		return ITEM_TYPE_ERROR;
 		break;
 	}
+
+
 
 	return 0;
 }
@@ -137,4 +164,6 @@ void CConfig::Trim(string& s)
 		while ((index = s.find(' ', index)) != string::npos)
 			s.erase(index, 1);
 	}
+}
+
 }

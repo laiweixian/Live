@@ -1,11 +1,14 @@
-#include "SocketIO/SocketIO.h"
+#include "SocketIO.h"
 
-CSocketIO::CSocketIO() :m_MaxConnect(DEFAULT_MAX_CONN),m_Port(DEFAULT_PORT), \
-						m_TimeOut(DEFAULT_TIME_OUT), m_Backlog(DEFAULT_BACK_LOG), \
-						m_ListenFd(INVALID_SOCKET),m_TatalConnect(0),\
-						m_Message(NULL)
+CSocketIO::CSocketIO(IIOMsg* pMsg, const char* ip, const int port, int maxConnect , int timeout , int backlog)
 {
-	strcpy(m_Ip, DEFAULT_IP);
+	m_Msg = pMsg;
+	strcpy(m_Ip,ip);
+	m_Port = port;
+	m_MaxConnect = maxConnect;
+	m_TimeOut = timeout;
+	m_Backlog = backlog;
+	m_ConnectIndex = 0;
 }
 
 CSocketIO::~CSocketIO()
@@ -23,105 +26,96 @@ int CSocketIO::GetPort()
 	return m_Port;
 }
 
-ULONG CSocketIO::Open(const char* ip, const int port, CIOMessage* pMsg)
+int CSocketIO::Open()
 {
-	strcpy(m_Ip, ip);
-	m_Port = port;
-	m_Message = pMsg;
 	return InitSocket();
 }
 
-ULONG CSocketIO::Read(const int ioId,  char* buf, const int bufLen, int *outLen)
+int CSocketIO::Read(const int ioId, char *buff, const int buffLen)
 {
-	Connecter *temp = NULL;
-	int readLen = 0;
-	int backBuffLen = 0;
-	char backBuff[1024] = { 0 };
+	Connecter *conn = NULL;
 	auto it = m_Connects.begin();
+	SOCKET fd = INVALID_SOCKET;
+	int readLen = 0,remainLen = 0;
+	char *temp0 = NULL,*temp1 = NULL;
+
 	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
 	{
-		temp = *it;
-		if (temp->connId == ioId)
-		{
-			readLen = temp->buffLen > bufLen ? bufLen : temp->buffLen;
-			if (readLen <= 0 )
-				continue;
-			
-			memcpy(buf,temp->buff,readLen);
-			*outLen = readLen;
-
-			backBuffLen = temp->buffLen - readLen;
-			if (backBuffLen > 0)
-			{
-				memcpy(backBuff,temp->buff+readLen,backBuffLen);
-				memset(temp->buff,0,1024);
-				memcpy(temp->buff, backBuff,backBuffLen);
-			}
-			return SAR_OK;
-		}
+		conn = *it;
+		if (conn->ioid == ioId)
+			fd = conn->sockfd;
 	}
 
-	return READ_ERR;
+	if (fd == INVALID_SOCKET)
+		return 0;
+
+	//
+	if (buffLen >= conn->receiveBuffLen)
+	{
+		readLen = conn->receiveBuffLen;
+		memcpy(buff, conn->receiveBuff, readLen);
+		memset(conn->receiveBuff, 0, readLen);
+		conn->receiveBuffLen = 0;
+	}
+	else
+	{
+		readLen = buffLen;
+		temp0 = new char[readLen];
+		memcpy(temp0,conn->receiveBuff,readLen);
+		
+		remainLen = conn->receiveBuffLen - readLen;
+		temp1 = new char[remainLen];
+		memcpy(temp1, conn->receiveBuff + readLen , remainLen);
+
+		memset(conn->receiveBuff,0, conn->receiveBuffLen);
+		memcpy(conn->receiveBuff,temp1,remainLen);
+		conn->receiveBuffLen = remainLen;
+	
+		memcpy(buff,temp0,readLen);
+		delete[] temp0 ; delete[] temp1;
+	}
+
+	return readLen;
 }
 
-ULONG CSocketIO::Write(const int ioId,  char* buf, const int bufLen, int *outLen)
+int CSocketIO::Write(const int ioId, char *buff, const int buffLen)
 {
 	Connecter *temp = NULL;
 	auto it = m_Connects.begin();
-	int len = 0,errorCode = 0;
+	SOCKET fd = INVALID_SOCKET;
+	int writeLen = 0;
+
 	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
 	{
 		temp = *it;
-		if (temp->connId == ioId && temp->connectSock != INVALID_SOCKET)
-		{
-			len = send(temp->connectSock,buf,bufLen,0);
-			if (len == 0)
-			{
-				return SAR_OK;
-			}
-			else if (len > 0)
-			{
-				//
-				return SAR_OK;
-			}
-			else
-			{
-				errorCode = WSAGetLastError();
-				if (errorCode == WSAEWOULDBLOCK)
-				{
-					//time out
-					return WRITE_TIME_OUT;
-				}
-				else
-				{
-					
-				}
-			}
-		}
+		if (temp->ioid == ioId)
+			fd = temp->sockfd;
 	}
 
-	return WRITE_ERR;
+	if (fd == INVALID_SOCKET)
+		return 0;
+
+	writeLen = send(fd, buff, buffLen, 0);
+	return writeLen;
 }
 
-ULONG CSocketIO::Close(const int ioId)
+int CSocketIO::Close(const int ioId)
 {
 	Connecter *temp = NULL;
 	auto it = m_Connects.begin();
-	int ret;
+	SOCKET fd = INVALID_SOCKET;
 
 	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
 	{
 		temp = *it;
-		if (temp->connId == ioId)
-		{
-			ret = closesocket(temp->connectSock);
-			m_Connects.erase(it);
-			delete temp;
-
-			return SAR_OK;
-		}
+		if (temp->ioid == ioId)
+			fd = temp->sockfd;
 	}
-	return CLOSE_ERR;
+
+	if (fd == INVALID_SOCKET)
+		return 0;
+
+	return closesocket(fd);
 }
 
 ULONG CSocketIO::InitSocket()
@@ -197,25 +191,32 @@ int CSocketIO::SetSocketNonblock(SOCKET sock)
 	return ioctlsocket(sock, sockCmd, &arg);
 }
 
-ULONG CSocketIO::Run()
+ULONG CSocketIO::ThreadHandle()
+{
+	int ret = 0;
+
+	ret = CheckAccept();
+	ret = CheckReceive();
+
+
+	return 0;
+}
+
+int CSocketIO::CheckAccept()
 {
 	SOCKET userSock = INVALID_SOCKET;
 	sockaddr_in userAddr;
 	int len = sizeof(userAddr);
 	char* userIp = NULL;
-	ULONG ret = SAR_OK;
 	int errorCode;
-	auto it = m_Connects.begin();
-	int outLen = 0;
-	Connecter *conn = NULL,*temp = NULL;
-	
+	Connecter *conn = NULL;
+
 	if (m_ListenFd == INVALID_SOCKET)
 		return NO_LISTEN_SOCKET;
 
 	userSock = accept(m_ListenFd, (sockaddr*)&userAddr, &len);
-	switch (userSock)
+	if (userSock == INVALID_SOCKET)
 	{
-	case INVALID_SOCKET:
 		errorCode = WSAGetLastError();
 		if (errorCode != WSAEWOULDBLOCK)
 		{
@@ -223,57 +224,86 @@ ULONG CSocketIO::Run()
 			closesocket(m_ListenFd);
 			m_ListenFd = INVALID_SOCKET;
 		}
-		break;
-	default:
-		SetSocketNonblock(userSock);
-		m_TatalConnect++;
+	}
+	else
+	{
+		CSocketIO::SetSocketNonblock(userSock);
+		m_ConnectIndex++;
 		userIp = inet_ntoa(userAddr.sin_addr);
 
 		conn = new Connecter;
+		memset(conn,0,sizeof(Connecter));
 		strcpy(conn->ip, userIp);
-		conn->connectSock = userSock;
-		conn->connId = m_TatalConnect;
-		memset(conn->buff,0,1024);
-		conn->buffLen = 0;
-		conn->maxBuffLen = 1024;
+		conn->sockfd = userSock;
+		conn->ioid = m_ConnectIndex;
 		m_Connects.push_back(conn);
-		break;
+		Dispatch(CONNECT, conn->ioid);
 	}
 
-	//check connect socket data
+	return 0;
+}
+
+int CSocketIO::CheckReceive()
+{
+	Connecter *conn = NULL;
+	auto it = m_Connects.begin();
+	int readLen = 0 , remainLen = 0;
+	int errorCode = 0;
+
 	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
 	{
-		temp = *it;
-		if (temp->buffLen >= temp->maxBuffLen)
-		{
-			//buff is full
+		conn = *it;
+		remainLen = 1024 - conn->receiveBuffLen;
+		if(remainLen <= 0)
 			continue;
-		}
-		
-		outLen = recv(temp->connectSock, temp->buff + temp->buffLen, temp->maxBuffLen - temp->maxBuffLen, 0);
-		if (outLen == 0)
+		readLen = recv(conn->sockfd,conn->receiveBuff+conn->receiveBuffLen,remainLen,0);
+		if (readLen == 0)
 		{
-			Close(temp->connId);
+			Dispatch(CLOSE, conn->ioid);
 		}
-		else if (outLen > 0)
+		else if (readLen > 0)
 		{
-			temp->buffLen += outLen;
-			m_Message->OnData(temp->connId);
+			conn->receiveBuffLen += readLen;
+			Dispatch(READ,conn->ioid);
 		}
 		else
 		{
 			errorCode = WSAGetLastError();
 			if (errorCode == WSAEWOULDBLOCK)
-			{
-				//time out
-			}
+				continue;
 			else
-			{
-				//connect socket error
-				Close(temp->connId);
-			}
+				Dispatch(IO_ERR,conn->ioid);
 		}
 	}
 
-	return ret;
+	return 0;
+}
+
+int CSocketIO::Dispatch(DispatchType dType,const int ioId)
+{
+	if (m_Msg == NULL)
+		return 0;
+
+	switch (dType)
+	{
+	case CONNECT:
+		m_Msg->OnConnect(ioId);
+		break;
+	case READ:
+		m_Msg->OnReceive(ioId);
+		break;
+	case WRITE:
+		m_Msg->OnSend(ioId);
+		break;
+	case CLOSE:
+		m_Msg->OnClose(ioId);
+		break;
+	case IO_ERR:
+		m_Msg->OnError(ioId);
+		break;
+	default:
+		m_Msg->OnError(ioId);
+		break;
+	}
+	return 0;
 }

@@ -146,23 +146,25 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="CoreModule.h" />
+    <ClInclude Include="Config\Config.h" />
     <ClInclude Include="Global\Codes.h" />
     <ClInclude Include="Global\Funcs.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpApplication.h" />
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpRoom\RtmpRoom.h" />
-    <ClInclude Include="Rtmp\RtmpApplication\RtmpRoom\RtmpUser\RtmpUser.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h" />
+    <ClInclude Include="Rtmp\RtmpModule.h" />
     <ClInclude Include="SocketIO\IOBase.h" />
     <ClInclude Include="SocketIO\SocketIO.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
-    <ClCompile Include="Rtmp\RtmpApplication\RtmpApplicationcpp.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="SocketIO\SocketIO.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
