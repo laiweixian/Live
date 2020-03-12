@@ -15,7 +15,8 @@ CConfig::CConfig(const char* config)
 
 CConfig::~CConfig()
 {
-
+	auto it = m_ItemObjects.begin();
+	
 }
 
 int CConfig::RegisterItem(const char* parent, const char* itemName, ItemType itemType, const int itemLen, void* dst, int *outSize)
