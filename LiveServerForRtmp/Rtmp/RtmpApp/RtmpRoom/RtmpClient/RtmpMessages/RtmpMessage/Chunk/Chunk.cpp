@@ -196,7 +196,7 @@ int CChunk::DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen)
 
 int CChunk::DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen)
 {
-
+	//¡£¡£¡£
 
 }
 
