@@ -186,7 +186,7 @@ ext_err:
 
 int CChunk::DemuxBaseHeader(char* buff, const int buffLen, int* outBasicLen)
 {
-
+	int offset ;
 }
 
 int CChunk::DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen)
