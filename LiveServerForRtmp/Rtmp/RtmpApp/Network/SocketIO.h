@@ -1,10 +1,6 @@
 #pragma once
 
-#include "../../stdafx.h"
-#include "../../CoreModule.h"
-#include "../IOModule.h"
-#include <WinSock2.h>
-
+#include "stdafx.h"
 
 
 
@@ -19,7 +15,7 @@
 #define SOCKET_LISTEN_ERR -5
 #define NO_LISTEN_SOCKET -6
 
-#define CORE_IO_NAME	"socket"
+
 
 enum DispatchType
 {
@@ -44,9 +40,6 @@ public:
 	CSocketIO();
 	~CSocketIO();
 
-
-
-	//IIO
 	int Open() ;
 	int Read(const int ioId, char *buff, const int buffLen) ;
 	int Write(const int ioId, char *buff, const int buffLen) ;
@@ -77,5 +70,4 @@ private:
 	int		m_ConnectIndex;
 	SOCKET m_ListenFd;
 	vector<Connecter*> m_Connects;
-
 };

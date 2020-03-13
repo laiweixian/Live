@@ -15,11 +15,10 @@
 #include <stdlib.h>
 #include <string>
 #include <string.h>
+#include <WinSock2.h>
+#include <stdint.h>
 #include "Global/Codes.h"
 #include "Global/Funcs.h"
-
-
-
 using namespace std;
 
 

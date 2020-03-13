@@ -11,12 +11,6 @@ CSocketIO::~CSocketIO()
 }
 
 
-
-
-
-
-
-
 char* CSocketIO::GetIp()
 {
 	return m_Ip;
