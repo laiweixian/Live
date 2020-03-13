@@ -10,25 +10,12 @@ CSocketIO::~CSocketIO()
 
 }
 
-int CSocketIO::InitCore()
-{
 
-}
 
-int CSocketIO::RunCore()
-{
 
-}
 
-int CSocketIO::RemoveCore()
-{
 
-}
 
-char* CSocketIO::GetCoreName()
-{
-	return CORE_IO_NAME;
-}
 
 char* CSocketIO::GetIp()
 {
@@ -295,29 +282,5 @@ int CSocketIO::CheckReceive()
 
 int CSocketIO::Dispatch(DispatchType dType,const int ioId)
 {
-	if (m_Msg == NULL)
-		return 0;
-
-	switch (dType)
-	{
-	case CONNECT:
-		m_Msg->OnConnect(ioId);
-		break;
-	case READ:
-		m_Msg->OnReceive(ioId);
-		break;
-	case WRITE:
-		m_Msg->OnSend(ioId);
-		break;
-	case CLOSE:
-		m_Msg->OnClose(ioId);
-		break;
-	case IO_ERR:
-		m_Msg->OnError(ioId);
-		break;
-	default:
-		m_Msg->OnError(ioId);
-		break;
-	}
 	return 0;
 }

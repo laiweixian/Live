@@ -38,7 +38,7 @@ struct Connecter
 
 
 
-class CSocketIO :	public IIO 
+class CSocketIO 
 {
 public:
 	CSocketIO();
@@ -73,7 +73,6 @@ private:
 	int  m_MaxConnect;
 	int  m_TimeOut;
 	int  m_Backlog;
-	IIOMsg *m_Msg;
 
 	int		m_ConnectIndex;
 	SOCKET m_ListenFd;

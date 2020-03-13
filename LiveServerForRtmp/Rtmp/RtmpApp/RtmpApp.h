@@ -1,15 +1,17 @@
 #pragma once
 
-#include "../RtmpModule.h"
+#include "../stdafx.h"
+#include "Network/SocketIO.h"
 #include "RtmpRoom/RtmpRoom.h"
 
-class CRtmpApp : public CRtmpModule
+class CRtmpApp 
 {
 public:
-	CRtmpApp();
+	CRtmpApp(const char* appName,const char* ip,const int port);
 	~CRtmpApp();
 
 private:
+	CSocketIO *m_IO;
 	vector<CRtmpRoom*> m_Rooms;
 	CRtmpRoom *m_TempRoom;
 };

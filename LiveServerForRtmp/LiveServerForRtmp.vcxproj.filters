@@ -39,25 +39,10 @@
     <ClInclude Include="Config\Config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpModule.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CoreModule.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\ipv4\SocketIO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\IO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="IO\IOModule.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.h">
@@ -73,6 +58,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -92,12 +80,6 @@
     <ClCompile Include="Config\Config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="IO\ipv4\SocketIO.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="IO\IO.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -108,6 +90,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\CRtmpMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
