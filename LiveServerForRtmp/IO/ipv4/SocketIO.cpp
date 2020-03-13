@@ -1,19 +1,33 @@
 #include "SocketIO.h"
 
-CSocketIO::CSocketIO(IIOMsg* pMsg, const char* ip, const int port, int maxConnect , int timeout , int backlog)
+CSocketIO::CSocketIO()
 {
-	m_Msg = pMsg;
-	strcpy(m_Ip,ip);
-	m_Port = port;
-	m_MaxConnect = maxConnect;
-	m_TimeOut = timeout;
-	m_Backlog = backlog;
-	m_ConnectIndex = 0;
+	
 }
 
 CSocketIO::~CSocketIO()
 {
 
+}
+
+int CSocketIO::InitCore()
+{
+
+}
+
+int CSocketIO::RunCore()
+{
+
+}
+
+int CSocketIO::RemoveCore()
+{
+
+}
+
+char* CSocketIO::GetCoreName()
+{
+	return CORE_IO_NAME;
 }
 
 char* CSocketIO::GetIp()

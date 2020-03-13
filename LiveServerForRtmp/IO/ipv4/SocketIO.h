@@ -1,13 +1,25 @@
 #pragma once
 
-#include "../stdafx.h"
+#include "../../stdafx.h"
+#include "../../CoreModule.h"
+#include "../IOModule.h"
 #include <WinSock2.h>
-#include "IOBase.h"
+
+
 
 
 #define DEFAULT_MAX_CONN	100
 #define DEFAULT_TIME_OUT	500
 #define DEFAULT_BACK_LOG	100
+
+#define SOCKET_INIT_ERR -1
+#define SOCKET_CREATE_ERR -2
+#define SOCKET_SET_CMD_ERROR -3
+#define SOCKET_BIND_ERR -4
+#define SOCKET_LISTEN_ERR -5
+#define NO_LISTEN_SOCKET -6
+
+#define CORE_IO_NAME	"socket"
 
 enum DispatchType
 {
@@ -26,11 +38,13 @@ struct Connecter
 
 
 
-class CSocketIO : public IIO
+class CSocketIO :	public IIO 
 {
 public:
-	CSocketIO(IIOMsg* pMsg,const char* ip,const int port,int maxConnect = DEFAULT_MAX_CONN,int timeout = DEFAULT_TIME_OUT,int backlog = DEFAULT_BACK_LOG);
+	CSocketIO();
 	~CSocketIO();
+
+
 
 	//IIO
 	int Open() ;

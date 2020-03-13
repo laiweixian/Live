@@ -33,12 +33,6 @@
     <ClInclude Include="Global\Funcs.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SocketIO\SocketIO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketIO\IOBase.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -57,6 +51,30 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="IO\ipv4\SocketIO.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IO.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\IOModule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\Chunk\chunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\chunks.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -68,13 +86,28 @@
     <ClCompile Include="Rtmp\Rtmp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SocketIO\SocketIO.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Config\Config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\ipv4\SocketIO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\IO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\Chunk\chunk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\chunks.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\CRtmpMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

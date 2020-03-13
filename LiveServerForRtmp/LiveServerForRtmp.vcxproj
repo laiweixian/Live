@@ -150,22 +150,33 @@
     <ClInclude Include="Config\Config.h" />
     <ClInclude Include="Global\Codes.h" />
     <ClInclude Include="Global\Funcs.h" />
+    <ClInclude Include="IO\IO.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\chunks.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\Chunk\chunk.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMessage.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h" />
     <ClInclude Include="Rtmp\RtmpModule.h" />
-    <ClInclude Include="SocketIO\IOBase.h" />
-    <ClInclude Include="SocketIO\SocketIO.h" />
+    <ClInclude Include="IO\IOModule.h" />
+    <ClInclude Include="IO\ipv4\SocketIO.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config\Config.cpp" />
+    <ClCompile Include="IO\IO.cpp" />
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
-    <ClCompile Include="SocketIO\SocketIO.cpp" />
+    <ClCompile Include="IO\ipv4\SocketIO.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\chunks.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunks\Chunk\chunk.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\CRtmpMessage.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

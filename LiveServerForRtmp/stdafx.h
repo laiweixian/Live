@@ -18,7 +18,7 @@
 #include "Global/Codes.h"
 #include "Global/Funcs.h"
 
-typedef unsigned long ULONG;
+
 
 using namespace std;
 
