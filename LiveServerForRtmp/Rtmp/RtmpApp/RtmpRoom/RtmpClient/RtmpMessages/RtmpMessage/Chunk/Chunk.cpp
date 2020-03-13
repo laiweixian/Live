@@ -83,7 +83,7 @@ CChunk* CChunk::DeMultiplexing(CChunk* pPrev, const int chunkSize,char* buff, co
 	int result = SAR_FAILURE;
 	int length = 0;
 
-	pChunk = new CChunk;
+	pChunk = new CChunk(pPrev,chunkSize);
 	result = pChunk->Demux(buff,buffLen,&length);
 	if (result != SAR_OK)
 	{
@@ -117,7 +117,34 @@ ExtendedTimestampType CChunk::GetExtendedTimestamp()
 	return m_ExTHeader;
 }
 
-int CChunk::Demux(char* buff, const int buffLen, int* chunkLen)
+int CChunk::Demux(char* buff, const int buffLen, int* outChunkLen)
+{
+	int headerLen = 0, dataLen = 0;
+	int headerRet = SAR_FAILURE , dataRet = SAR_FAILURE;
+	int offset = 0;
+
+	headerRet = DemuxChunkHeader(buff,buffLen,&headerLen);
+	if (headerRet != SAR_OK)
+		goto header_err;
+	offset += headerLen;
+
+	dataRet = DemuxChunkData(buff+offset,buffLen-offset,&dataLen);
+	if (dataRet != SAR_OK)
+		goto data_err;
+	offset += dataLen;
+	
+	*outChunkLen = offset;
+	return SAR_OK;
+
+header_err:
+	*outChunkLen = 0;
+	return headerRet;
+data_err:
+	*outChunkLen = 0;
+	return dataRet;
+}
+
+int CChunk::DemuxChunkHeader(char* buff, const int buffLen, int* outChunkHeaderLen)
 {
 	int basicLen = 0, msgLen = 0,extLen = 0;
 	int basicRet = SAR_FAILURE , msgRet = SAR_FAILURE , extRet = SAR_FAILURE;
@@ -125,19 +152,36 @@ int CChunk::Demux(char* buff, const int buffLen, int* chunkLen)
 
 	basicRet = DemuxBaseHeader(buff + offset,buffLen - offset,&basicLen);
 	if (basicRet != SAR_OK)
-		
+		goto basic_err;
+	offset += basicLen;
+	if (buffLen < offset)
+		goto basic_err;
+
+	msgRet = DemuxMsgHeader(buff + offset,buffLen-offset,&msgLen);
+	if (msgRet != SAR_OK)
+		goto msg_err;
+	offset += msgLen;
+	if (buffLen < offset)
+		goto msg_err;
+
+	extRet = DemuxExtendedTimestamp(buff+offset,buffLen-offset,&extLen);
+	if (extRet != SAR_OK)
+		goto ext_err;
+	offset += extLen;
+	if (buffLen < offset)
+		goto ext_err;
+
+	*outChunkHeaderLen = offset;
+	return SAR_OK;
 basic_err:
-	*chunkLen = 0;
+	*outChunkHeaderLen = 0;
 	return basicRet;
 msg_err:
-	*chunkLen = 0;
+	*outChunkHeaderLen = 0;
 	return msgRet;
 ext_err:
-	*chunkLen = 0;
+	*outChunkHeaderLen = 0;
 	return extRet;
-data_err:
-	*chunkLen = 0;
-	return DATA_LACK;
 }
 
 int CChunk::DemuxBaseHeader(char* buff, const int buffLen, int* outBasicLen)
@@ -151,6 +195,11 @@ int CChunk::DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen)
 }
 
 int CChunk::DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen)
+{
+
+}
+
+int CChunk::DemuxChunkData(char* buff, const int buffLen, int* outChunkDataLen)
 {
 
 }

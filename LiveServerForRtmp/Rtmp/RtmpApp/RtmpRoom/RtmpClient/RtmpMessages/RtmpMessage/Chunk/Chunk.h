@@ -25,11 +25,15 @@ public:
 	MessageHeaderType GetMessageHeaderType();
 	ExtendedTimestampType GetExtendedTimestamp() ;
 
-protected:
+private:
 	int Demux(char* buff, const int buffLen, int* outChunkLen);
+
+	int DemuxChunkHeader(char* buff, const int buffLen, int* outChunkHeaderLen);
 	int DemuxBaseHeader(char* buff, const int buffLen, int* outBasicLen);
 	int DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen);
 	int DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen);
+
+	int DemuxChunkData(char* buff, const int buffLen, int* outChunkDataLen);
 
 private:
 	BasicHeaderType m_BasicHeader;
