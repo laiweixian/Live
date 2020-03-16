@@ -4,7 +4,7 @@ CChunk::CChunk() :	m_BasicHeader(BasicHeaderType::INVALID),\
 					m_MsgHeader(MessageHeaderType::INVALID),\
 					m_ExT(ExtendedTimestampType::INVALID)
 {
-
+	m_Info = {0};
 }
 
 CChunk::~CChunk()
@@ -117,6 +117,11 @@ ExtendedTimestampType CChunk::GetExtendedTimestampType()
 	return m_ExT;
 }
 
+ChunkHeaderInfo CChunk::GetInfo()
+{
+	return m_Info;
+}
+
 int CChunk::Demux(char* buff, const int buffLen, int* outChunkLen)
 {
 	int headerLen = 0, dataLen = 0;
@@ -136,7 +141,6 @@ int CChunk::Demux(char* buff, const int buffLen, int* outChunkLen)
 header_err:
 	*outChunkLen = 0;
 	return headerRet;
-
 }
 
 int CChunk::DemuxChunkHeader(char* buff, const int buffLen, int* outChunkHeaderLen)
@@ -213,9 +217,9 @@ int CChunk::DemuxBaseHeader(char* buff, const int buffLen, int* outBasicLen)
 		return DATA_LACK;
 	if (csid == 0 || csid == 1)
 		return INVALID_CHUNK;
-	
-	m_Fields.push_back(new ChunkHeaderField(FMT, buff, 1));
-	m_Fields.push_back(new ChunkHeaderField(CSID, buff ,csidLen));
+
+	SetFMT(buff);
+	SetCSID(buff,csidLen);
 	*outBasicLen = basicLen;
 	return SAR_OK;
 }
@@ -233,26 +237,17 @@ int CChunk::DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen)
 	case INVALID:
 		break;
 	case MSG0:
-		m_Fields.push_back(new ChunkHeaderField(TIMESTAMP, buff, timestampLen));
-		offset += timestampLen;
-		m_Fields.push_back(new ChunkHeaderField(MESSAGE_LENGTH,buff+offset,messageLengthLen));
-		offset += messageLengthLen;
-		m_Fields.push_back(new ChunkHeaderField(MESSAGE_TYPE_ID,buff+offset, messageTypeIDLen));
-		offset += messageTypeIDLen;
-		m_Fields.push_back(new ChunkHeaderField(MESSAGE_STREAM_ID,buff+offset, messageStreamIDLen));
-		offset += messageStreamIDLen;
+		SetTimestamp(buff);						offset += timestampLen;
+		SetMessageLength(buff + offset);		offset += messageLengthLen;
+		SetMessageTypeID(buff + offset);		offset += messageTypeIDLen;
+		SetMessageStreamID(buff + offset);		offset += messageStreamIDLen;	
 		break;
 	case MSG1:
-		m_Fields.push_back(new ChunkHeaderField(TIMESTAMP_DELTA, buff, timestampDeltaLen));
-		offset += timestampDeltaLen;
-		m_Fields.push_back(new ChunkHeaderField(MESSAGE_LENGTH, buff + offset, messageLengthLen));
-		offset += messageLengthLen;
-		m_Fields.push_back(new ChunkHeaderField(MESSAGE_TYPE_ID, buff + offset, messageTypeIDLen));
-		offset += messageTypeIDLen;
-		break;
+		SetTimestampDelta(buff);				offset += timestampDeltaLen;
+		SetMessageLength(buff + offset);		offset += messageLengthLen;
+		SetMessageTypeID(buff + offset);		offset += messageTypeIDLen;
 	case MSG2:
-		m_Fields.push_back(new ChunkHeaderField(TIMESTAMP_DELTA, buff, timestampDeltaLen));
-		offset += timestampDeltaLen;
+		SetTimestampDelta(buff);				offset += timestampDeltaLen;
 		break;
 	case MSG3:
 		break;
@@ -267,10 +262,10 @@ int CChunk::DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen)
 int CChunk::DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen)
 {
 	const int basicLen = CChunk::GetByteLength(m_BasicHeader);
-	char timestamp[3] = {0};
+
 	int len = 0;
 	int extLen = 0;
-	auto it = m_Fields.begin();
+	
 
 	if (m_MsgHeader == MSG3)
 	{
@@ -278,18 +273,9 @@ int CChunk::DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen
 	}
 	else
 	{
-		for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-		{
-			if ((*it)->m_Type == TIMESTAMP || (*it)->m_Type == TIMESTAMP_DELTA)
-			{
-				(*it)->Copy(timestamp, &len);
-				break;
-			}
-		}
-
-		if (timestamp[0] == 0xff && timestamp[1] == 0xff && timestamp[2] == 0xff)
+		if (m_Info.timestamp == 0xffffff || m_Info.timestamp_delta == 0xffffff)
 			m_ExT = EXT1;
-		else
+		else 
 			m_ExT = EXT0;
 	}
 
@@ -297,8 +283,8 @@ int CChunk::DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen
 	if (buffLen < extLen)
 		return DATA_LACK;
 
-
-	m_Fields.push_back(new ChunkHeaderField(EXTENDED_TIMESTAMP,buff,extLen));
+	SetExtendedTimestamp(buff, extLen);
+	
 	*outExtLen = extLen;
 	return SAR_OK;
 }
@@ -314,14 +300,7 @@ void CChunk::Restore()
 	m_MsgHeader = MessageHeaderType::INVALID;
 	m_ExT = ExtendedTimestampType::INVALID;
 	
-	auto it = m_Fields.begin();
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		delete (*it);
-		(*it) = NULL;
-	}
-
-	m_Fields.clear();
+	m_Info = { 0 };
 }
 
 int CChunk::GetHeaderLength()
@@ -333,246 +312,109 @@ int CChunk::GetHeaderLength()
 	return (basicLen + msgLen + extLen);
 }
 
-int CChunk::GetFMT(uint8_t *pFmt)
+void CChunk::SetFMT(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	char fmt = 0;
-	int len = 0;
+	uint8_t fmt ;
+	
+	memcpy(&fmt,buff, buffLen);
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == FMT)
-		{
-			field = *it;
-			break;
-		}
-	}
-
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&fmt, &len);
-
-	memcpy(pFmt,&fmt,1);
-	return 0;
+	fmt = (fmt >> 6);
+	m_Info.fmt = fmt;
+	m_FieldTypes.push_back(FMT);
 }
 
-int CChunk::GetCSID(uint32_t *pCsid)
+void CChunk::SetCSID(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
+	char csid[3] = { 0 };
 	uint32_t csidNumber = 0;
-	char csid[3] = {0};
-	int len;
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == CSID)
-		{
-			field = *it;
-			break;
-		}
-	}
-
-	if (field == NULL)
-		return -1;
-	
-	field->Copy(csid, &len);
-	if (len == CChunk::GetByteLength(BASE0))
+	memcpy(csid,buff,buffLen);
+	if (buffLen == CChunk::GetByteLength(BASE0))
 	{
 		csidNumber = csid[0];
 	}
-	else if (len == CChunk::GetByteLength(BASE1))
+	else if (buffLen == CChunk::GetByteLength(BASE1))
 	{
 		csidNumber = csid[1] + 64;
 	}
-	else if (len == CChunk::GetByteLength(BASE2))
+	else if (buffLen == CChunk::GetByteLength(BASE2))
 	{
 		csidNumber = (csid[2] * 256) + csid[1] + 64;
 	}
-	else
-		return -1;
+	else 
+		return ;
+	m_Info.csid = csidNumber;
+	m_FieldTypes.push_back(CSID);
+}
 
-	*pCsid = csidNumber;
+void CChunk::SetTimestamp(void *buff, const int buffLen)
+{
+	uint32_t ts; 
+
+	memcpy(&ts,buff,buffLen);
+	ts = ::BigToHost24(&ts);
 	
-	return 0;
+	m_Info.timestamp = ts;
+	m_FieldTypes.push_back(TIMESTAMP);
 }
 
-int CChunk::GetTimestamp(uint32_t *pTs)
+void CChunk::SetTimestampDelta(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	uint32_t ts;
-	int len = 0;
+	uint32_t tsDelta;
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == TIMESTAMP)
-		{
-			field = *it;
-			break;
-		}
-	}
+	memcpy(&tsDelta, buff, buffLen);
+	tsDelta = ::BigToHost24(&tsDelta);
 
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&ts,&len);
-	*pTs = ::BigToHost24(&ts);
-	return 0;
+	m_Info.timestamp_delta = tsDelta;
+	m_FieldTypes.push_back(TIMESTAMP_DELTA);
 }
 
-int CChunk::GetTimestampDelta(uint32_t *pTsDelta)
+void CChunk::SetMessageLength(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	uint32_t tsDelta; 
-	int len;
+	uint32_t msgLength ;
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == TIMESTAMP_DELTA)
-		{
-			field = *it;
-			break;
-		}
-	}
+	memcpy(&msgLength,buff,buffLen);
+	msgLength = ::BigToHost24(&msgLength);
 
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&tsDelta, &len);
-	*pTsDelta = ::BigToHost24(&tsDelta);
-	return 0;
+	m_Info.message_length = msgLength;
+	m_FieldTypes.push_back(MESSAGE_LENGTH);
 }
 
-int CChunk::GetMessageLength(uint32_t *pMsgLen)
+void CChunk::SetMessageTypeID(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	uint32_t msgLen;
-	int len;
+	uint8_t msgTypeID ; 
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == MESSAGE_LENGTH)
-		{
-			field = *it;
-			break;
-		}
-	}
+	memcpy(&msgTypeID,buff,buffLen);
 
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&msgLen, &len);
-	*pMsgLen = ::BigToHost24(&msgLen);
-	return 0;
+	m_Info.message_type_id = msgTypeID;
+	m_FieldTypes.push_back(MESSAGE_TYPE_ID);
 }
 
-int CChunk::GetMessageTypeID(uint8_t *pMsgTypeID)
+void CChunk::SetMessageStreamID(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	uint8_t msgTypeID;
-	int len;
-
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == MESSAGE_TYPE_ID)
-		{
-			field = *it;
-			break;
-		}
-	}
-
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&msgTypeID, &len);
-	*pMsgTypeID = msgTypeID;
-	return 0;
-}
-
-int CChunk::GetMessageStreamID(uint32_t *pMsgStreamID)
-{
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
 	uint32_t msgStreamID; 
-	int len;
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
-	{
-		if ((*it)->m_Type == MESSAGE_STREAM_ID)
-		{
-			field = *it;
-			break;
-		}
-	}
+	memcpy(&msgStreamID,buff,buffLen);
 
-	if (field == NULL)
-		return -1;
-
-	field->Copy(&msgStreamID, &len);
-	*pMsgStreamID = ::BigToHost32(&msgStreamID);
-	return;
+	msgStreamID = ::BigToHost32(&msgStreamID);
+	m_Info.message_stream_id = msgStreamID;
+	m_FieldTypes.push_back(MESSAGE_STREAM_ID);
 }
 
-int CChunk::GetExtendedTimestamp(uint32_t *pExTs)
+void CChunk::SetExtendedTimestamp(void *buff, const int buffLen)
 {
-	const bool complete = (m_BasicHeader != BasicHeaderType::INVALID && m_MsgHeader != MessageHeaderType::INVALID && m_ExT != ExtendedTimestampType::INVALID);
-	auto it = m_Fields.begin();
-	ChunkHeaderField *field = NULL;
-	uint32_t exTs; 
-	int len;
+	uint32_t exTs ;
 
-	if (!complete)
-		return -1;
-	for (it = m_Fields.begin(); it != m_Fields.end(); it++)
+	if (buffLen == 0)
 	{
-		if ((*it)->m_Type == EXTENDED_TIMESTAMP)
-		{
-			field = *it;
-			break;
-		}
-	}
-
-	if (field == NULL)
-		return -1;
-
-	if (m_ExT == EXT0)
-	{
-		*pExTs = 0;
-		return 0; 
+		
 	}
 	else
 	{
-		field->Copy(&exTs, &len);
-		*pExTs = ::BigToHost32(&exTs);
-		return 0;
+		memcpy(&exTs, buff, buffLen);
+		exTs = ::BigToHost32(&exTs);
+		m_Info.extended_timestamp = exTs;
+		m_FieldTypes.push_back(EXTENDED_TIMESTAMP);
 	}
-
-
+	
 }

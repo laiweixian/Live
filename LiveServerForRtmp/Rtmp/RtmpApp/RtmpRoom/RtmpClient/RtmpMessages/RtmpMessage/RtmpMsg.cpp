@@ -1,6 +1,6 @@
-#include "RtmpMessage.h"
+#include "RtmpMsg.h"
 
-CRtmpMessage::CRtmpMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId):
+CRtmpMsg::CRtmpMsg(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId):
 							m_Timestamp(ts),m_MessageLength(msgLength),\
 							m_MessageTypeID(msgTypeId),m_MessageStreamID(msgStreamId),\
 							m_Payload(NULL),m_PayloadLen(0)
@@ -9,32 +9,32 @@ CRtmpMessage::CRtmpMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, u
 	memset(m_Payload,0,msgLength);
 }
 
-CRtmpMessage::~CRtmpMessage()
+CRtmpMsg::~CRtmpMsg()
 {
 
 }
 
-uint32_t CRtmpMessage::GetTimestamp()
+uint32_t CRtmpMsg::GetTimestamp()
 {
 	return m_Timestamp;
 }
 
-uint32_t CRtmpMessage::GetMessageLength()
+uint32_t CRtmpMsg::GetMessageLength()
 {
 	return m_MessageLength;
 }
 
-uint8_t CRtmpMessage::GetMessageTypeID()
+uint8_t CRtmpMsg::GetMessageTypeID()
 {
 	return m_MessageTypeID;
 }
 
-uint32_t CRtmpMessage::GetMessageStreamID()
+uint32_t CRtmpMsg::GetMessageStreamID()
 {
 	return m_MessageStreamID;
 }
 
-int CRtmpMessage::Append(const char* buff, const int buffLen)
+int CRtmpMsg::Append(const char* buff, const int buffLen)
 {
 	const int remainSize = m_MessageLength - m_PayloadLen;
 	if (remainSize > buffLen)
@@ -44,7 +44,7 @@ int CRtmpMessage::Append(const char* buff, const int buffLen)
 	return 0;
 }
 
-uint32_t CRtmpMessage::GetPayloadLength()
+uint32_t CRtmpMsg::GetPayloadLength()
 {
 	return m_PayloadLen;
 }

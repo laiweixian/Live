@@ -2,7 +2,9 @@
 
 #include "stdafx.h"
 #include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/Chunk/chunk.h"
-#include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/RtmpMessage.h"
+#include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/RtmpMsg.h"
+
+
 
 class CRtmpMessages
 {
@@ -14,13 +16,15 @@ public:
 	int OnReceive(char *buff, const int buffLen);
 
 private:
-	int DeMultiplexingChunk(char *buff, const int buffLen);
-	
+	int DeMultiplexing(char *buff, const int buffLen);
+	int DeMultiplexingChunkHeader(char *buff, const int buffLen);
+	int DeMultiplexingChunkData( CChunk* pChunk, char *buff, const int buffLen);
 
 
 private:
-	vector<CChunk*> m_Chunks;
-	vector<CRtmpMessage*> m_Msgs;
+	vector<ChunkHeaderInfo> m_ChunkInfors;
+	vector<CRtmpMsg*> m_Msgs;
+
+private:
 	int m_ChunkSize;
-	
 };

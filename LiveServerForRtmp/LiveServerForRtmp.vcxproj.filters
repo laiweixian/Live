@@ -51,13 +51,13 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunk\Chunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,10 +83,10 @@
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMessage.cpp">
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunk\Chunk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunk\Chunk.cpp">
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,11 +2,11 @@
 
 #include "stdafx.h"
 
-class CRtmpMessage
+class CRtmpMsg
 {
 public:
-	CRtmpMessage(uint32_t ts,uint32_t msgLength,uint8_t msgTypeId,uint32_t msgStreamId);
-	~CRtmpMessage();
+	CRtmpMsg(uint32_t ts,uint32_t msgLength,uint8_t msgTypeId,uint32_t msgStreamId);
+	~CRtmpMsg();
 
 	uint32_t GetTimestamp();
 	uint32_t GetMessageLength();

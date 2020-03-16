@@ -7,6 +7,7 @@
 #define  DATA_LACK			-1
 #define  RTMP_VERSION_ERR	-2
 #define  SEND_DATA_FAILURE	-3
+#define	 INVALID_CHUNK		-4
 
 
 

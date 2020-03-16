@@ -13,38 +13,16 @@ enum ChunkHeaderFieldType
 	EXTENDED_TIMESTAMP
 };
 
-class ChunkHeaderField
+struct ChunkHeaderInfo
 {
-public:
-	ChunkHeaderField(ChunkHeaderFieldType fieldType,const char *data,const int dataLen) {
-		m_Type = fieldType;
-		m_DataLen = dataLen;
-		m_Data = new char[m_DataLen];
-		memcpy(m_Data,data,m_DataLen);
-	}
-	~ChunkHeaderField() {
-		delete[] m_Data;
-		m_Data = NULL;
-	}
-
-	void Copy(void* buff, int *outBuffLen)
-	{
-		if (!buff)
-		{
-			*outBuffLen = m_DataLen;
-			return;
-		}
-
-		memcpy(buff,m_Data,m_DataLen);
-		*outBuffLen = m_DataLen;
-
-		return;
-	}
-
-public:
-	ChunkHeaderFieldType m_Type;
-	char *m_Data;
-	int m_DataLen;
+	uint8_t fmt;
+	uint32_t csid;
+	uint32_t timestamp;
+	uint32_t timestamp_delta;
+	uint32_t message_length;
+	uint8_t message_type_id;
+	uint32_t message_stream_id;
+	uint32_t extended_timestamp;
 };
 
 
@@ -58,27 +36,16 @@ private:
 public:
 	
 	static CChunk* DeMultiplexing(char* buff,const int buffLen,int* outChunkLen);
-
 	void Destory() ;
 	
 	int GetHeaderLength();
-	
 	BasicHeaderType GetBaseHeaderType();
 	MessageHeaderType GetMessageHeaderType();
 	ExtendedTimestampType GetExtendedTimestampType();
 
-	//将信息转换成大端数据类型并返回
-	int GetFMT(uint8_t *pFmt);
-	int GetCSID(uint32_t *pCsid);
-	int GetTimestamp(uint32_t *pTs);
-	int GetTimestampDelta(uint32_t *pTsDelta);
-	int GetMessageLength(uint32_t *pMsgLen);
-	int GetMessageTypeID(uint8_t *pMsgTypeID);
-	int GetMessageStreamID(uint32_t *pMsgStreamID);
-	int GetExtendedTimestamp(uint32_t *pExTs);
+	ChunkHeaderInfo GetInfo();
 private:
 	void Restore();
-
 	
 	int Demux(char* buff, const int buffLen, int* outChunkLen);
 	//chunk header
@@ -86,6 +53,15 @@ private:
 	int DemuxBaseHeader(char* buff, const int buffLen, int* outBasicLen);
 	int DemuxMsgHeader(char* buff, const int buffLen, int* outMsgLen);
 	int DemuxExtendedTimestamp(char* buff, const int buffLen, int* outExtLen);
+
+	void SetFMT(void *buff,const int buffLen = 1);
+	void SetCSID(void *buff, const int buffLen);
+	void SetTimestamp(void *buff, const int buffLen = 3);
+	void SetTimestampDelta(void *buff, const int buffLen = 3);
+	void SetMessageLength(void *buff, const int buffLen = 3);
+	void SetMessageTypeID(void *buff, const int buffLen = 1);
+	void SetMessageStreamID(void *buff, const int buffLen = 4);
+	void SetExtendedTimestamp(void *buff, const int buffLen );
 private:
 	static int GetByteLength(BasicHeaderType baseType);
 	static int GetByteLength(MessageHeaderType msgType);
@@ -103,5 +79,6 @@ private:
 	CChunk *m_Prev;
 	int		m_ChunkSize;
 
-	vector<ChunkHeaderField*> m_Fields;
+	vector<ChunkHeaderFieldType> m_FieldTypes;
+	ChunkHeaderInfo m_Info;
 };
