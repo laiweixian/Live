@@ -89,5 +89,8 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMsg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

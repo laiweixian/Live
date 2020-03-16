@@ -167,6 +167,7 @@
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunk\Chunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\RtmpMsg.cpp" />
