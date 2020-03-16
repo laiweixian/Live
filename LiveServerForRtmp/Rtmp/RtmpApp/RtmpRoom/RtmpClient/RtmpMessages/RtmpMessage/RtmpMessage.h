@@ -1,16 +1,27 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdint.h>
+#include "stdafx.h"
 
 class CRtmpMessage
 {
 public:
-	CRtmpMessage();
+	CRtmpMessage(uint32_t ts,uint32_t msgLength,uint8_t msgTypeId,uint32_t msgStreamId);
 	~CRtmpMessage();
+
+	uint32_t GetTimestamp();
+	uint32_t GetMessageLength();
+	uint8_t GetMessageTypeID();
+	uint32_t GetMessageStreamID();
+
+	int Append(const char* buff , const int buffLen);
+	uint32_t GetPayloadLength();
+	
 private:
 	uint32_t m_Timestamp;
-	uint32_t m_Length;
-	uint8_t  m_TypeId;
+	uint32_t m_MessageLength;
+	uint8_t  m_MessageTypeID;
 	uint32_t m_MessageStreamID;
+
+	uint8_t *m_Payload;
+	uint32_t m_PayloadLen;
 };
