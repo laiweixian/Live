@@ -8,6 +8,7 @@
 #define  RTMP_VERSION_ERR	-2
 #define  SEND_DATA_FAILURE	-3
 #define	 INVALID_CHUNK		-4
+#define	 INVALID_RTMP_MESSAGE -5
 
 
 
