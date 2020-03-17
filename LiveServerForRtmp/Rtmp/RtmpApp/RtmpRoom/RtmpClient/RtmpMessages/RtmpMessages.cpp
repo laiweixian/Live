@@ -283,7 +283,15 @@ int CRtmpMessages::UserControlMessages(const uint8_t* buff, const int buffLen)
 
 int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, const int buffLen)
 {
+	if (msgTypeId == 20)
+	{
+		//AMF0
 
+	}
+	else if (msgTypeId == 17)
+	{
+		//AMF3
+	}
 }
 
 int CRtmpMessages::DataMessage(const uint8_t msgTypeId, const uint8_t* buff, const int buffLen)
