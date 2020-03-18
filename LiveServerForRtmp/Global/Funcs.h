@@ -67,3 +67,12 @@ static void GenRamdomByte(char* buff, const int buffLen)
 		memcpy(buff+i,&c,1);
 	}
 }
+
+static double BigToHostDouble(void *src,const int srcLen)
+{
+	double number = 0 ;
+
+	memcpy(&number,src,srcLen);
+
+	return number;
+}
