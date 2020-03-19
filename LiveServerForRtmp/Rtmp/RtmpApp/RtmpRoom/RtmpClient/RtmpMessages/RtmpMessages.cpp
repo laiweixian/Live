@@ -287,6 +287,7 @@ int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, 
 	{
 		//AMF0
 
+
 	}
 	else if (msgTypeId == 17)
 	{

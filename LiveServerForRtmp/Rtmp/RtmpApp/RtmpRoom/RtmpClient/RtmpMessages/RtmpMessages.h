@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/Chunk/chunk.h"
 #include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/RtmpMsg.h"
+#include "AMF/AMF0.h"
+#include "AMF/AMF3.h"
 
 #define DEFAULT_CHUNK_SIZE 128
 

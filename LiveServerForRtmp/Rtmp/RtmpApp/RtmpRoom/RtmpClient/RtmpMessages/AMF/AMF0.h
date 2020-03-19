@@ -37,10 +37,11 @@ struct AMF0Data
 	AMF0Type dType;
 	union 
 	{
-		DOUBLE data0;			//NUMBER
-		U8	   data1;			//BOOLEAN
-		UTF8   data2;			//UTF-8 CHAR
-		AMF0Object data3;		//OBJECT
+		DOUBLE data_num;			//NUMBER
+		U8	   data_bool;			//BOOLEAN
+		UTF8   data_utf8;			//UTF-8 CHAR
+		AMF0Object data_object;		//OBJECT
+		U16		data_reference;		//REFERENCE 
 	};
 };
 
@@ -52,6 +53,7 @@ private:
 
 public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
+	void Destroy();
 private:
 	int Splite(uint8_t *pData, const int dataLen);
 	int SpliteBasicType(uint8_t *pData, const int dataLen);
