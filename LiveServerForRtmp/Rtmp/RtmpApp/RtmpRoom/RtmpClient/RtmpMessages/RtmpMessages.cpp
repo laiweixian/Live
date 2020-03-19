@@ -283,10 +283,17 @@ int CRtmpMessages::UserControlMessages(const uint8_t* buff, const int buffLen)
 
 int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, const int buffLen)
 {
+	CAMF0 *amf0 = NULL;
+	CAMF3 *amf3 = NULL;
+
 	if (msgTypeId == 20)
 	{
 		//AMF0
+		amf0 = CAMF0::CreateAMF0(const_cast<UINT8*>(buff),buffLen);
+		if (amf0 == NULL)
+			return INVALID_RTMP_MESSAGE;
 
+		
 
 	}
 	else if (msgTypeId == 17)

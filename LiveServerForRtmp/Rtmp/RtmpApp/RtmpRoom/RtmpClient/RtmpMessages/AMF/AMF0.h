@@ -18,8 +18,14 @@ struct UTF8
 
 struct AMF0Object
 {
-	UTF8 *pUtf8;
+	UTF8 *pUtf8s;
 	int utf8Count;
+};
+
+struct AMF0EcmaArray
+{
+	AMF0Object *pObjects;
+	int			objCount ;
 };
 
 enum AMF0Type
@@ -42,6 +48,7 @@ struct AMF0Data
 		UTF8   data_utf8;			//UTF-8 CHAR
 		AMF0Object data_object;		//OBJECT
 		U16		data_reference;		//REFERENCE 
+		AMF0EcmaArray data_ecma_array;	//ECMA ARRAY
 	};
 };
 
@@ -55,9 +62,9 @@ public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
 	void Destroy();
 private:
-	int Splite(uint8_t *pData, const int dataLen);
-	int SpliteBasicType(uint8_t *pData, const int dataLen);
-	int SpliteCompositType(uint8_t *pData, const int dataLen);
+	int Splite( uint8_t *pData, const int dataLen);
+	static int SpliteBasicType( uint8_t *pData, const int dataLen,AMF0Data *pAMF);
+	static int SpliteCompositType( uint8_t *pData, const int dataLen,AMF0Data *pAMF);
 public:
 	vector<AMF0Data*> m_Datas;
 };
