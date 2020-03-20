@@ -1,39 +1,67 @@
 #include "AMF0.h"
 
-static AMF0Data* amf0_alloc()
+void UTF8_free(UTF8 &utf8)
 {
-	AMF0Data *pamf = NULL;
-
-	pamf = new AMF0Data;
-	memset(pamf, 0, sizeof(AMF0Data));
-	return pamf;
+	if (utf8.buff)	delete[] utf8.buff;
+	utf8.buff = NULL;
+	utf8.buffLength = 0;
 }
 
-static void amf0_free(AMF0Data *pAmf)
+void AMF0Object_free(AMF0Object &amfObject)
 {
 	int i = 0;
-	switch (pAmf->dType)
+	for (i = 0;i < amfObject.utf8Count;i++)
+		UTF8_free(amfObject.pUtf8s[i]);
+
+	if (amfObject.pUtf8s)	delete[] amfObject.pUtf8s;
+	amfObject.pUtf8s = NULL;
+	amfObject.utf8Count = 0;
+}
+
+void AMF0EcmaArray_free(AMF0EcmaArray &ecma)
+{
+	int i = 0;
+	for (i = 0;i < ecma.objCount;i++)
+		AMF0Object_free(ecma.pObjects[i]);
+
+	if (ecma.pObjects)	delete[] ecma.pObjects;
+	ecma.pObjects = NULL;
+	ecma.objCount = 0;
+}
+
+void AMF0StrictArray_free(AMF0StrictArray &strict)
+{
+	int i = 0;
+	for (i=0;i<strict.amfDataCount;i++)
+		AMF0Data_free(strict.pAMFData[i]);
+	if (strict.pAMFData)	delete[] strict.pAMFData;
+	strict.pAMFData = NULL;
+	strict.amfDataCount = 0;
+}
+
+void AMF0TypeObject_free(AMF0TypeObject& typeObject)
+{
+	int i = 0;
+	for (i=0;i<typeObject.objCount;i++)
+		AMF0Object_free(typeObject.pObjects[i]);
+	UTF8_free(typeObject.className);
+	if (typeObject.pObjects)	delete[] typeObject.pObjects;
+	typeObject.pObjects = NULL;
+	typeObject.objCount = 0;
+}
+void AMF0Data_free(AMF0Data &amfData)
+{
+	switch (amfData.dType)
 	{
 	case AMF0Type::NUMBER:
 		break;
 	case AMF0Type::BOOLEAN:
 		break;
 	case AMF0Type::STRING:
-		delete[] (pAmf->data_utf8.buff);
-		pAmf->data_utf8.buff = NULL;
-		pAmf->data_utf8.buffLength = 0;
+		UTF8_free(amfData.data_utf8);
 		break;
 	case AMF0Type::OBJECT:
-		for (i=0;i<pAmf->data_object.utf8Count;i++)
-		{
-			delete[] pAmf->data_object.pUtf8s[i].buff;
-			pAmf->data_object.pUtf8s[i].buff = NULL;
-			pAmf->data_object.pUtf8s[i].buffLength = 0;
-		}
-
-		delete[] pAmf->data_object.pUtf8s;
-		pAmf->data_object.pUtf8s = NULL;
-		pAmf->data_object.utf8Count = 0;
+		AMF0Object_free(amfData.data_object);
 		break;
 	case AMF0Type::MOVIECLIP:
 		break;
@@ -44,10 +72,12 @@ static void amf0_free(AMF0Data *pAmf)
 	case AMF0Type::REFERENCE:
 		break;
 	case AMF0Type::ECMA_ARRAY:
+		AMF0EcmaArray_free(amfData.data_ecma_array);
 		break;
 	case AMF0Type::OBJECT_END:
 		break;
 	case AMF0Type::STRICT_ARRAY:
+		AMF0StrictArray_free(amfData.data_strict_array);
 		break;
 	case AMF0Type::DATE:
 		break;
@@ -60,14 +90,29 @@ static void amf0_free(AMF0Data *pAmf)
 	case AMF0Type::XML_DOCUMENT:
 		break;
 	case AMF0Type::TYPE_OBJECT:
+		AMF0TypeObject_free(amfData.data_type_object);
 		break;
 
 	default:
 		break;
 	}
+}
 
-	delete pAmf;
-	return;
+AMF0Data* amf0_init()
+{
+	AMF0Data *pamf = NULL;
+
+	pamf = new AMF0Data;
+	memset(pamf, 0, sizeof(AMF0Data));
+	return pamf;
+}
+
+void amf0_free(AMF0Data **pamf)
+{
+	AMF0Data_free(**pamf);
+	delete *pamf;
+	*pamf = NULL;
+	return ;
 }
 
 CAMF0::CAMF0()
@@ -80,11 +125,7 @@ CAMF0::~CAMF0()
 	auto it = m_Datas.begin();
 	
 	for (it=m_Datas.begin() ; it!= m_Datas.end(); it++)
-	{
-		
-		::amf0_free(*it);
-		*it = NULL;
-	}
+		::amf0_free(&(*it));
 	m_Datas.clear();
 }
 
@@ -92,13 +133,22 @@ CAMF0* CAMF0::CreateAMF0( uint8_t *pData, const int dataLen)
 {
 	CAMF0 *pamf = NULL;
 	int ret  = 0;
+	int offset = 0;
+	int length = 0;
 
 	pamf = new CAMF0;
-	ret = pamf->Splite(pData,dataLen);
-	if (ret != 0)
+	while (1)
 	{
-		pamf->Destroy();
-		pamf = NULL;
+		length = pamf->Splite(pData+offset,dataLen-offset);
+		if (length == 0)
+			break;
+		if (length == -1)
+		{
+			pamf->Destroy();
+			pamf = NULL;
+			break;
+		}
+		offset += length;
 	}
 
 	return pamf;
@@ -111,7 +161,26 @@ void CAMF0::Destroy()
 
 int CAMF0::Splite( uint8_t *pData, const int dataLen)
 {
-	
+	AMF0Data *amf = amf0_init();
+	int length  = 0;
+
+	if (dataLen == 0)
+		return 0;
+
+	length = SpliteBasicType(pData,dataLen,amf);
+	if (length == -1)
+		return -1;
+	if (length == 0)
+		length = SpliteCompositType(pData,dataLen,amf);
+
+	if (length == -1)
+		return -1;
+	if (length == 0)
+		return -1;
+
+	m_Datas.push_back(amf);
+
+	return length;
 }
 
 int CAMF0::SpliteBasicType( uint8_t *pData, const int dataLen, AMF0Data *pAMF)
@@ -189,7 +258,12 @@ int CAMF0::SpliteBasicType( uint8_t *pData, const int dataLen, AMF0Data *pAMF)
 
 		offset += buffLength;
 		break;
-
+	case AMF0Type::UNDEFINED:
+		pAMF->dType = AMF0Type::UNDEFINED;
+		break;
+	case AMF0Type::NULL_MARKER:
+		pAMF->dType = AMF0Type::NULL_MARKER;
+		break;
 	default:
 		return 0;
 		break;
@@ -216,7 +290,8 @@ int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
 
 	//ECMA ARRAY
 	uint32_t associative_count = 0;
-	vector<AMF0Object> amfObject;
+	AMF0Data *ecma = NULL;
+	int objectLength = 0;
 
 	offset += 1;
 	switch (valueType)
@@ -274,14 +349,8 @@ int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
 		offset += ptr - (pData-offset);
 		break;
 
-	case AMF0Type::NULL_MARKER:
-		pAMF->dType = AMF0Type::NULL_MARKER;
-		return offset;
-		break;
-	case AMF0Type::UNDEFINED:
-		pAMF->dType = AMF0Type::UNDEFINED;
-		return offset;
-		break;
+
+	
 	case AMF0Type::REFERENCE:
 		pAMF->dType = AMF0Type::REFERENCE;
 		buffLength = 2;
@@ -303,11 +372,24 @@ int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
 		associative_count = ::BigToHost32(&associative_count);
 		ptr += 4;
 
+		pAMF->data_ecma_array.objCount = associative_count;
+		pAMF->data_ecma_array.pObjects  = new AMF0Object[associative_count];
+		i = 0;
 		while (associative_count > 0)
 		{
+			ecma = amf0_init();
+			objectLength = SpliteCompositType(ptr,pData+dataLen-ptr, ecma);
+			if (objectLength == 0 || objectLength == -1 || ecma->dType != AMF0Type::OBJECT)
+				return -1;
 			
+			ptr += objectLength;
+
+			pAMF->data_ecma_array.pObjects[i] = ecma->data_object;
+			i++;
 			associative_count --;
 		}
+
+		offset += ptr - (pData+offset);
 
 		break;
 	case AMF0Type::STRICT_ARRAY:
@@ -336,8 +418,6 @@ int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
 		return 0;
 		break;
 	}
-
-
 
 	return offset;
 }
