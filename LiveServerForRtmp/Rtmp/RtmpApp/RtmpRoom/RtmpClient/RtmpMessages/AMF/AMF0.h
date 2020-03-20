@@ -2,6 +2,10 @@
 
 #include "stdafx.h"
 
+#define INVALID_INPUT_ARGS	-1
+#define OUT_OF_DATA			-2
+#define NO_THIS_TYPE		-3
+#define INVALID_UTF8_CHAR	-4
 
 typedef uint8_t		U8;
 typedef uint16_t	U16;
@@ -29,8 +33,8 @@ void amf0_free(AMF0Data** pamf);
 
 struct UTF8
 {
-	char *buff;
-	int buffLength;
+	uint8_t *buff;
+	uint64_t buffLength;
 };
 
 struct AMF0Object
@@ -67,7 +71,7 @@ enum AMF0Type
 	MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
 	ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
 	LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
-	TYPE_OBJECT
+	TYPE_OBJECT,INVALID = 0xFF
 };
 
 
@@ -88,7 +92,7 @@ struct AMF0Data
 		DOUBLE	data_date;					//DATE
 		UTF8	data_utf8_long;				//LONG UTF-8 CHAR
 		AMF0TypeObject data_type_object;	//TYPE OBJECT 
-		AMF0Reserved *data_reserved;
+		AMF0Reserved *data_reserved;		//reserved
 	};
 };
 
@@ -103,8 +107,8 @@ public:
 	void Destroy();
 private:
 	int Splite( uint8_t *pData, const int dataLen);
-	static int SpliteBasicType( uint8_t *pData, const int dataLen,AMF0Data *pAMF);
-	static int SpliteCompositType( uint8_t *pData, const int dataLen,AMF0Data *pAMF);
+	static int SpliteBasicType( uint8_t *pData, const int dataLen,AMF0Data *pAMF,int *outLen);
+	static int SpliteCompositType( uint8_t *pData, const int dataLen,AMF0Data *pAMF, int *outLen);
 public:
 	vector<AMF0Data*> m_Datas;
 };

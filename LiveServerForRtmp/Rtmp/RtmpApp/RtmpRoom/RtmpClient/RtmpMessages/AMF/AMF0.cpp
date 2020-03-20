@@ -1,5 +1,8 @@
 #include "AMF0.h"
 
+#define CHECK_OFFSET(start,end,ptr,off)	\
+	if (ptr + off > end )	return OUT_OF_DATA;
+
 void UTF8_free(UTF8 &utf8)
 {
 	if (utf8.buff)	delete[] utf8.buff;
@@ -104,11 +107,14 @@ AMF0Data* amf0_init()
 
 	pamf = new AMF0Data;
 	memset(pamf, 0, sizeof(AMF0Data));
+	pamf->dType = AMF0Type::INVALID;
 	return pamf;
 }
 
 void amf0_free(AMF0Data **pamf)
 {
+	if (*pamf == NULL)
+		return;
 	AMF0Data_free(**pamf);
 	delete *pamf;
 	*pamf = NULL;
@@ -183,96 +189,111 @@ int CAMF0::Splite( uint8_t *pData, const int dataLen)
 	return length;
 }
 
-int CAMF0::SpliteBasicType( uint8_t *pData, const int dataLen, AMF0Data *pAMF)
+int CAMF0::SpliteBasicType( uint8_t *pData, const int dataLen, AMF0Data *pAMF,int *outLen)
 {
-	const uint8_t valueType = *pData;
+	if (pData == NULL || dataLen == 0 || pAMF->dType != AMF0Type::INVALID)
+		return INVALID_INPUT_ARGS;
+
+	uint8_t marker = 0x00;
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData , *end = pData + dataLen;
 	char *buff = NULL; 
 	int buffLength = 0;
-	int offset = 0;
 	
 	//string
-	uint16_t utf8Length = 0;
-	int length = 0;
-	uint8_t  start = 0x00;
-	uint8_t *ptr = NULL;
+	uint16_t utf8Len = 0 ;
+	uint8_t *utf8Start = NULL;
+	int utf8CharLen = 0;
 	bool c1 = false, c2 = false, c3 = false, c4 = false;
 
-	offset += 1;
-	switch (valueType)
+	CHECK_OFFSET(start,end,ptr,1)
+
+	marker = *ptr;
+	ptr += 1;
+	switch (marker)
 	{
 	case AMF0Type::NUMBER:
-		pAMF->dType = AMF0Type::NUMBER;
+		CHECK_OFFSET(start, end, ptr, 8)
 		buffLength = 8;
 		buff = new char[buffLength];
 		memcpy(buff,ptr,buffLength);
+		ptr += buffLength;
+		
+		pAMF->dType = AMF0Type::NUMBER;
 		pAMF->data_num = ::BigToHostDouble(buff,buffLength);
-		delete[] buff;	buff = NULL;
-		offset += buffLength;
+		
+		delete[] buff ; buff = NULL;
 		break;
 
 	case AMF0Type::BOOLEAN:
-		pAMF->dType = AMF0Type::BOOLEAN;
+		CHECK_OFFSET(start, end, ptr,  1)
 		buffLength = 1;	
 		buff = new char[buffLength];
-		memcpy(buff, pData + offset, buffLength);
-		pAMF->data_bool = *buff;
+		memcpy(buff,ptr, buffLength);
+		ptr += buffLength;
+
+		pAMF->dType = AMF0Type::NUMBER;
+		pAMF->data_bool = buff[0];
 
 		delete[] buff; buff = NULL;	
-		offset += buffLength;
 		break;
 
 	case AMF0Type::STRING:
-		pAMF->dType = AMF0Type::STRING;
-		memcpy(&utf8Length,pData+offset,2);
-		utf8Length = BigToHost16(&utf8Length);
-		offset += 2;
-
-		ptr = pData + offset;
-		while (utf8Length > 0)
+		CHECK_OFFSET(start, end, ptr, 2)
+		memcpy(&utf8Len,ptr,2);
+		utf8Len = BigToHost16(&utf8Len);
+		ptr += 2;
+		utf8Start = ptr;
+		while (utf8Len > 0)
 		{
-			start = *ptr;
-			c1 = start >= 0x00 && start <= 0x7f;
-			c2 = start >= 0xc2 && start <= 0xdf;
-			c3 = start == 0xe0 || (start >= 0xe1 && start <= 0xec) || start == 0xed || (start >= 0xee && start <= 0xef);
-			c4 = start == 0xf0 || (start >= 0xf1 && start <= 0xf3) || (start == 0xf4);
+			c1 = (*ptr) >= 0x00 && (*ptr) <= 0x7f;
+			c2 = (*ptr) >= 0xc2 && (*ptr) <= 0xdf;
+			c3 = (*ptr) == 0xe0 || ((*ptr) >= 0xe1 && (*ptr) <= 0xec) || (*ptr) == 0xed || ((*ptr) >= 0xee && (*ptr) <= 0xef);
+			c4 = (*ptr) == 0xf0 || ((*ptr) >= 0xf1 && (*ptr) <= 0xf3) || ((*ptr) == 0xf4);
 
 			if (c1)
-				length = 1;
+				utf8CharLen = 1;
 			else if (c2)
-				length = 2 ;
+				utf8CharLen = 2;
 			else if (c3)
-				length = 3;
+				utf8CharLen = 3;
 			else if (c4)
-				length = 4;
-			else 
-				return -1;
-			
-			ptr += length;
-			utf8Length --;
+				utf8CharLen = 4;
+			else
+			{
+				*outLen = 0;
+				return INVALID_UTF8_CHAR;
+			}
+				
+			CHECK_OFFSET(start,end,ptr,utf8CharLen)
+			ptr += utf8CharLen;
+			utf8Len--;
 		}
 
-		buffLength = ptr - (pData+offset);
-		pAMF->data_utf8.buff = new char[buffLength];
-		memcpy(pAMF->data_utf8.buff, pData + offset, buffLength);
-		pAMF->data_utf8.buffLength = buffLength;
-
-		offset += buffLength;
+		pAMF->dType = AMF0Type::STRING;
+		pAMF->data_utf8.buffLength = ptr - utf8Start;
+		pAMF->data_utf8.buff = new uint8_t[pAMF->data_utf8.buffLength];
+		memcpy(pAMF->data_utf8.buff,utf8Start, pAMF->data_utf8.buffLength);
 		break;
 	case AMF0Type::UNDEFINED:
 		pAMF->dType = AMF0Type::UNDEFINED;
+		pAMF->data_reserved = NULL;
 		break;
 	case AMF0Type::NULL_MARKER:
 		pAMF->dType = AMF0Type::NULL_MARKER;
+		pAMF->data_reserved = NULL;
 		break;
 	default:
-		return 0;
+		*outLen = 0;
+		return NO_THIS_TYPE;
 		break;
 	}
 
-	return offset;
+	*outLen = ptr - start;
+	return SAR_OK;
 }
 
-int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
+int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF,int *outLen)
 {
 	const uint8_t valueType = *pData;
 	int offset = 0;
@@ -338,7 +359,7 @@ int CAMF0::SpliteCompositType(uint8_t *pData, const int dataLen,AMF0Data *pAMF)
 			buffLength = ptr - utf8Start;
 			buff = new char[buffLength];
 			memcpy(buff,utf8Start,buffLength);
-			utf8Str.push_back({buff,buffLength});
+			utf8Str.push_back({(uint8_t*)buff,buffLength});
 		}
 
 		pAMF->data_object.utf8Count = utf8Str.size();
