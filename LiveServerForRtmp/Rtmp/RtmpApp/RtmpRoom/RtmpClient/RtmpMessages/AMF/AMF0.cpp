@@ -135,21 +135,25 @@ CAMF0::CAMF0()
 
 CAMF0::~CAMF0()
 {
-	auto it = m_Datas.begin();
+	auto it = m_Amfs.begin();
 	
-	for (it=m_Datas.begin() ; it!= m_Datas.end(); it++)
+	for (it= m_Amfs.begin() ; it!= m_Amfs.end(); it++)
 		::amf0_free(&(*it));
-	m_Datas.clear();
+	m_Amfs.clear();
 }
 
 CAMF0* CAMF0::CreateAMF0( uint8_t *pData, const int dataLen)
 {
 	CAMF0 *pamf = NULL;
-	int ret  = 0;
-	int offset = 0;
-	int length = 0;
-
-
+	int ret ;
+	pamf = new CAMF0;
+	
+	ret = pamf->Init(pData,dataLen);
+	if (ret != SAR_OK)
+	{
+		pamf->Destroy();
+		pamf = NULL;
+	}
 	return pamf;
 }
 
@@ -158,12 +162,30 @@ void CAMF0::Destroy()
 	delete this;
 }
 
+int CAMF0::Init(uint8_t *pData, const int dataLen)
+{
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
+	int offset = 0;
+
+	AMF0Data *amf = NULL;
+
+	while (ptr < end)
+	{
+		amf = CAMF0::Splite(ptr,end-ptr,&offset);
+		if (amf == NULL)
+			return SAR_FAILURE;
+		ptr += offset;
+		m_Amfs.push_back(amf);
+	}
+	return SAR_OK;
+}
+
 AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 {
 	if (pData == NULL || dataLen == 0 )
 		return NULL;
 
-	
 	uint8_t marker = 0x00;
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
@@ -190,45 +212,59 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::OBJECT:
 		amfType = AMF0Type::OBJECT;
+		ret = CAMF0::ParseObject(ptr,end-ptr,pamf->data_object,&offset);
 		break;
 	case AMF0Type::MOVIECLIP:
 		amfType = AMF0Type::MOVIECLIP;
+		ret = CAMF0::ParseMovieClip(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::NULL_MARKER:
 		amfType = AMF0Type::NULL_MARKER;
+		ret = CAMF0::ParseNull(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::UNDEFINED:
 		amfType = AMF0Type::UNDEFINED;
+		ret = CAMF0::ParseUndefined(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::REFERENCE:
 		amfType = AMF0Type::REFERENCE;
+		ret = CAMF0::ParseReference(ptr,end-ptr,pamf->data_reference,&offset);
 		break;
 	case AMF0Type::ECMA_ARRAY:
 		amfType = AMF0Type::ECMA_ARRAY;
+		ret = CAMF0::ParseEcmaArray(ptr,end-ptr,pamf->data_ecma_array,&offset);
 		break;
 	case AMF0Type::OBJECT_END:
 		amfType = AMF0Type::OBJECT_END;
+		ret = CAMF0::ParseObjectEnd(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::STRICT_ARRAY:
 		amfType = AMF0Type::STRICT_ARRAY;
+		ret = CAMF0::ParseStrictArray(ptr,end-ptr,pamf->data_strict_array,&offset);
 		break;
 	case AMF0Type::DATE:
 		amfType = AMF0Type::DATE;
+		ret = CAMF0::ParseDate(ptr,end-ptr,pamf->data_date,&offset);
 		break;
 	case AMF0Type::LONG_STRING:
 		amfType = AMF0Type::LONG_STRING;
+		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->data_utf8_long,&offset);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		amfType = AMF0Type::UNSUPPORTED;
+		ret = CAMF0::ParseUnsupported(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::RECORDSET:
 		amfType = AMF0Type::RECORDSET;
+		ret = CAMF0::ParseRecordSet(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::XML_DOCUMENT:
 		amfType = AMF0Type::XML_DOCUMENT;
+		ret = CAMF0::ParseXmlDocument(ptr,end-ptr,pamf->data_xml_document,&offset);
 		break;
 	case AMF0Type::TYPE_OBJECT:
 		amfType = AMF0Type::TYPE_OBJECT;
+		ret = CAMF0::ParseTypeObject(ptr,end-ptr,pamf->data_type_object,&offset);
 		break;
 	default:
 		break;
@@ -508,7 +544,7 @@ int CAMF0::ParseXmlDocument(uint8_t *pData, const int dataLen, UTF8 &utf8, int* 
 	return CAMF0::ParseUTF8Long(pData, dataLen, utf8, outOffset);
 }
 
-int CAMF0::ParseTypeObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+int CAMF0::ParseTypeObject(uint8_t *pData, const int dataLen, AMF0TypeObject &typeObject, int* outOffset)
 {
 	//标准文档完全不明(原因:object-property数组没有结束标志)
 	return SAR_FAILURE;

@@ -293,7 +293,9 @@ int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, 
 		if (amf0 == NULL)
 			return INVALID_RTMP_MESSAGE;
 
-		
+		//connect,createStream,publish,play,pause
+		//onstatus,result
+		//command name,transaction ID,command object
 
 	}
 	else if (msgTypeId == 17)

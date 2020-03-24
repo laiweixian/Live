@@ -112,7 +112,7 @@ public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
 	void Destroy();
 private:
-
+	int Init(uint8_t *pData, const int dataLen);
 	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);
 	static int ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset);
 	static int ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset);
@@ -130,11 +130,11 @@ private:
 	static int ParseUnsupported(uint8_t *pData, const int dataLen,  int* outOffset);
 	static int ParseRecordSet(uint8_t *pData, const int dataLen, int* outOffset);
 	static int ParseXmlDocument(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset);
-	static int ParseTypeObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
+	static int ParseTypeObject(uint8_t *pData, const int dataLen, AMF0TypeObject &typeObject, int* outOffset);
 	
 	static int ParseUTF8(uint8_t *pData,const int dataLen,UTF8& utf8,int *outOffset);
 	static int ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset);
 public:
-	vector<AMF0Data*> m_Datas;
+	vector<AMF0Data*> m_Amfs;;
 };
 
