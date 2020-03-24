@@ -315,9 +315,9 @@ int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, in
 			goto PARSE_ERR;
 		ptr += offset;
 
-		pValue = amf0_init();
-		ret = CAMF0::Splite(ptr,end-ptr,pValue,&offset);
-		if (ret != SAR_OK)
+
+		pValue = CAMF0::Splite(ptr,end-ptr,&offset);
+		if (pValue == NULL)
 			goto PARSE_ERR;
 		ptr += offset;
 
@@ -450,9 +450,8 @@ int CAMF0::ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& 
 	i = array_count;
 	while (i > 0)
 	{
-		pValue = amf0_init();
-		ret = Splite(ptr,end-ptr,pValue,&offset);
-		if (ret != SAR_OK)
+		pValue = Splite(ptr,end-ptr,&offset);
+		if (pValue == NULL)
 			goto PARSE_ERR;
 		ptr += offset;
 
