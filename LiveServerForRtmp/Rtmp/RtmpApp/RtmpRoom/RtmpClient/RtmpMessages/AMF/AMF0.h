@@ -111,6 +111,8 @@ private:
 public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
 	void Destroy();
+
+
 private:
 	int Init(uint8_t *pData, const int dataLen);
 	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);

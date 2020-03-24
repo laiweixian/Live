@@ -66,6 +66,45 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF3.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Call.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Close.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Connect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\CreateStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Play.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Play2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\DeleteStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\CloseStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\ReceiveAudio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\ReceiveVideo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Publish.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Seek.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Pause.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
