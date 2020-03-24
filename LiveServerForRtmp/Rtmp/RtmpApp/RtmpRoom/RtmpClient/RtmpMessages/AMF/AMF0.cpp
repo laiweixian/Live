@@ -10,6 +10,7 @@ void UTF8_free(UTF8 &utf8)
 	utf8.buffLength = 0;
 }
 
+
 void AMF0Object_free(AMF0Object &amfObject)
 {
 	int i = 0;
@@ -89,12 +90,14 @@ void AMF0Data_free(AMF0Data &amfData)
 	case AMF0Type::DATE:
 		break;
 	case AMF0Type::LONG_STRING:
+		UTF8_free(amfData.data_utf8_long);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		break;
 	case AMF0Type::RECORDSET:
 		break;
 	case AMF0Type::XML_DOCUMENT:
+		UTF8_free(amfData.data_xml_document);
 		break;
 	case AMF0Type::TYPE_OBJECT:
 		AMF0TypeObject_free(amfData.data_type_object);
@@ -154,142 +157,98 @@ void CAMF0::Destroy()
 {
 	delete this;
 }
-int Splite(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
-{
-	if (pData == NULL || dataLen == 0 || pAMF->dType != AMF0Type::INVALID)
-		return INVALID_INPUT_ARGS;
 
-	int ret = SAR_FAILURE;
+AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
+{
+	if (pData == NULL || dataLen == 0 )
+		return NULL;
+
+	
 	uint8_t marker = 0x00;
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
-
-	CHECK_OFFSET(start, end, ptr, 1)
+	int ret = SAR_FAILURE;
+	int offset = 0;
+	AMF0Type amfType = AMF0Type::INVALID;
+	AMF0Data* pamf = amf0_init();
+	
 	marker = *ptr;
 	ptr += 1;
 	switch (marker)
 	{
 	case AMF0Type::NUMBER:
-		 break;
+		amfType = AMF0Type::NUMBER;
+		ret = CAMF0::ParseNumber(ptr,end-ptr,pamf->data_num,&offset);
+		break;
 	case AMF0Type::BOOLEAN:
+		amfType = AMF0Type::BOOLEAN;
+		ret = CAMF0::ParseBoolean(ptr, end - ptr, pamf->data_bool, &offset);
 		break;
 	case AMF0Type::STRING:
+		amfType = AMF0Type::STRING;
+		ret = CAMF0::ParseString(ptr,end-ptr,pamf->data_utf8,&offset);
 		break;
 	case AMF0Type::OBJECT:
+		amfType = AMF0Type::OBJECT;
 		break;
 	case AMF0Type::MOVIECLIP:
+		amfType = AMF0Type::MOVIECLIP;
 		break;
 	case AMF0Type::NULL_MARKER:
+		amfType = AMF0Type::NULL_MARKER;
 		break;
 	case AMF0Type::UNDEFINED:
+		amfType = AMF0Type::UNDEFINED;
 		break;
 	case AMF0Type::REFERENCE:
+		amfType = AMF0Type::REFERENCE;
 		break;
 	case AMF0Type::ECMA_ARRAY:
+		amfType = AMF0Type::ECMA_ARRAY;
 		break;
 	case AMF0Type::OBJECT_END:
+		amfType = AMF0Type::OBJECT_END;
 		break;
 	case AMF0Type::STRICT_ARRAY:
+		amfType = AMF0Type::STRICT_ARRAY;
 		break;
 	case AMF0Type::DATE:
+		amfType = AMF0Type::DATE;
 		break;
 	case AMF0Type::LONG_STRING:
+		amfType = AMF0Type::LONG_STRING;
 		break;
 	case AMF0Type::UNSUPPORTED:
+		amfType = AMF0Type::UNSUPPORTED;
 		break;
 	case AMF0Type::RECORDSET:
+		amfType = AMF0Type::RECORDSET;
 		break;
 	case AMF0Type::XML_DOCUMENT:
+		amfType = AMF0Type::XML_DOCUMENT;
 		break;
 	case AMF0Type::TYPE_OBJECT:
+		amfType = AMF0Type::TYPE_OBJECT;
 		break;
 	default:
 		break;
 	}
-
-}
-
-int CAMF0::SpliteBasicType( uint8_t *pData, const int dataLen, AMF0Data *pAMF,int *outLen)
-{
-	if (pData == NULL || dataLen == 0 || pAMF->dType != AMF0Type::INVALID)
-		return INVALID_INPUT_ARGS;
-
-	int ret = SAR_FAILURE;
-
-	uint8_t marker = 0x00;
-	uint8_t *ptr = pData;
-	const uint8_t* start = pData , *end = pData + dataLen;
+	ptr += offset;
 	
-	
-
-	//number
-	DOUBLE num = 0;
-
-	//boolean
-	uint8_t booleanData = 0x00; 
-
-	//string
-	uint8_t *utf8 = NULL;
-	int utf8Len = 0;
-	int utf8Offset = 0;
-	
-
-	CHECK_OFFSET(start,end,ptr,1)
-	marker = *ptr;
-	ptr += 1;
-	switch (marker)
+	if (ret != SAR_OK)
 	{
-	case AMF0Type::NUMBER:
-		CHECK_OFFSET(start, end, ptr, 8)
-		::memcpy(&num,ptr,8);
-		ptr += 8;
-
-		pAMF->dType = AMF0Type::NUMBER;
-		pAMF->data_num = ::BigToHostDouble(&num, sizeof(DOUBLE));
-		break;
-
-	case AMF0Type::BOOLEAN:
-		CHECK_OFFSET(start, end, ptr,  1)
-		booleanData = *ptr;
-		ptr += 1;
-
-		pAMF->dType = AMF0Type::BOOLEAN;
-		pAMF->data_bool = booleanData;
-		break;
-
-	case AMF0Type::STRING:
-		ret = CAMF0::ParseUTF8(ptr,end-ptr, NULL,&utf8Len,&utf8Offset);
-		if (ret != SAR_OK)
-			return ret;
-
-		utf8 = new uint8_t[utf8Len];
-		ret = CAMF0::ParseUTF8(ptr,end-ptr,utf8,&utf8Len,&utf8Offset);
-		ptr += utf8Offset;
-
-		pAMF->dType = AMF0Type::STRING;
-		pAMF->data_utf8.buff = utf8;
-		pAMF->data_utf8.buffLength = utf8Len;
-		break;
-	case AMF0Type::UNDEFINED:
-		pAMF->dType = AMF0Type::UNDEFINED;
-		pAMF->data_reserved = NULL;
-		break;
-	case AMF0Type::NULL_MARKER:
-		pAMF->dType = AMF0Type::NULL_MARKER;
-		pAMF->data_reserved = NULL;
-		break;
-	default:
-		*outLen = 0;
-		return NO_THIS_TYPE;
-		break;
+		amf0_free(&pamf);
+		*outOffset = 0;
+		return NULL;
 	}
 
-	*outLen = ptr - start;
-	return SAR_OK;
+	*outOffset = ptr - start;
+	return pamf;
 }
 
 
-int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset)
 {
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
@@ -301,64 +260,45 @@ int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* o
 	ptr += 8;
 
 	*outOffset = ptr - start; 
-	pAMF->dType = AMF0Type::NUMBER;
-	pAMF->data_num = BigToHostDouble(&num,sizeof(DOUBLE));
+	number = BigToHostDouble(&num,sizeof(DOUBLE));
 	return SAR_OK;
 }
 
-int CAMF0::ParseBoolean(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+int CAMF0::ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset)
 {
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
 
-	uint8_t boolData = 0x00;
+	uint8_t boolD = 0x00;
 
 	CHECK_OFFSET(start,end,ptr,1)
-	memcpy(&boolData,ptr,1);
+	memcpy(&boolD,ptr,1);
 	ptr += 1;
 
 	*outOffset = ptr - start;
-	pAMF->dType = AMF0Type::BOOLEAN;
-	pAMF->data_bool = boolData;
+	boolData = boolD;
 	return SAR_OK;
 }
-int CAMF0::ParseString(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseString(uint8_t *pData, const int dataLen, UTF8& utf8, int* outOffset)
 {
-	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
-
-	int ret = SAR_FAILURE;
-	uint8_t *utf8 = NULL;
-	int utf8Length = 0;
-	int offset = 0;
-
-	ret = CAMF0::ParseUTF8(ptr,end-ptr,NULL,&utf8Length,&offset);
-	if (ret != SAR_OK)
-		return ret ;
-
-	utf8 = new uint8_t[utf8Length];
-	ret = CAMF0::ParseUTF8(ptr, end - ptr, utf8, &utf8Length, &offset);
-	ptr += offset;
-
-	*outOffset = ptr - start;
-	pAMF->dType = AMF0Type::STRING;
-	pAMF->data_utf8.buff = new uint8_t[utf8Length];
-	pAMF->data_utf8.buffLength = utf8Length;
-	return SAR_OK;
+	return CAMF0::ParseUTF8(pData,dataLen,utf8,outOffset);
 }
-int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, int* outOffset)
 {
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
 	
 	int ret = SAR_FAILURE;
 	uint8_t three[3] = {0};
-	int utf8BuffLength;
 	int offset = 0;
 	int i = 0;
-	vector<AMF0Obj> objs;
-	AMF0Obj obj;
+	
 	AMF0Data *pValue = NULL;
+	vector<Obj> objs;
+	Obj obj;
+	UTF8 name; 
 	
 	while (1)
 	{
@@ -370,35 +310,28 @@ int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* o
 			break;
 		}
 
-		ret = CAMF0::ParseUTF8(ptr,end-ptr,NULL,&utf8BuffLength,&offset);
+		ret = CAMF0::ParseUTF8(ptr,end-ptr,name,&offset);
 		if (ret != SAR_OK)
 			goto PARSE_ERR;
-
-		obj.name.buff = new uint8_t[utf8BuffLength];
-		obj.name.buffLength = utf8BuffLength;
-		ret = CAMF0::ParseUTF8(ptr, end - ptr, obj.name.buff, &utf8BuffLength, &offset);
 		ptr += offset;
 
-
-		//
-		offset = 0;
 		pValue = amf0_init();
-		ret = Splite(ptr,end-ptr,pValue,&offset);
+		ret = CAMF0::Splite(ptr,end-ptr,pValue,&offset);
 		if (ret != SAR_OK)
 			goto PARSE_ERR;
-		
 		ptr += offset;
+
+		obj.name = name;
 		obj.data = *pValue;
 		objs.push_back(obj);
 	}
 
-	pAMF->dType = AMF0Type::OBJECT;
-	pAMF->data_object.objCount = objs.size();
-	pAMF->data_object.pObjs = new AMF0Obj[objs.size()];
-	for (i=0;i<objs.size(); i++)
-		pAMF->data_object.pObjs[i] = objs.at(i);
-	
+	amfObj.objCount = objs.size();
+	amfObj.pObjs = new Obj[objs.size()];
+	for (i=0;i<objs.size();i++)
+		amfObj.pObjs[i] = objs.at(i);
 	*outOffset = ptr - start;
+
 	return SAR_OK;
 
 PARSE_ERR:
@@ -408,62 +341,181 @@ PARSE_ERR:
 		UTF8_free(objs.at(i).name);
 	}
 	objs.clear();
+	*outOffset = 0;
 	return ret;
 }
-int CAMF0::ParseMovieClip(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseMovieClip(uint8_t *pData, const int dataLen,  int* outOffset)
 {
+	return SAR_FAILURE;
+}
+
+int CAMF0::ParseNull(uint8_t *pData, const int dataLen, int* outOffset)
+{
+	*outOffset = 0;
+	return SAR_OK;
+}
+
+int CAMF0::ParseUndefined(uint8_t *pData, const int dataLen,  int* outOffset)
+{
+	*outOffset = 0;
+	return SAR_OK;
+}
+
+int CAMF0::ParseReference(uint8_t *pData, const int dataLen, U16 &refer, int* outOffset)
+{
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
+	uint16_t indexPoint = 0;
+
+	CHECK_OFFSET(start,end,ptr,2)
+	memcpy(&indexPoint,ptr,2);
+	ptr += 2;
+
+	refer = ::BigToHost16(&indexPoint);
+	*outOffset = ptr - start;
+
+	return SAR_OK;
+}
+
+int CAMF0::ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0EcmaArray &ecma, int* outOffset)
+{
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
+	uint32_t associative_count  = 0;
+	int i = 0;
+
+	int ret = SAR_FAILURE;
+	int offset = 0;
+	AMF0Object obj;
+	uint8_t marker = 0x00;
+
+	CHECK_OFFSET(start,end,ptr,4)
+	memcpy(&associative_count,ptr,4);
+	ptr += 4;
+
+	associative_count = ::BigToHost32(&associative_count);
+	
+	ecma.objCount = associative_count;
+	ecma.pObjects = new AMF0Object[associative_count];
+	i = associative_count;
+	while (i>0)
+	{
+		
+		CHECK_OFFSET(start,end,ptr,1)
+		marker = *ptr;
+		ptr += 1;
+
+		ret = CAMF0::ParseObject(ptr,end-ptr,ecma.pObjects[i],&offset);
+		if (ret != SAR_OK)
+			goto PARSE_ERR;
+		ptr += offset;
+		i--;
+	}
+	
+	*outOffset = ptr - start;
+	return SAR_OK;
+
+PARSE_ERR:
+
+	return ret; 
 
 }
-int CAMF0::ParseNull(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
-{
 
-}
-int CAMF0::ParseUndefined(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+int CAMF0::ParseObjectEnd(uint8_t *pData, const int dataLen, int* outOffset)
 {
-
+	return SAR_FAILURE;
 }
-int CAMF0::ParseReference(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& strictArray, int* outOffset)
 {
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
+	int ret = SAR_FAILURE;
+	int offset;
 
+	//
+	uint32_t array_count = 0;
+	int i = 0;
+	AMF0Data *pValue = NULL;
+
+	CHECK_OFFSET(start,end,ptr,4)
+	memcpy(&array_count,ptr,4);
+	ptr += 4;
+
+	array_count = ::BigToHost32(&array_count);
+
+	strictArray.amfDataCount = array_count;
+	strictArray.pAMFData = new AMF0Data[array_count];
+	i = array_count;
+	while (i > 0)
+	{
+		pValue = amf0_init();
+		ret = Splite(ptr,end-ptr,pValue,&offset);
+		if (ret != SAR_OK)
+			goto PARSE_ERR;
+		ptr += offset;
+
+		strictArray.pAMFData[i] = *pValue;
+		i--;
+	}
+
+	return SAR_OK;
+
+PARSE_ERR:
+
+	return ret;
 }
-int CAMF0::ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseDate(uint8_t *pData, const int dataLen, DOUBLE& date, int* outOffset)
 {
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
+	int ret = SAR_FAILURE;
 
+	DOUBLE dateData = 0;
+	S16 timeZone = 0;
+
+	CHECK_OFFSET(start,end,ptr,8)
+	memcpy(&dateData,ptr,8);
+	ptr += 8;
+
+	CHECK_OFFSET(start,end,ptr,2)
+	memcpy(&timeZone,ptr,2);
+	ptr += 2;
+
+	date = ::BigToHostDouble(&dateData,8);
+	*outOffset = ptr - start;
+	return SAR_OK;
 }
-int CAMF0::ParseObjectEnd(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseLongString(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset)
 {
-
+	return CAMF0::ParseUTF8Long(pData,dataLen,utf8,outOffset);
 }
-int CAMF0::ParseStrictArray(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseUnsupported(uint8_t *pData, const int dataLen, int* outOffset)
 {
-
+	return SAR_FAILURE;
 }
-int CAMF0::ParseDate(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseRecordSet(uint8_t *pData, const int dataLen, int* outOffset)
 {
-
+	return SAR_FAILURE;
 }
-int CAMF0::ParseLongString(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
+
+int CAMF0::ParseXmlDocument(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset)
 {
-
+	return CAMF0::ParseUTF8Long(pData, dataLen, utf8, outOffset);
 }
-int CAMF0::ParseUnsupported(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
-{
 
-}
-int CAMF0::ParseRecordSet(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
-{
-
-}
-int CAMF0::ParseXmlDocument(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
-{
-
-}
 int CAMF0::ParseTypeObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset)
 {
-
+	//标准文档完全不明(原因:object-property数组没有结束标志)
+	return SAR_FAILURE;
 }
 
-int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, uint8_t* utf8, int *outUtf8Length,int* outOffset)
+int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset)
 {
 	uint8_t *ptr = pData;
 	const uint8_t* start = pData, *end = pData + dataLen;
@@ -480,6 +532,7 @@ int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, uint8_t* utf8, int *outU
 	memcpy(&utf8CharCount,ptr,2);
 	ptr += 2;
 
+	utf8CharCount = ::BigToHost16(&utf8CharCount);
 	i = utf8CharCount; 
 	while (i > 0)
 	{
@@ -508,15 +561,62 @@ int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, uint8_t* utf8, int *outU
 	utf8Buff = new uint8_t[utf8BuffLen];
 	memcpy(utf8Buff,start+2,utf8BuffLen);
 
-	*outUtf8Length = utf8BuffLen;
 	*outOffset = ptr - start;
-	if (utf8 != NULL)
-		memcpy(utf8,utf8Buff,utf8BuffLen);
-
+	utf8.buff = utf8Buff;
+	utf8.buffLength = utf8BuffLen;
 	return SAR_OK;
 }
 
-int CAMF0::ParseUTF8Long(uint8_t *pData, const int dataLen, uint8_t* outChar, int *outCharLen)
+int CAMF0::ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset)
 {
+	uint8_t *ptr = pData;
+	const uint8_t* start = pData, *end = pData + dataLen;
 
+	uint32_t utf8CharCount = 0;
+	int i = 0;
+	bool c1 = false, c2 = false, c3 = false, c4 = false;
+	int utf8CharLength = 0;
+
+	uint8_t *utf8Buff = NULL;
+	int utf8BuffLen = 0;
+
+	CHECK_OFFSET(start, end, ptr, 4)
+	memcpy(&utf8CharCount, ptr,4);
+	ptr +=4;
+
+	utf8CharCount = ::BigToHost32(&utf8CharCount);
+	i = utf8CharCount;
+	while (i > 0)
+	{
+		c1 = (*ptr) >= 0x00 && (*ptr) <= 0x7f;
+		c2 = (*ptr) >= 0xc2 && (*ptr) <= 0xdf;
+		c3 = (*ptr) == 0xe0 || ((*ptr) >= 0xe1 && (*ptr) <= 0xec) || (*ptr) == 0xed || ((*ptr) >= 0xee && (*ptr) <= 0xef);
+		c4 = (*ptr) == 0xf0 || ((*ptr) >= 0xf1 && (*ptr) <= 0xf3) || (*ptr) == 0xf4;
+
+		if (c1)
+			utf8CharLength = 1;
+		else if (c2)
+			utf8CharLength = 2;
+		else if (c3)
+			utf8CharLength = 3;
+		else if (c4)
+			utf8CharLength = 4;
+		else
+			return INVALID_UTF8_CHAR;
+
+		CHECK_OFFSET(start, end, ptr, utf8CharLength)
+		ptr += utf8CharLength;
+		i--;
+	}
+
+	utf8BuffLen = ptr - start - 4;
+	utf8Buff = new uint8_t[utf8BuffLen];
+	memcpy(utf8Buff, start + 4, utf8BuffLen);
+
+	*outOffset = ptr - start;
+	utf8.buff = utf8Buff;
+	utf8.buffLength = utf8BuffLen;
+	return SAR_OK;
 }
+
+

@@ -14,7 +14,7 @@ typedef uint32_t	U32;
 typedef double		DOUBLE;
 
 struct UTF8;
-struct AMF0Obj;
+struct Obj;
 struct AMF0Object;
 struct AMF0EcmaArray;
 struct AMF0StrictArray;
@@ -38,7 +38,7 @@ struct UTF8
 	uint64_t buffLength;
 };
 
-struct AMF0Obj
+struct Obj
 {
 	UTF8 name;
 	AMF0Data data;
@@ -46,7 +46,7 @@ struct AMF0Obj
 
 struct AMF0Object
 {
-	AMF0Obj *pObjs;
+	Obj *pObjs;
 	uint32_t objCount;
 };
 
@@ -82,8 +82,6 @@ enum AMF0Type
 };
 
 
-
-
 struct AMF0Data
 {
 	AMF0Type dType;
@@ -98,6 +96,7 @@ struct AMF0Data
 		AMF0StrictArray data_strict_array;	//STRICT ARRAY
 		DOUBLE	data_date;					//DATE
 		UTF8	data_utf8_long;				//LONG UTF-8 CHAR
+		UTF8	data_xml_document;			//XML
 		AMF0TypeObject data_type_object;	//TYPE OBJECT 
 		AMF0Reserved *data_reserved;		//reserved
 	};
@@ -114,29 +113,27 @@ public:
 	void Destroy();
 private:
 
-	static int SpliteBasicType( uint8_t *pData, const int dataLen,AMF0Data *pAMF,int *outLen);
-	static int SpliteCompositType( uint8_t *pData, const int dataLen,AMF0Data *pAMF, int *outLen);
-
-	static int Splite(uint8_t *pData, const int dataLen,AMF0Data *pAMF,int* outOffset);
-	static int ParseNumber(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseBoolean(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseString(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseMovieClip(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseNull(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseUndefined(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseReference(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseObjectEnd(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseStrictArray(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseDate(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseLongString(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseUnsupported(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseRecordSet(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseXmlDocument(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
+	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);
+	static int ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset);
+	static int ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset);
+	static int ParseString(uint8_t *pData, const int dataLen, UTF8& utf8, int* outOffset);
+	static int ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, int* outOffset);
+	static int ParseMovieClip(uint8_t *pData, const int dataLen, int* outOffset);
+	static int ParseNull(uint8_t *pData, const int dataLen, int* outOffset);
+	static int ParseUndefined(uint8_t *pData, const int dataLen,  int* outOffset);
+	static int ParseReference(uint8_t *pData, const int dataLen, U16 &refer, int* outOffset);
+	static int ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0EcmaArray &ecma, int* outOffset);
+	static int ParseObjectEnd(uint8_t *pData, const int dataLen,  int* outOffset);
+	static int ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& strictArray, int* outOffset);
+	static int ParseDate(uint8_t *pData, const int dataLen, DOUBLE& date, int* outOffset);
+	static int ParseLongString(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset);
+	static int ParseUnsupported(uint8_t *pData, const int dataLen,  int* outOffset);
+	static int ParseRecordSet(uint8_t *pData, const int dataLen, int* outOffset);
+	static int ParseXmlDocument(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset);
 	static int ParseTypeObject(uint8_t *pData, const int dataLen, AMF0Data *pAMF, int* outOffset);
-	static int ParseUTF8(uint8_t *pData,const int dataLen,uint8_t* utf8,int *outUtf8Length,int* outOffset);
-	static int ParseUTF8Long(uint8_t *pData, const int dataLen, uint8_t* outChar, int *outCharLen);
+	
+	static int ParseUTF8(uint8_t *pData,const int dataLen,UTF8& utf8,int *outOffset);
+	static int ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset);
 public:
 	vector<AMF0Data*> m_Datas;
 };
