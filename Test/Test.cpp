@@ -8,23 +8,16 @@
 #include <cstring>
 using namespace std;
 
+void SetInt(int *i)
+{
+	*i = 100;
+}
+
 int main()
 {
-	string sInt("2ppp");
-	string sFloat("12.2");
-	
-	
-	int v;
-	try
-	{
-		v = std::stoi(sInt);
-	}
-	catch (const std::exception& e)
-	{
-		const char *msg = e.what();
-
-	}
-	
+	int *i = NULL;
+	SetInt(i);
     return 0;
 }
+
 
