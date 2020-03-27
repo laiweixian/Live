@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../AMF/AMF0.h"
-#include "../../AMF/AMF3.h"
+
+
 #include "stdafx.h"
+#include "../../AMF/AMF.h"
 
 //Flag values for the audioCodecs property
 enum AudioCodecs {
@@ -48,8 +49,39 @@ enum ObjectEncoding
 	AMF3 = 3
 };
 
+struct ConnectCommandObject
+{
+	string app;
+	string flashver;
+	string swfUrl;
+	string tcUrl;
+	bool	fpad;
+	int		audioCodecs;
+	int		videoCodecs;
+	int		videoFunction;
+	string	pageUrl;
+	int		objectEncoding;
+};
+
+struct OptionalUserArguments
+{
+
+};
+
+struct ConnectCommand
+{
+	string commandName;
+	int		transactionID;
+	ConnectCommandObject commandObject;
+	OptionalUserArguments optional;
+};
+
 class CConnect
 {
-	
-	
+public:
+	CConnect() = default;
+	~CConnect() = default;
+
+	static ConnectCommand* Parse(CAMF0* pamf);
+	static ConnectCommand* Parse(CAMF3* pamf);
 };

@@ -151,6 +151,7 @@
     <ClInclude Include="Global\Funcs.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF0.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF3.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Call.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF3.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Connect.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessages.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\RtmpMessage\Chunk\Chunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handshake\Handshake.cpp" />

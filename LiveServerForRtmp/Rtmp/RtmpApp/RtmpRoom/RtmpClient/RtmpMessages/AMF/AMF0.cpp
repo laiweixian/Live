@@ -66,7 +66,7 @@ void AMF0Data_free(AMF0Data &amfData)
 	case AMF0Type::BOOLEAN:
 		break;
 	case AMF0Type::STRING:
-		UTF8_free(amfData.data_utf8);
+		UTF8_free(amfData.data_string);
 		break;
 	case AMF0Type::OBJECT:
 		AMF0Object_free(amfData.data_object);
@@ -90,7 +90,7 @@ void AMF0Data_free(AMF0Data &amfData)
 	case AMF0Type::DATE:
 		break;
 	case AMF0Type::LONG_STRING:
-		UTF8_free(amfData.data_utf8_long);
+		UTF8_free(amfData.data_string_long);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		break;
@@ -208,7 +208,7 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::STRING:
 		amfType = AMF0Type::STRING;
-		ret = CAMF0::ParseString(ptr,end-ptr,pamf->data_utf8,&offset);
+		ret = CAMF0::ParseString(ptr,end-ptr,pamf->data_string,&offset);
 		break;
 	case AMF0Type::OBJECT:
 		amfType = AMF0Type::OBJECT;
@@ -248,7 +248,7 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::LONG_STRING:
 		amfType = AMF0Type::LONG_STRING;
-		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->data_utf8_long,&offset);
+		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->data_string_long,&offset);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		amfType = AMF0Type::UNSUPPORTED;

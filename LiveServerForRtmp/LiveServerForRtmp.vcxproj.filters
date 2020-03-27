@@ -105,6 +105,9 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetStream\Pause.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -141,6 +144,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\AMF\AMF3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpMessages\Commands\NetConnection\Connect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

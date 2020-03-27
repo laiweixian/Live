@@ -89,13 +89,13 @@ struct AMF0Data
 	{
 		DOUBLE data_num;					//NUMBER
 		U8	   data_bool;					//BOOLEAN
-		UTF8   data_utf8;					//UTF-8 CHAR
+		UTF8   data_string;					//UTF-8 CHAR
 		AMF0Object data_object;				//OBJECT
 		U16		data_reference;				//REFERENCE 
 		AMF0EcmaArray data_ecma_array;		//ECMA ARRAY
 		AMF0StrictArray data_strict_array;	//STRICT ARRAY
 		DOUBLE	data_date;					//DATE
-		UTF8	data_utf8_long;				//LONG UTF-8 CHAR
+		UTF8	data_string_long;				//LONG UTF-8 CHAR
 		UTF8	data_xml_document;			//XML
 		AMF0TypeObject data_type_object;	//TYPE OBJECT 
 		AMF0Reserved *data_reserved;		//reserved
