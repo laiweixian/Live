@@ -3,8 +3,10 @@
 #include "stdafx.h"
 #include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/Chunk/chunk.h"
 #include "Rtmp/RtmpApp/RtmpRoom/RtmpClient/RtmpMessages/RtmpMessage/RtmpMsg.h"
-#include "AMF/AMF0.h"
-#include "AMF/AMF3.h"
+#include "AMF/AMF.h"
+#include "Commands/Commands.h"
+
+extern int SendToPeer(char* buff, const int buffLen);
 
 #define DEFAULT_CHUNK_SIZE 128
 

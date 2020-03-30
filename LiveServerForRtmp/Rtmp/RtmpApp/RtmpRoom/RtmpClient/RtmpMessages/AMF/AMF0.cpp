@@ -165,7 +165,7 @@ void CAMF0::Destroy()
 int CAMF0::Init(uint8_t *pData, const int dataLen)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	int offset = 0;
 
 	AMF0Data *amf = NULL;
@@ -188,7 +188,7 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 
 	uint8_t marker = 0x00;
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	int ret = SAR_FAILURE;
 	int offset = 0;
 	AMF0Type amfType = AMF0Type::INVALID;
@@ -287,7 +287,7 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 
 	DOUBLE num = 0;
 
@@ -303,7 +303,7 @@ int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* o
 int CAMF0::ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 
 	uint8_t boolD = 0x00;
 
@@ -324,7 +324,7 @@ int CAMF0::ParseString(uint8_t *pData, const int dataLen, UTF8& utf8, int* outOf
 int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	
 	int ret = SAR_FAILURE;
 	uint8_t three[3] = {0};
@@ -401,7 +401,7 @@ int CAMF0::ParseUndefined(uint8_t *pData, const int dataLen,  int* outOffset)
 int CAMF0::ParseReference(uint8_t *pData, const int dataLen, U16 &refer, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	uint16_t indexPoint = 0;
 
 	CHECK_OFFSET(start,end,ptr,2)
@@ -417,7 +417,7 @@ int CAMF0::ParseReference(uint8_t *pData, const int dataLen, U16 &refer, int* ou
 int CAMF0::ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0EcmaArray &ecma, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	uint32_t associative_count  = 0;
 	int i = 0;
 
@@ -466,7 +466,7 @@ int CAMF0::ParseObjectEnd(uint8_t *pData, const int dataLen, int* outOffset)
 int CAMF0::ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& strictArray, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	int ret = SAR_FAILURE;
 	int offset;
 
@@ -505,7 +505,7 @@ PARSE_ERR:
 int CAMF0::ParseDate(uint8_t *pData, const int dataLen, DOUBLE& date, int* outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	int ret = SAR_FAILURE;
 
 	DOUBLE dateData = 0;
@@ -553,7 +553,7 @@ int CAMF0::ParseTypeObject(uint8_t *pData, const int dataLen, AMF0TypeObject &ty
 int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 
 	uint16_t utf8CharCount = 0;
 	int i = 0;
@@ -605,7 +605,7 @@ int CAMF0::ParseUTF8(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffs
 int CAMF0::ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset)
 {
 	uint8_t *ptr = pData;
-	const uint8_t* start = pData, *end = pData + dataLen;
+	const uint8_t* start = pData, *end = pData + dataLen - 1;
 
 	uint32_t utf8CharCount = 0;
 	int i = 0;

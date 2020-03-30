@@ -103,3 +103,12 @@ ConnectCommand* CConnect::Parse(CAMF3* pamf)
 {
 
 }
+
+void CConnect::ConnectCommand_Free(ConnectCommand** ppcc)
+{
+	if (*ppcc == NULL)
+		return;
+
+	delete (*ppcc);
+	*ppcc = NULL;
+}

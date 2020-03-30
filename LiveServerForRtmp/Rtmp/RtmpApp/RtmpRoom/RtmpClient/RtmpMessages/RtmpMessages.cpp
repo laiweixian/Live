@@ -285,6 +285,7 @@ int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, 
 {
 	CAMF0 *amf0 = NULL;
 	CAMF3 *amf3 = NULL;
+	ConnectCommand *pConnCmd = NULL;
 
 	if (msgTypeId == 20)
 	{
@@ -293,10 +294,11 @@ int CRtmpMessages::CommandMessage(const uint8_t msgTypeId, const uint8_t* buff, 
 		if (amf0 == NULL)
 			return INVALID_RTMP_MESSAGE;
 
-		//connect,createStream,publish,play,pause
-		//onstatus,result
-		//command name,transaction ID,command object
+		pConnCmd = CConnect::Parse(amf0);
 
+		amf0->Destroy();
+		CConnect::ConnectCommand_Free(&pConnCmd);
+		
 	}
 	else if (msgTypeId == 17)
 	{

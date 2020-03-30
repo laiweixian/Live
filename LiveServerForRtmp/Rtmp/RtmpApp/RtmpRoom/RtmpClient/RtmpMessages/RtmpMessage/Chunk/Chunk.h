@@ -69,8 +69,6 @@ private:
 
 
 private:
-
-
 	BasicHeaderType m_BasicHeader;
 	MessageHeaderType m_MsgHeader;
 	ExtendedTimestampType m_ExT;

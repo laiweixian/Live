@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-extern int SendToPeer(char* buff,const int buffLen);
+#include "../Receive.h"
 
 struct HandshakePacket
 {
@@ -15,13 +15,13 @@ enum ReceiveHandshakeType{NO_RECEIVE ,C0,C1,C2};
 enum SendHandshakeType{NO_SEND,S0,S1,S2};
 
 
-class CHandshake
+class CHandshake : public IReceive
 {
 public:
-	CHandshake();
+	CHandshake(SendToPeer sendtp);
 	~CHandshake();
 
-	int OnReceive(char *buff,const int buffLen);
+	int OnReceive(void* src, const int srcLength);
 
 private:
 	int ReiceivePacket(char *buff, const int buffLen,int *outLen);

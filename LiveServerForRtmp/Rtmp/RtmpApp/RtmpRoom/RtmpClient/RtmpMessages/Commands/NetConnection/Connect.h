@@ -84,4 +84,5 @@ public:
 
 	static ConnectCommand* Parse(CAMF0* pamf);
 	static ConnectCommand* Parse(CAMF3* pamf);
+	static void ConnectCommand_Free(ConnectCommand** ppcc);
 };
