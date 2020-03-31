@@ -242,5 +242,35 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\AbortMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\Acknowledgement.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\AggregateMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\AudioMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\CommandMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\DataMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\SetPeerBandwidth.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\SharedObjectMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\UserControlMessages.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\VideoMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMsg\WindowAcknowledgementSize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,9 +12,6 @@
 #include "VideoMessage.h"
 #include "WindowAcknowledgementSize.h"
 
-
-
-
 class CRtmpMessage
 {
 public:
