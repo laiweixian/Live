@@ -1,6 +1,6 @@
 #include "Message.h"
 
-CMessage::CMessage(SendToPeer sendToPeer):IReceive(sendToPeer) ,m_ChunkSize(CHUNK_SIZE)
+CMessage::CMessage(IOutStream* pOut):CReciever(pOut) ,m_ChunkSize(CHUNK_SIZE)
 {
 	m_Msg = NULL;
 	m_PrevHeader = NULL;
@@ -20,10 +20,13 @@ int CMessage::OnReceive(void* src, const int srcLength)
 int CMessage::ParseChunk(void* src, const int srcLength)
 {
 	CChunkHeader *pHeader = NULL;
-	CRtmpMsg *pMsg = NULL;
+	CBaseMessage *pMsg = NULL;
 	bool newMsg = false;
 	int headerLength = 0;
 	int dataLength = 0;
+
+	if (src == NULL || srcLength == 0)
+		return 0;
 
 	pHeader = CChunk::Parse(src, srcLength, &headerLength);
 	if (pHeader == NULL)
@@ -70,7 +73,7 @@ int CMessage::ParseChunk(void* src, const int srcLength)
 	if (newMsg)
 	{
 		delete m_Msg;
-		pMsg = new CRtmpMsg(pHeader->timestamp, pHeader->messageLength, pHeader->messageTypeID, pHeader->messageStreamID);
+		pMsg = CRtmpMessage::CreateMessage(pHeader->timestamp, pHeader->messageLength, pHeader->messageTypeID, pHeader->messageStreamID);
 		m_Msg = pMsg;
 	}
 	else 

@@ -1,7 +1,7 @@
 #include "VideoMessage.h"
 
-CVideoMessage::CVideoMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, MessageInform inform) :\
-CBaseMsg(ts, msgLength, msgTypeId, msgStreamId, inform)
+CVideoMessage::CVideoMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform) :\
+CBaseMessage(ts, msgLength, msgTypeId, msgStreamId, inform)
 {
 
 }

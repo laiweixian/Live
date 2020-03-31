@@ -3,6 +3,7 @@
 #include "AbortMessage.h"
 #include "Acknowledgement.h"
 #include "AudioMessage.h"
+#include "AggregateMessage.h"
 #include "CommandMessage.h"
 #include "DataMessage.h"
 #include "SetChunkSize.h"
@@ -18,5 +19,5 @@ public:
 	CRtmpMessage();
 	~CRtmpMessage();
 
-	static CBaseMsg* CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, MessageInform inform);
+	static CBaseMessage* CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform);
 };

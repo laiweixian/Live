@@ -2,13 +2,12 @@
 
 #define RTMP_VERSION	0x03
 
-CHandshake::CHandshake(SendToPeer sendtp) : IReceive(sendtp)
+CHandshake::CHandshake(IOutStream *pOut) : CReciever(pOut)
 {
 	m_Receive = {0};
 	m_Send = {0};
 	m_RecieveStatus = NO_RECEIVE;
 	m_SendStatus = NO_SEND;
-
 }
 
 CHandshake::~CHandshake()
@@ -150,7 +149,7 @@ int CHandshake::SendS0(int *outLen)
 	const char rtmpVersion = RTMP_VERSION;
 	memcpy(m_Send.data0,&rtmpVersion,length);
 
-	sendLen = m_SendToPeer(m_Send.data0,length);
+	sendLen = m_OutStream->WriteToPeer(m_Send.data0,length);
 	if (sendLen != length)
 		return SEND_DATA_FAILURE;
 	
@@ -174,7 +173,7 @@ int CHandshake::SendS1(int *outLen)
 	memcpy(m_Send.data1,&timestamp,4);	offset += 4;
 	memcpy(m_Send.data1+offset,zeroMark,4); offset+= 4;
 	memcpy(m_Send.data1+offset,randomMark,1528); offset += 1528;
-	sendLen = m_SendToPeer((char*)m_Send.data1, length);
+	sendLen = m_OutStream->WriteToPeer((char*)m_Send.data1, length);
 	if (sendLen != length)
 		return SEND_DATA_FAILURE;
 	*outLen = sendLen;
@@ -190,7 +189,7 @@ int CHandshake::SendS2(int *outLen)
 	memcpy(m_Send.data2,m_Receive.data1,4);		offset += 4;
 	memcpy(m_Send.data2+offset,m_Send.data1,4); offset += 4;
 	memcpy(m_Send.data2+offset,m_Send.data1+8,1528); offset += 1528;
-	sendLen = m_SendToPeer(m_Send.data2, length);
+	sendLen = m_OutStream->WriteToPeer(m_Send.data2, length);
 	if (sendLen != length)
 		return SEND_DATA_FAILURE;
 	*outLen = sendLen;

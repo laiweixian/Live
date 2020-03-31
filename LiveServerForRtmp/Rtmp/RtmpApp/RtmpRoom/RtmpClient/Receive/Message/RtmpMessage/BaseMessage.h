@@ -10,7 +10,15 @@ enum RtmpMessageType
 	SHARED_OBJECT_MESSAGE, AUDIO_MESSAGE, VIDEO_MESSAGE, AGGREGATE_MESSAGE
 };
 
-typedef void (*MessageInform)(RtmpMessageType msgType,void* pObj,const int objSize);
+class IMessageInform
+{
+protected:
+	virtual ~IMessageInform() = default;
+public:
+	IMessageInform() = default;
+
+	virtual void OnMessageInform(RtmpMessageType msgType,void* pObj,const int objSize) = 0;
+};
 
 struct MessageHeader
 {
@@ -26,11 +34,11 @@ struct MessagePayload
 	int buffLength;
 };
 
-class CBaseMsg
+class CBaseMessage
 {
 public:
-	CBaseMsg(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId,MessageInform inform);
-	virtual ~CBaseMsg();
+	CBaseMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId,IMessageInform* inform);
+	virtual ~CBaseMessage();
 
 	//property
 	uint32_t GetTimestamp() const ;
@@ -47,7 +55,7 @@ public:
 	virtual void Inform() = 0;
 
 protected:
-	MessageInform  m_Inform;
+	IMessageInform* m_Inform;
 	MessageHeader  m_Header;
 	MessagePayload m_Payload;
 	int m_AppendLength;

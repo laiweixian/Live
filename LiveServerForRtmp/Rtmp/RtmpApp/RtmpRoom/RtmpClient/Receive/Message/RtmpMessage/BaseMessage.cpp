@@ -1,6 +1,6 @@
-#include "BaseMsg.h"
+#include "BaseMessage.h"
 
-CBaseMsg::CBaseMsg(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, MessageInform inform) :
+CBaseMessage::CBaseMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform) :
 		m_Inform(inform), m_AppendLength(0)
 {
 	m_Header.timestamp = ts;
@@ -13,37 +13,37 @@ CBaseMsg::CBaseMsg(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t 
 	memset(m_Payload.buff,0,msgLength);
 }
 
-CBaseMsg::~CBaseMsg()
+CBaseMessage::~CBaseMessage()
 {
 	delete[] m_Payload.buff;
 }
 
-uint32_t CBaseMsg::GetTimestamp() const
+uint32_t CBaseMessage::GetTimestamp() const
 {
 	return m_Header.timestamp;
 }
 
-uint32_t CBaseMsg::GetLength() const
+uint32_t CBaseMessage::GetLength() const
 {
 	return m_Header.messageLength;
 }
 
-uint8_t	 CBaseMsg::GetTypeID() const
+uint8_t	 CBaseMessage::GetTypeID() const
 {
 	return m_Header.messageTypeID;
 }
 
-uint32_t CBaseMsg::GetStreamID() const
+uint32_t CBaseMessage::GetStreamID() const
 {
 	return m_Header.messageStreamID;
 }
 
-uint32_t CBaseMsg::GetRemainSize() const
+uint32_t CBaseMessage::GetRemainSize() const
 {
 	return (m_Header.messageLength - m_AppendLength);
 }
 
-int CBaseMsg::Append(const uint8_t* src, const int srcLen)
+int CBaseMessage::Append(const uint8_t* src, const int srcLen)
 {
 	const int remainSize = GetRemainSize();
 

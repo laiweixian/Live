@@ -16,7 +16,6 @@
 #define VIDEO_MESSAGE_TYPE_ID				((uint8_t)9)
 #define AGGREGATE_MESSAGE_TYPE_ID			((uint8_t)22)
 
-
 CRtmpMessage::CRtmpMessage()
 {
 
@@ -27,9 +26,9 @@ CRtmpMessage::~CRtmpMessage()
 
 }
 
-CBaseMsg* CRtmpMessage::CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, MessageInform inform)
+CBaseMessage* CRtmpMessage::CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform)
 {
-	CBaseMsg* pMsg = NULL;
+	CBaseMessage* pMsg = NULL;
 
 	switch (msgTypeId)
 	{
@@ -37,34 +36,51 @@ CBaseMsg* CRtmpMessage::CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t m
 		pMsg = new CSetChunkSize(ts,msgLength,msgTypeId,msgStreamId,inform);
 		break;
 	case ABORT_MESSAGE_TYPE_ID:
+		pMsg = new CAbortMessage(ts,msgLength,msgTypeId,msgStreamId,inform);
 		break;
 	case ACKNOWLEDGEMENT_TYPE_ID:
+		pMsg = new CAcknowledgement(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case WINDOW_ACKNOWLEDGEMENT_SIZE_TYPE_ID:
+		pMsg = new CWindowAcknowledgementSize(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case SET_PEER_BADNWIDTH_TYPE_ID:
+		pMsg = new CSetPeerBandwidth(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case USER_CONTROL_MESSAGES_TYPE_ID:
+		pMsg = new CUserControlMessages(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case COMMAND_MESSAGE_TYPE_ID_AMF0:
+		pMsg = new CCommandMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case COMMAND_MESSAGE_TYPE_ID_AMF3:
+		pMsg = new CCommandMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case DATA_MESSAGE_TYPE_ID_AMF0:
+		pMsg = new CDataMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case DATA_MESSAGE_TYPE_ID_AMF3:
+		pMsg = new CDataMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case SHARED_OBJECT_MESSAGE_TYPE_ID_AMF0:
+		pMsg = new CSharedObjectMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case SHARED_OBJECT_MESSAGE_TYPE_ID_AMF3:
+		pMsg = new CSharedObjectMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case AUDIO_MESSAGE_TYPE_ID:
+		pMsg = new CAudioMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case VIDEO_MESSAGE_TYPE_ID:
+		pMsg = new CVideoMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	case AGGREGATE_MESSAGE_TYPE_ID:
+		pMsg = new CAggregateMessage(ts, msgLength, msgTypeId, msgStreamId, inform);
 		break;
 	default:
+		pMsg = NULL;
 		break;
 	}
+
+	return pMsg;
 }

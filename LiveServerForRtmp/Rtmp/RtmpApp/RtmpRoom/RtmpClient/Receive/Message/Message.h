@@ -1,25 +1,25 @@
 #pragma once
 
-#include "../Receive.h"
+#include "../Receiver.h"
 #include "Chunk/Chunk.h"
-#include "RtmpMsg/RtmpMsg.h"
+#include "RtmpMsg/RtmpMessage.h"
 
 #define CHUNK_SIZE 128
 
-class CMessage : public IReceive
+class CMessage : public CReciever
 {
 public:
-	CMessage(SendToPeer sendToPeer);
+	CMessage(IOutStream* pOut);
 	~CMessage();
 
-	//IReceive
+	//CReciever
 	int OnReceive( void* src, const int srcLength);
 private:
 	int ParseChunk(void* src, const int srcLength);
 
 private:
 	CChunkHeader *m_PrevHeader;
-	CBasem *m_Msg;
+	CBaseMessage *m_Msg;
 
 	uint32_t m_ChunkSize;
 };
