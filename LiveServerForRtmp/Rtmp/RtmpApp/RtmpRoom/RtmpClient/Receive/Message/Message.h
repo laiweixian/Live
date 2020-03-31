@@ -2,6 +2,9 @@
 
 #include "../Receive.h"
 #include "Chunk/Chunk.h"
+#include "RtmpMsg/RtmpMsg.h"
+
+#define CHUNK_SIZE 128
 
 class CMessage : public IReceive
 {
@@ -16,4 +19,7 @@ private:
 
 private:
 	CChunkHeader *m_PrevHeader;
+	CBasem *m_Msg;
+
+	uint32_t m_ChunkSize;
 };
