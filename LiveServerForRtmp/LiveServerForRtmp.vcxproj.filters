@@ -120,9 +120,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Chunk\Chunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Receiver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMessage\AMF\AMF.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMessage\WindowAcknowledgementSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\DataHandle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -222,9 +222,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Chunk\Chunk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Receiver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\RtmpMessage\AMF\AMF0.cpp">

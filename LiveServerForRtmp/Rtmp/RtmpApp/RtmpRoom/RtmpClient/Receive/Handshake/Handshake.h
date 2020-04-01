@@ -2,7 +2,10 @@
 
 #include "stdafx.h"
 
-#include "../Receiver.h"
+#include "../DataHandle.h"
+
+#define DATA_LACK (int(-1))
+#define RTMP_VERSION_ERR (int(-2))
 
 struct HandshakePacket
 {
@@ -15,13 +18,16 @@ enum ReceiveHandshakeType{NO_RECEIVE ,C0,C1,C2};
 enum SendHandshakeType{NO_SEND,S0,S1,S2};
 
 
-class CHandshake : public CReciever
+class CHandshake : public CDataHandle
 {
 public:
-	CHandshake(IOutStream *pOut);
+	CHandshake();
 	~CHandshake();
 
-	int OnReceive(void* src, const int srcLength);
+	//CDataHandle
+	int OnRequest(uint8_t* src, const int srcLength) ;
+	DataHandleType GetType() ;
+	void* GetResponse(int* outLen) const ;
 
 private:
 	int ReiceivePacket(char *buff, const int buffLen,int *outLen);
@@ -29,10 +35,9 @@ private:
 	int ReceiveC1(char *buff, const int buffLen, int *outLen);
 	int ReceiveC2(char *buff, const int buffLen, int *outLen);
 
-	int SendPakcet(int *outLen);
-	int SendS0(int *outLen);
-	int SendS1(int *outLen);
-	int SendS2(int *outLen);
+	int InitS0();
+	int InitS1();
+	int InitS2();
 
 private:
 	HandshakePacket m_Receive;

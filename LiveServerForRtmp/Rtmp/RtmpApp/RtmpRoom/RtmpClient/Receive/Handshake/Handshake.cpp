@@ -2,7 +2,7 @@
 
 #define RTMP_VERSION	0x03
 
-CHandshake::CHandshake(IOutStream *pOut) : CReciever(pOut)
+CHandshake::CHandshake() 
 {
 	m_Receive = {0};
 	m_Send = {0};
@@ -15,58 +15,85 @@ CHandshake::~CHandshake()
 
 }
 
-int CHandshake::OnReceive(void* src, const int srcLength)
+int CHandshake::OnRequest(uint8_t* src, const int srcLength)
 {
-	int receLen = 0 , sendLen = 0;
-	int receResult = SAR_FAILURE , sendResult = SAR_FAILURE;
+	int ret = SAR_FAILURE;
+	int length = 0;
+	ret = ReiceivePacket((char*)src, srcLength,&length);
 
-	if (m_SendStatus == S2 && m_RecieveStatus == C2)
+	if (ret != SAR_OK)
 		return 0;
-
-	receResult = ReiceivePacket((char*)src, srcLength,&receLen);
-	sendResult = SendPakcet(&sendLen);
-
-	if (receResult != SAR_OK)
-		return 0;
-	
-	return (OnReceive((char*)src +receLen, srcLength -receLen) + receLen);
+	else 
+		return length;
 }
 
-int CHandshake::ReiceivePacket(char *buff, const int buffLen, int *outLen)
+DataHandleType CHandshake::GetType()
 {
-	int receLen = 0;
+	return DataHandleType::HANDSHAKE;	
+}
+
+void* CHandshake::GetResponse(int* outLen) const
+{
+
+}
+
+int CHandshake::ReiceivePacket(char* buff, const int buffLen, int *outLen)
+{
+	int receLen = 0 ;
 	int result = SAR_FAILURE;
 
-	if (m_RecieveStatus == C2)
-		return 0;
-
+	if (m_RecieveStatus == C2 || !buff || buffLen <= 0)
+		goto receive_complete;
+		
 	switch (m_RecieveStatus)
 	{
 	case NO_RECEIVE:
 		result = ReceiveC0(buff, buffLen,&receLen);
 		if (result == SAR_OK)
+		{
 			m_RecieveStatus = C0;
+			InitS0();
+		}
+			
 		break;
 	case C0:
 		result = ReceiveC1(buff, buffLen, &receLen);
 		if (result == SAR_OK)
+		{
 			m_RecieveStatus = C1;
+			InitS1();
+		}
+			
 		break;
 	case C1:
 		result = ReceiveC2(buff, buffLen, &receLen);
 		if (result == SAR_OK)
+		{
 			m_RecieveStatus = C2;
+			InitS2();
+		}
+			
 		break;
 	case C2:
-		result = SAR_OK;
+		goto receive_complete;
 		break;
 	default:
-		result = SAR_OK;
+		goto receive_complete;
 		break;
 	}
 
-	*outLen = receLen;
-	return result;
+	*outLen += receLen;
+	if (result == SAR_OK)
+		return  ReiceivePacket(buff + receLen,buffLen-receLen, outLen);
+	else
+	{
+		*outLen += 0;
+		return result;
+	}
+
+receive_complete:
+	*outLen += 0;
+	return SAR_OK;
 }
 
 int CHandshake::ReceiveC0(char *buff, const int buffLen, int *outLen)
@@ -99,65 +126,23 @@ int CHandshake::ReceiveC2(char *buff, const int buffLen, int *outLen)
 	const int length = sizeof(m_Receive.data2);
 	if (buffLen < length)
 		return DATA_LACK;
-	
 	memcpy(m_Receive.data2,buff,length);
 	*outLen = length;
 	return SAR_OK;
 }
 
-int CHandshake::SendPakcet(int *outLen)
-{
-	int sendLen = 0;
-	int result = SAR_FAILURE;
 
-	if (m_SendStatus == S2)
-		return 0;
-	
-	switch (m_SendStatus)
-	{
-	case NO_SEND:
-		result = SendS0(&sendLen);
-		if (result == SAR_OK)
-			m_SendStatus = S0;
-		break;
-	case S0:
-		result = SendS1(&sendLen);
-		if (result == SAR_OK)
-			m_SendStatus = S1;
-		break;
-	case S1:
-		result = SendS2(&sendLen);
-		if (result == SAR_OK)
-			m_SendStatus = S2;
-		break;
-	case S2:
-		result = SAR_OK;
-		break;
-	default:
-		result = SAR_OK;
-		break;
-	}
-
-	*outLen = sendLen;
-	return result;
-}
-
-int CHandshake::SendS0(int *outLen)
+int CHandshake::InitS0()
 {
 	int sendLen = 0;
 	const int length = sizeof(m_Send.data0);
 	const char rtmpVersion = RTMP_VERSION;
 	memcpy(m_Send.data0,&rtmpVersion,length);
-
-	sendLen = m_OutStream->WriteToPeer(m_Send.data0,length);
-	if (sendLen != length)
-		return SEND_DATA_FAILURE;
-	
-	*outLen = sendLen;
+	m_SendStatus = SendHandshakeType::S0;
 	return SAR_OK;
 }
 
-int CHandshake::SendS1(int *outLen)
+int CHandshake::InitS1()
 {
 	int sendLen = 0;
 	const int length = sizeof(m_Send.data1);
@@ -173,25 +158,18 @@ int CHandshake::SendS1(int *outLen)
 	memcpy(m_Send.data1,&timestamp,4);	offset += 4;
 	memcpy(m_Send.data1+offset,zeroMark,4); offset+= 4;
 	memcpy(m_Send.data1+offset,randomMark,1528); offset += 1528;
-	sendLen = m_OutStream->WriteToPeer((char*)m_Send.data1, length);
-	if (sendLen != length)
-		return SEND_DATA_FAILURE;
-	*outLen = sendLen;
+	m_SendStatus = SendHandshakeType::S1;
 	return SAR_OK;
 }
 
-int CHandshake::SendS2(int *outLen)
+int CHandshake::InitS2()
 {
 	int sendLen = 0;
 	const int length = sizeof(m_Send.data2);
 	int offset = 0;
-
 	memcpy(m_Send.data2,m_Receive.data1,4);		offset += 4;
 	memcpy(m_Send.data2+offset,m_Send.data1,4); offset += 4;
 	memcpy(m_Send.data2+offset,m_Send.data1+8,1528); offset += 1528;
-	sendLen = m_OutStream->WriteToPeer(m_Send.data2, length);
-	if (sendLen != length)
-		return SEND_DATA_FAILURE;
-	*outLen = sendLen;
+	m_SendStatus = SendHandshakeType::S2;
 	return SAR_OK;
 }

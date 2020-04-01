@@ -84,7 +84,7 @@ int CMessage::ParseChunk(void* src, const int srcLength)
 
 	if (pMsg->GetRemainSize() == 0)
 	{
-
+		//´¥·¢ÊÂ¼ş
 	}
 
 	return (headerLength+dataLength);

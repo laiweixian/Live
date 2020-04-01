@@ -5,10 +5,10 @@
 class CDataMessage : public CBaseMessage
 {
 public:
-	CDataMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform);
+	CDataMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CDataMessage();
 
 	//CBaseMessage
 	RtmpMessageType GetType();
-	void Inform();
+	void* GetPtr(int* outDstLen);
 };

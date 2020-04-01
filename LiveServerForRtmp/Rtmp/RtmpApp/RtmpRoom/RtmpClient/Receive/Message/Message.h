@@ -2,7 +2,7 @@
 
 #include "../Receiver.h"
 #include "Chunk/Chunk.h"
-#include "RtmpMsg/RtmpMessage.h"
+#include "RtmpMessage/RtmpMessage.h"
 
 #define CHUNK_SIZE 128
 

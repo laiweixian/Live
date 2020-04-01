@@ -5,10 +5,10 @@
 class CAudioMessage : public CBaseMessage
 {
 public:
-	CAudioMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform);
+	CAudioMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CAudioMessage();
 
 	//CBaseMessage
 	RtmpMessageType GetType();
-	void Inform();
+	void* GetPtr(int* outDstLen);
 };

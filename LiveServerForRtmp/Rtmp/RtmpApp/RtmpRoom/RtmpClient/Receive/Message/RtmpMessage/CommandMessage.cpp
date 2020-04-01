@@ -1,6 +1,6 @@
 #include "CommandMessage.h"
 
-CCommandMessage::CCommandMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId, IMessageInform* inform) :\
+CCommandMessage::CCommandMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
 CBaseMessage(ts, msgLength, msgTypeId, msgStreamId, inform)
 {
 
