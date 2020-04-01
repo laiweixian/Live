@@ -151,6 +151,7 @@
     <ClInclude Include="Global\Funcs.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\DataHandleRespose.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Chunk\Chunk.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Message.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\DataHandle.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Handshake\Handshake.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Chunk\Chunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Receive\Message\Message.cpp" />
