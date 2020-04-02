@@ -20,6 +20,4 @@ public:
 	~CRtmpMessage();
 
 	static CBaseMessage* CreateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
-
-
 };

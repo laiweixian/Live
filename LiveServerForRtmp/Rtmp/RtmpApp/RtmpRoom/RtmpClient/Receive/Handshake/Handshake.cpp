@@ -2,12 +2,12 @@
 
 #define RTMP_VERSION	0x03
 
-CHandshake::CHandshake() 
+CHandshake::CHandshake(IHandshakeRespose *pRespose) : m_Respose(pRespose)
 {
-	m_Receive = {0};
-	m_Send = {0};
-	m_RecieveStatus = NO_RECEIVE;
-	m_SendStatus = NO_SEND;
+	m_ReceivePacket = {0};
+	m_SendPacket = {0};
+	m_RecieveType = HandshakeReceiveType::INVALID;
+	m_SendType = HandshakeSendType::INVALID;
 }
 
 CHandshake::~CHandshake()
@@ -15,7 +15,7 @@ CHandshake::~CHandshake()
 
 }
 
-int CHandshake::OnRequest(uint8_t* src, const int srcLength)
+int CHandshake::OnHandshake(uint8_t* src, const int srcLength)
 {
 	int ret = SAR_FAILURE;
 	int length = 0;
@@ -27,70 +27,48 @@ int CHandshake::OnRequest(uint8_t* src, const int srcLength)
 		return length;
 }
 
-DataHandleType CHandshake::GetType()
-{
-	return DataHandleType::HANDSHAKE;	
-}
-
-void* CHandshake::GetResponse(int* outLen) const
-{
-
-}
-
 int CHandshake::ReiceivePacket(char* buff, const int buffLen, int *outLen)
 {
-	int receLen = 0 ;
 	int result = SAR_FAILURE;
+	int c0Len = 0 , c1Len = 0 , c2Len = 0;
 
-	if (m_RecieveStatus == C2 || !buff || buffLen <= 0)
-		goto receive_complete;
-		
-	switch (m_RecieveStatus)
+
+
+	if (m_RecieveType == HandshakeReceiveType::INVALID)
 	{
-	case NO_RECEIVE:
-		result = ReceiveC0(buff, buffLen,&receLen);
+		result = SAR_OK;
+		result &= ReceiveC0(buff, buffLen, &c0Len);
+		result &= ReceiveC1(buff+c0Len,buffLen - c0Len,&c1Len);
 		if (result == SAR_OK)
 		{
-			m_RecieveStatus = C0;
-			InitS0();
-		}
-			
-		break;
-	case C0:
-		result = ReceiveC1(buff, buffLen, &receLen);
-		if (result == SAR_OK)
-		{
-			m_RecieveStatus = C1;
-			InitS1();
-		}
-			
-		break;
-	case C1:
-		result = ReceiveC2(buff, buffLen, &receLen);
-		if (result == SAR_OK)
-		{
-			m_RecieveStatus = C2;
-			InitS2();
-		}
-			
-		break;
-	case C2:
-		goto receive_complete;
-		break;
-	default:
-		goto receive_complete;
-		break;
-	}
+			m_RecieveType = C1;
+			result = SendS0_S1();
 
-	*outLen += receLen;
-	if (result == SAR_OK)
-		return  ReiceivePacket(buff + receLen,buffLen-receLen, outLen);
+			*outLen = c0Len + c1Len;
+			return result;
+		}
+	}
+	else if (m_RecieveType == C1)
+	{
+		result = SAR_OK;
+		result &= ReceiveC2(buff,buffLen,&c2Len);
+		if (result == SAR_OK)
+		{
+			m_RecieveType = C2;
+			result = SendS2();
+			*outLen = c2Len;
+			return result;
+		}
+	}
 	else
 	{
-		*outLen += 0;
-		return result;
+		*outLen = 0 ;
+		return SAR_FAILURE;
 	}
 
+	
+	*outLen = 0;
+	return result;
 receive_complete:
 	*outLen += 0;
 	return SAR_OK;
@@ -98,12 +76,12 @@ receive_complete:
 
 int CHandshake::ReceiveC0(char *buff, const int buffLen, int *outLen)
 {	
-	const int length = sizeof(m_Receive.data0);
+	const int length = sizeof(m_ReceivePacket.data0);
 	if (buffLen < length)
 		return DATA_LACK;
 
-	memcpy(m_Receive.data0,buff, length);
-	if (m_Receive.data0[0] != RTMP_VERSION)
+	memcpy(m_ReceivePacket.data0,buff, length);
+	if (m_ReceivePacket.data0[0] != RTMP_VERSION)
 		return RTMP_VERSION_ERR;
 
 	*outLen = length;
@@ -112,64 +90,51 @@ int CHandshake::ReceiveC0(char *buff, const int buffLen, int *outLen)
 
 int CHandshake::ReceiveC1(char *buff, const int buffLen, int *outLen)
 {
-	const int length = sizeof(m_Receive.data1);
+	const int length = sizeof(m_ReceivePacket.data1);
 	if (buffLen < length)
 		return DATA_LACK;
 
-	memcpy(m_Receive.data1,buff, length);
+	memcpy(m_ReceivePacket.data1,buff, length);
 	*outLen = length;
 	return SAR_OK;
 }
 
 int CHandshake::ReceiveC2(char *buff, const int buffLen, int *outLen)
 {
-	const int length = sizeof(m_Receive.data2);
+	const int length = sizeof(m_ReceivePacket.data2);
 	if (buffLen < length)
 		return DATA_LACK;
-	memcpy(m_Receive.data2,buff,length);
+	memcpy(m_ReceivePacket.data2,buff,length);
 	*outLen = length;
 	return SAR_OK;
 }
 
-
-int CHandshake::InitS0()
+void CHandshake::SendS0_S1()
 {
-	int sendLen = 0;
-	const int length = sizeof(m_Send.data0);
-	const char rtmpVersion = RTMP_VERSION;
-	memcpy(m_Send.data0,&rtmpVersion,length);
-	m_SendStatus = SendHandshakeType::S0;
-	return SAR_OK;
-}
-
-int CHandshake::InitS1()
-{
-	int sendLen = 0;
-	const int length = sizeof(m_Send.data1);
-	uint32_t timestamp ; 
-	char zeroMark[4] = {0};
+	uint32_t timestamp;
 	char randomMark[1528] = {0};
-	int offset = 0;
+	const char zeroMark[4] = {0};
+
+	m_SendPacket.data0[0] = RTMP_VERSION;
 
 	timestamp = GetTimestamp();
 	timestamp = HostToBig32(timestamp);
-	GenRamdomByte(randomMark,1528);
+	GenRamdomByte(randomMark, 1528);
+	memcpy(m_SendPacket.data1, &timestamp, 4);	
+	memcpy(m_SendPacket.data1 + 4, zeroMark, 4);
+	memcpy(m_SendPacket.data1 + 4+4, randomMark, 1528);
 
-	memcpy(m_Send.data1,&timestamp,4);	offset += 4;
-	memcpy(m_Send.data1+offset,zeroMark,4); offset+= 4;
-	memcpy(m_Send.data1+offset,randomMark,1528); offset += 1528;
-	m_SendStatus = SendHandshakeType::S1;
-	return SAR_OK;
+	m_SendType = S1;
+	m_Respose->S0(m_SendPacket.data0,1);
+	m_Respose->S1(m_SendPacket.data1, 1536);
 }
 
-int CHandshake::InitS2()
+void CHandshake::SendS2()
 {
-	int sendLen = 0;
-	const int length = sizeof(m_Send.data2);
-	int offset = 0;
-	memcpy(m_Send.data2,m_Receive.data1,4);		offset += 4;
-	memcpy(m_Send.data2+offset,m_Send.data1,4); offset += 4;
-	memcpy(m_Send.data2+offset,m_Send.data1+8,1528); offset += 1528;
-	m_SendStatus = SendHandshakeType::S2;
-	return SAR_OK;
-}
+	memcpy(m_SendPacket.data2, m_ReceivePacket.data1, 4);;
+	memcpy(m_SendPacket.data2 + 4, m_SendPacket.data1, 4);
+	memcpy(m_SendPacket.data2 + 4 + 4, m_SendPacket.data1 + 8, 1528);
+
+	m_SendType = S2;
+	m_Respose->S2(m_SendPacket.data2, 1536);
+}	
