@@ -16,7 +16,3 @@ RtmpMessageType CAudioMessage::GetType()
 	return RtmpMessageType::AUDIO_MESSAGE;
 }
 
-void CAudioMessage::Inform()
-{
-
-}

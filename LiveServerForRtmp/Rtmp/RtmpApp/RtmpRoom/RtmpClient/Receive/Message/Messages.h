@@ -4,28 +4,28 @@
 #include "RtmpMessage/RtmpMessage.h"
 #include "Chunk/Chunk.h"
 
-class IMessages
+class IMessageHandle
 {
 protected:
-	~IMessages() = default;
+	~IMessageHandle() = default;
 public:
-	IMessages() = default;
+	IMessageHandle() = default;
 
-	virtual void SetChunkSize(CSetChunkSize* pMsg) = 0;
-	virtual void AbortMessage(CAbortMessage* pMsg) = 0;
-	virtual void Acknowledgement(CAcknowledgement* pMsg) = 0;
-	virtual void WindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg) = 0;
-	virtual void SetPeerBandwidth(CSetPeerBandwidth* pMsg) = 0;
-	virtual void UserControlMessages(CUserControlMessages* pMsg) = 0;
-	virtual void CommandMessage(CCommandMessage* pMsg) = 0;
-	virtual void DataMessage(CDataMessage* pMsg) = 0;
-	virtual void SharedObjectMessage(CSharedObjectMessage* pMsg) = 0;
-	virtual void AudioMessage(CAudioMessage* pMsg) = 0;
-	virtual void VideoMessage(CVideoMessage* pMsg) = 0;
-	virtual void AggregateMessage(CAggregateMessage* pMsg) = 0;
+	virtual void HandleSetChunkSize(CSetChunkSize* pMsg) = 0;
+	virtual void HandleAbortMessage(CAbortMessage* pMsg) = 0;
+	virtual void HandleAcknowledgement(CAcknowledgement* pMsg) = 0;
+	virtual void HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg) = 0;
+	virtual void HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg) = 0;
+	virtual void HandleUserControlMessages(CUserControlMessages* pMsg) = 0;
+	virtual void HandleCommandMessage(CCommandMessage* pMsg) = 0;
+	virtual void HandleDataMessage(CDataMessage* pMsg) = 0;
+	virtual void HandleSharedObjectMessage(CSharedObjectMessage* pMsg) = 0;
+	virtual void HandleAudioMessage(CAudioMessage* pMsg) = 0;
+	virtual void HandleVideoMessage(CVideoMessage* pMsg) = 0;
+	virtual void HandleAggregateMessage(CAggregateMessage* pMsg) = 0;
 };
 
-class CMessages : public IMessages
+class CMessages : public IMessageHandle
 {
 public:
 	CMessages(const int chunkSize = 128);
@@ -34,25 +34,24 @@ public:
 
 	int OnRtmpMessage(uint8_t* src, const int srcLength);
 private:
-	
-
-	int ParseChunk(uint8_t* src, const int srcLength);
+	int ParseChunk(uint8_t* src, const int srcLength,int* outHeaderLen,int* outDataLen,CBaseMessage** outMsg);
 	CChunkHeader* ParseChunkHeader(uint8_t* src, const int srcLength,int* outLen);
 	CBaseMessage* ParseMessage(CChunkHeader* pHeader , uint8_t* src, const int srcLength);
 
-	//IMessages
-	void SetChunkSize() ;
-	void AbortMessage();
-	void Acknowledgement() ;
-	void WindowAcknowledgementSize();
-	void SetPeerBandwidth();
-	void UserControlMessages() ;
-	void CommandMessage() ;
-	void DataMessage() ;
-	void SharedObjectMessage() ;
-	void AudioMessage() ;
-	void VideoMessage();
-	void AggregateMessage();
+	//IMessageHandle
+	void HandleMessage(CBaseMessage* pMsg);
+	void HandleSetChunkSize(CSetChunkSize* pMsg);
+	void HandleAbortMessage(CAbortMessage* pMsg);
+	void HandleAcknowledgement(CAcknowledgement* pMsg);
+	void HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg);
+	void HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg);
+	void HandleUserControlMessages(CUserControlMessages* pMsg);
+	void HandleCommandMessage(CCommandMessage* pMsg);
+	void HandleDataMessage(CDataMessage* pMsg);
+	void HandleSharedObjectMessage(CSharedObjectMessage* pMsg);
+	void HandleAudioMessage(CAudioMessage* pMsg);
+	void HandleVideoMessage(CVideoMessage* pMsg);
+	void HandleAggregateMessage(CAggregateMessage* pMsg);
 private:
 	uint32_t m_ChunkSize;
 

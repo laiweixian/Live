@@ -16,7 +16,3 @@ RtmpMessageType CVideoMessage::GetType()
 	return RtmpMessageType::VIDEO_MESSAGE;
 }
 
-void CVideoMessage::Inform()
-{
-
-}

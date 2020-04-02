@@ -10,5 +10,4 @@ public:
 
 	//BaseMessage
 	RtmpMessageType GetType();
-	void* GetPtr(int* outDstLen);
 };

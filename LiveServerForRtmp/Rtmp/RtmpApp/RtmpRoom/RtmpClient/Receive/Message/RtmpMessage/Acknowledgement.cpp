@@ -16,7 +16,3 @@ RtmpMessageType CAcknowledgement::GetType()
 	return RtmpMessageType::ACKNOWLEDGEMENT;
 }
 
-void CAcknowledgement::Inform()
-{
-
-}

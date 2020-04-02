@@ -16,7 +16,3 @@ RtmpMessageType CSetPeerBandwidth::GetType()
 	return RtmpMessageType::SET_PEER_BADNWIDTH;
 }
 
-void CSetPeerBandwidth::Inform()
-{
-
-}

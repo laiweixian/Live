@@ -7,7 +7,11 @@ public:
 	CSetChunkSize(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CSetChunkSize();
 
+	//property
+
 	//CBaseMessage
 	RtmpMessageType GetType();
-	void* GetPtr(int* outDstLen);
+
+
+	
 };

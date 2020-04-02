@@ -16,7 +16,3 @@ RtmpMessageType CSharedObjectMessage::GetType()
 	return RtmpMessageType::SHARED_OBJECT_MESSAGE;
 }
 
-void CSharedObjectMessage::Inform()
-{
-
-}

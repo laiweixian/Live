@@ -16,7 +16,3 @@ RtmpMessageType CWindowAcknowledgementSize::GetType()
 	return RtmpMessageType::WINDOW_ACKNOWLEDGEMENT_SIZE;
 }
 
-void CWindowAcknowledgementSize::Inform()
-{
-
-}

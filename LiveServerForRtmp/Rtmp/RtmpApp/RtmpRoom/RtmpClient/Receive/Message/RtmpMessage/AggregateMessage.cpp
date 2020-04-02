@@ -15,7 +15,3 @@ RtmpMessageType CAggregateMessage::GetType()
 	return RtmpMessageType::AGGREGATE_MESSAGE;
 }
 
-void CAggregateMessage::Inform()
-{
-
-}

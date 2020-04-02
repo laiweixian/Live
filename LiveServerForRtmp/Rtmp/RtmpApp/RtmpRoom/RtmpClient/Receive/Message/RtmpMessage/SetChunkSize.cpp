@@ -16,7 +16,3 @@ RtmpMessageType CSetChunkSize::GetType()
 	return RtmpMessageType::SET_CHUNK_SIZE;
 }
 
-void CSetChunkSize::Inform()
-{
-
-}

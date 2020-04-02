@@ -16,7 +16,3 @@ RtmpMessageType CUserControlMessages::GetType()
 	return RtmpMessageType::USER_CONTROL_MESSAGES;
 }
 
-void CUserControlMessages::Inform()
-{
-
-}

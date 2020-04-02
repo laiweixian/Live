@@ -16,7 +16,3 @@ RtmpMessageType CDataMessage::GetType()
 	return RtmpMessageType::DATA_MESSAGE;
 }
 
-void CDataMessage::Inform()
-{
-
-}

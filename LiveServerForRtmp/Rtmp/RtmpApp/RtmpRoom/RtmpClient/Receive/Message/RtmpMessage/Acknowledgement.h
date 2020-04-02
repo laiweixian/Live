@@ -10,5 +10,6 @@ public:
 
 	//CBaseMessage
 	RtmpMessageType GetType();
-	void* GetPtr(int* outDstLen);
+
+	
 };

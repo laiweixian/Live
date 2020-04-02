@@ -60,7 +60,6 @@ public:
 
 	//interface
 	virtual RtmpMessageType GetType()	 = 0;
-	virtual void* GetPtr(int* outDstLen) = 0;
 
 protected:
 	MessageHeader  m_Header;

@@ -16,7 +16,3 @@ RtmpMessageType CAbortMessage::GetType()
 	return RtmpMessageType::ABORT_MESSAGE;
 }
 
-void CAbortMessage::Inform()
-{
-
-}

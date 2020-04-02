@@ -16,7 +16,3 @@ RtmpMessageType CCommandMessage::GetType()
 	return RtmpMessageType::COMMAND_MESSAGE;
 }
 
-void CCommandMessage::Inform()
-{
-
-}
