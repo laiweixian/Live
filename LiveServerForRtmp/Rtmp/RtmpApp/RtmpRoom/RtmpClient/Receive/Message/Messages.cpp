@@ -221,60 +221,63 @@ void CMessages::HandleMessage(CBaseMessage* pMsg)
 
 void CMessages::HandleSetChunkSize(CSetChunkSize* pMsg)
 {
-	
+	if (!pMsg)	return ;
+
+	m_ChunkSize = pMsg->GetChunkSize();
+	delete pMsg;
 }
 
 void CMessages::HandleAbortMessage(CAbortMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleAcknowledgement(CAcknowledgement* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleUserControlMessages(CUserControlMessages* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleCommandMessage(CCommandMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleDataMessage(CDataMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleSharedObjectMessage(CSharedObjectMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleAudioMessage(CAudioMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleVideoMessage(CVideoMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
 
 void CMessages::HandleAggregateMessage(CAggregateMessage* pMsg)
 {
-
+	if (!pMsg)	return;
 }
