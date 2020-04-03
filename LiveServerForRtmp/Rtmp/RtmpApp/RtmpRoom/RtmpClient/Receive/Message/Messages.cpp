@@ -36,6 +36,7 @@ int CMessages::OnRtmpMessage(uint8_t* src, const int srcLength)
 		if (pMsg)
 			m_Message = pMsg;
 
+		//handle rtmp message
 		m_Message->Append(src+offset+headerLen,dataLen);
 		if (m_Message->GetRemainSize() == 0)
 		{
