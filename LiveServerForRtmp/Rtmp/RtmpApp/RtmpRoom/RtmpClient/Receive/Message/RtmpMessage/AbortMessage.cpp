@@ -11,13 +11,15 @@ CAbortMessage::~CAbortMessage()
 
 }
 
-uint32_t CAbortMessage::GetChunkStreamID()
+int CAbortMessage::GetProperty(uint32_t* pChunkStreamID)
 {
 	uint32_t chunkStreamID = 0;
 	memcpy(&chunkStreamID,m_Payload.buff,m_Payload.buffLength);
 
 	chunkStreamID = ::BigToHost32(&chunkStreamID);
-	return chunkStreamID;
+	
+	*pChunkStreamID = chunkStreamID;
+	return SAR_OK;
 }
 
 RtmpMessageType CAbortMessage::GetType()

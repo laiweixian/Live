@@ -231,6 +231,10 @@ void CMessages::HandleSetChunkSize(CSetChunkSize* pMsg)
 void CMessages::HandleAbortMessage(CAbortMessage* pMsg)
 {
 	if (!pMsg)	return;
+
+	uint32_t chunkStreamID = pMsg->GetChunkStreamID();
+	
+
 }
 
 void CMessages::HandleAcknowledgement(CAcknowledgement* pMsg)
