@@ -14,4 +14,6 @@ private:
 	 
 private:
 	CRtmpApp *m_App;
+
+
 };
