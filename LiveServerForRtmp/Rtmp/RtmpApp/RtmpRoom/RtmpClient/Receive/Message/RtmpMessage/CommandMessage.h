@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseMessage.h"
-#include "AMF/AMF.h"
+#include "Command/Commands.h"
 
 class CCommandMessage : public CBaseMessage
 {

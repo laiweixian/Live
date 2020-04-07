@@ -1,6 +1,8 @@
 #pragma once
 
 #include "stdafx.h"
+#include "../AMF/AMF.h"
+
 #include "Call.h"
 #include "Close.h"
 #include "CloseStream.h"
@@ -17,6 +19,8 @@
 
 enum CommandType
 {
+	INVALID,
+
 	//NetConnection
 	CONNECT, CALL, CLOSE, CREATE_STREAM,	
 
@@ -24,6 +28,25 @@ enum CommandType
 	PLAY, PLAY2, DELETE_STREAM, CLOSE_STREAM,
 	RECEIVE_AUDIO, RECEIVE_VIDEO, PUBLISH,
 	SEEK, PAUSE
+};
+
+struct Command
+{
+	CommandType cType;
+	union 
+	{
+		ConnectCommand command0;
+
+	};
+};
+
+class CCommands
+{
+public:
+	CCommands();
+	~CCommands();
+
+
 };
 
 

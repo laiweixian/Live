@@ -55,6 +55,25 @@ struct ConnectObject
 
 struct ConnectOptionalUserArguments
 {
+	
+};
+
+struct ConnectCommand
+{
+	string name;
+	uint32_t transactionID;
+	ConnectObject obj;
+	ConnectOptionalUserArguments option;
+};
+
+class CConnectCommand
+{
+private:
+	CConnectCommand() = default;
+	~CConnectCommand() = default;
+public:
+	static ConnectCommand* Parse();
 
 };
+
 
