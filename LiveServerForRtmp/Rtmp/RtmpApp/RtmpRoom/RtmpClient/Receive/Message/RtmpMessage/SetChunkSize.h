@@ -8,7 +8,7 @@ public:
 	~CSetChunkSize();
 
 	//property
-	uint32_t GetChunkSize() = 0;
+	int GetProperty(uint32_t* pChunkSize);
 
 	//CBaseMessage
 	RtmpMessageType GetType();

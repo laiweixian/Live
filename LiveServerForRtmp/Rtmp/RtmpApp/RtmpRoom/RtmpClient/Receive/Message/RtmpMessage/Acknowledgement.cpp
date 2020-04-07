@@ -11,6 +11,15 @@ CAcknowledgement::~CAcknowledgement()
 
 }
 
+int CAcknowledgement::GetProperty(uint32_t* pSequenceNumber)
+{
+	uint32_t sequenceNumber = 0;
+	memcpy(&sequenceNumber,m_Payload.buff,4);
+	
+	*pSequenceNumber = ::BigToHost32(&sequenceNumber);
+	return SAR_OK;
+}
+
 RtmpMessageType CAcknowledgement::GetType()
 {
 	return RtmpMessageType::ACKNOWLEDGEMENT;
