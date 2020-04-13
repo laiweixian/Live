@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../AMF/AMF.h"
+
 enum AudioCodes
 {
 	SUPPORT_SND_NONE  = 0x0001,
@@ -72,8 +74,24 @@ private:
 	CConnectCommand() = default;
 	~CConnectCommand() = default;
 public:
-	static ConnectCommand* Parse();
-
+	static ConnectCommand* Parse(uint8_t* pData,uint32_t dataLen, AMFType aType);
 };
 
 
+ConnectCommand* CConnectCommand::Parse(uint8_t* pData, uint32_t dataLen, AMFType aType)
+{
+	ConnectCommand* pCommand = NULL;
+	switch (aType)
+	{
+	case AMF_0:
+		CAMF0::CreateAMF0()
+		break;
+	case AMF_3:
+		break;
+	case AMF_NONE:
+		return NULL;
+		break;
+	default:
+		break;
+	}
+}

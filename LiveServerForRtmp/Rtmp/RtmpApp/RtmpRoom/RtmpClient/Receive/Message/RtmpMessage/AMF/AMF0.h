@@ -113,6 +113,7 @@ public:
 	void Destroy();
 
 
+
 private:
 	int Init(uint8_t *pData, const int dataLen);
 	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);
