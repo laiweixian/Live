@@ -52,6 +52,11 @@
 #endif
 #endif
 
+#include <string.h>
+#include <string>
+#include <iostream>
+#include <stdint.h>
+using namespace std;
 
 extern "C"
 {
@@ -60,3 +65,5 @@ extern "C"
 	#include "libavutil/avutil.h"
 	#include "libswscale/swscale.h"
 }
+
+#include "Wins/Wins.h"

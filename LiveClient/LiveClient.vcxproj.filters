@@ -30,12 +30,27 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Wins\MainDialog\MainDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Wins\Wins.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Wins\EditDialog\InputDialog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LiveClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Wins\MainDialog\MainDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Wins\EditDialog\InputDialog.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -193,12 +193,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LiveClient.h" />
+    <ClInclude Include="Wins\EditDialog\InputDialog.h" />
+    <ClInclude Include="Wins\MainDialog\MainDialog.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Wins\Wins.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LiveClient.cpp" />
+    <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />
+    <ClCompile Include="Wins\MainDialog\MainDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -218,4 +223,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="LiveClient.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
