@@ -129,36 +129,15 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	return pValue;
 }
 
-uint8_t  CChunkHeader::GetFmt()
+CChunkHeader* CChunkHeader::Parse(CChunkHeader::Head header)
 {
-	return m_Head.fmt;
+	CChunkHeader* pValue = new CChunkHeader;
+
+	pValue->m_Head = header;
+	return pValue;
 }
 
-uint32_t CChunkHeader::GetCSID()
+CChunkHeader::Head CChunkHeader::GetHead()
 {
-	return m_Head.csid;
-}
-
-uint32_t CChunkHeader::GetTimestamp()
-{
-	return m_Head.timestamp;
-}
-
-uint32_t CChunkHeader::GetTimestampDelta()
-{
-	return m_Head.timestampDelta;
-}
-
-uint32_t CChunkHeader::GetMessageLength()
-{
-	return m_Head.messageLength;
-}
-uint8_t  CChunkHeader::GetMessageTypeID()
-{
-	return m_Head.messageTypeID;
-}
-
-uint32_t CChunkHeader::GetMessageStreamID()
-{
-	return m_Head.messageStreamID;
+	return m_Head;
 }

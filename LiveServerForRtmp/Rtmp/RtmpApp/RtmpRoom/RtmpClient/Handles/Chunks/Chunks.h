@@ -20,11 +20,17 @@ public:
 	CChunks(IMessageEvent* pEvent,const uint32_t chunkSize = 128);
 	~CChunks();
 
-	int OnChunk(uint8_t* src, const int srcLength);
+	int OnChunks(uint8_t* src, const int srcLength);
 private:
-	int ParseChunk(uint8_t* src, const int srcLength,int* outHeaderLen,int* outDataLen,CBaseMessage** outMsg);
-	CChunkHeader* ParseChunkHeader(uint8_t* src, const int srcLength,int* outLen);
-	CBaseMessage* ParseMessage(CChunkHeader* pHeader , uint8_t* src, const int srcLength);
+	int OnChunk(uint8_t* src, const int srcLength);
+	CChunkHeader* OnChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen);
+	CBaseMessage* OnMessage(CChunkHeader* pHeader);
+	int OnChunkData( CBaseMessage *pMsg, const int srcLength);
+	
+
+
+	//int ParseChunk(uint8_t* src, const int srcLength,int* outHeaderLen,int* outDataLen,CBaseMessage** outMsg);
+	//CBaseMessage* ParseMessage(CChunkHeader* pHeader , uint8_t* src, const int srcLength);
 
 
 	void HandleMessage(CBaseMessage* pMsg);

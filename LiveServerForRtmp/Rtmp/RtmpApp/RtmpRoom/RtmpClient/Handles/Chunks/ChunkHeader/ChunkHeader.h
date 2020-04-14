@@ -22,14 +22,9 @@ public:
 	~CChunkHeader() ;
 
 	static CChunkHeader* Parse(uint8_t* src,const int srcLength,int* outLength);
+	static CChunkHeader* Parse(CChunkHeader::Head header);
 
-	uint8_t  GetFmt();
-	uint32_t GetCSID();
-	uint32_t GetTimestamp();
-	uint32_t GetTimestampDelta();
-	uint32_t GetMessageLength(); 
-	uint8_t  GetMessageTypeID();
-	uint32_t GetMessageStreamID();
+	CChunkHeader::Head GetHead();
 private:
 	CChunkHeader::Head m_Head;
 };
