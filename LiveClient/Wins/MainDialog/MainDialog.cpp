@@ -99,27 +99,31 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 
 int CMainDialog::ShowBitmap(uint8_t* data, const int dataLen)
 {
-	HDC hScreen ,hMemory;
+	HDC hScreen , hWin,hMemory;
 	HBITMAP hBit,hOldBit ;
 	int screenWidth = 0 , screenHeight = 0;
+	RECT rect;
+	int winWidth = 0 , winHeigth = 0;
 
-	hScreen = ::GetDC(NULL); 
-	screenWidth = ::GetDeviceCaps(hScreen, HORZRES);screenHeight = ::GetDeviceCaps(hScreen, VERTRES);
-
+	hScreen = ::GetDC(NULL);	
+	screenWidth = ::GetDeviceCaps(hScreen, HORZRES);
+	screenHeight = ::GetDeviceCaps(hScreen, VERTRES);
+	
+	hWin = this->GetDC()->GetSafeHdc();
+	this->GetClientRect(&rect);
+	winWidth = rect.right - rect.left ; winHeigth = rect.bottom - rect.top;
+	
 	hMemory = ::CreateCompatibleDC(hScreen);
 	hBit = ::CreateCompatibleBitmap(hScreen, screenWidth, screenHeight);
+	
 	hOldBit = (HBITMAP)::SelectObject(hMemory,hBit);
-
 	::BitBlt(hMemory,0,0,screenWidth,screenHeight,hScreen,0,0,SRCCOPY);
-	hBit = (HBITMAP)::SelectObject(hMemory, hOldBit);
 
-	//save hbit
+	::StretchBlt(hWin,0,0,winWidth,winHeigth,hScreen,0,0,screenWidth,screenHeight,SRCCOPY);
 
-	
-
-	
-
+	::DeleteObject(hBit);
 	::DeleteDC(hMemory);
 	::ReleaseDC(NULL,hScreen);
+	::ReleaseDC(this->GetSafeHwnd(),hWin);
 	return 0;
 }

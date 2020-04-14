@@ -18,6 +18,7 @@ public:
 #endif
 
 	int ShowBitmap(uint8_t* data,const int dataLen);
+	int SaveBitmap(HBITMAP hBit);
 
 
 protected:
