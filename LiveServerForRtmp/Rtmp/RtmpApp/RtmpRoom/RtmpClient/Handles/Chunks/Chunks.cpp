@@ -1,15 +1,19 @@
-#include "Messages.h"
+#include "Chunks.h"
 
-CMessages::CMessages(const int chunkSize) : m_ChunkSize(chunkSize)
+#define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
+	
+	
+
+CChunks::CChunks(IMessageEvent *pEvent, const uint32_t chunkSize /* = 128 */) : \
+	m_Event(pEvent),m_ChunkSize(chunkSize),m_NewHeader(NULL),m_NewMsg(NULL)
 {
-	m_ChunkHeader = NULL;
-	m_Message = NULL;
+
 }
 
-CMessages::~CMessages()
+CChunks::~CChunks()
 {
-	delete m_ChunkHeader;
-	delete m_Message;
+	DELETE_PTR(m_NewMsg)
+	DELETE_PTR(m_NewHeader)
 }
 
 int CMessages::OnRtmpMessage(uint8_t* src, const int srcLength)

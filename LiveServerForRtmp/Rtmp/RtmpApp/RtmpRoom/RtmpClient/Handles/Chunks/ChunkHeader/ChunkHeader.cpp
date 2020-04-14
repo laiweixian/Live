@@ -1,9 +1,19 @@
-#include "Chunk.h"
+#include "ChunkHeader.h"
 
 #define CHECK_OFFSET(start,end,ptr,offset) \
 	if(ptr+offset > end)	return NULL;
 
-CChunkHeader* CChunk::Parse(void* src, const int srcLength, int* outLength)
+CChunkHeader::CChunkHeader() : m_Head({0})
+{
+
+}
+
+CChunkHeader::~CChunkHeader()
+{
+
+}
+
+CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLength)
 {
 	CChunkHeader *pValue = nullptr;
 	const uint8_t *start = (uint8_t*)src ,*end = (uint8_t*)src + srcLength  - 1;
@@ -52,7 +62,6 @@ CChunkHeader* CChunk::Parse(void* src, const int srcLength, int* outLength)
 		ptr += 1;
 		break;
 	}
-
 
 	//Message Header
 	switch (fmt)
@@ -106,15 +115,50 @@ CChunkHeader* CChunk::Parse(void* src, const int srcLength, int* outLength)
 
 	pValue = new CChunkHeader;
 	memset(pValue,0,sizeof(CChunkHeader));
-	pValue->fmt = fmt;
-	pValue->csid = csid;
-	pValue->timestamp = timestamp;
-	pValue->timestampDelta = timestampDelta;
-	pValue->messageLength = messageLength;
-	pValue->messageTypeID = messageTypeID;
-	pValue->messageStreamID = messageStreamID;
-	pValue->extendedTimestamp = extendedTimestamp;
+
+	pValue->m_Head.fmt = fmt;
+	pValue->m_Head.csid = csid;
+	pValue->m_Head.timestamp = timestamp;
+	pValue->m_Head.timestampDelta = timestampDelta;
+	pValue->m_Head.messageLength = messageLength;
+	pValue->m_Head.messageTypeID = messageTypeID;
+	pValue->m_Head.messageStreamID = messageStreamID;
+	pValue->m_Head.extendedTimestamp = extendedTimestamp;
 
 	*outLength = ptr - start;
 	return pValue;
+}
+
+uint8_t  CChunkHeader::GetFmt()
+{
+	return m_Head.fmt;
+}
+
+uint32_t CChunkHeader::GetCSID()
+{
+	return m_Head.csid;
+}
+
+uint32_t CChunkHeader::GetTimestamp()
+{
+	return m_Head.timestamp;
+}
+
+uint32_t CChunkHeader::GetTimestampDelta()
+{
+	return m_Head.timestampDelta;
+}
+
+uint32_t CChunkHeader::GetMessageLength()
+{
+	return m_Head.messageLength;
+}
+uint8_t  CChunkHeader::GetMessageTypeID()
+{
+	return m_Head.messageTypeID;
+}
+
+uint32_t CChunkHeader::GetMessageStreamID()
+{
+	return m_Head.messageStreamID;
 }
