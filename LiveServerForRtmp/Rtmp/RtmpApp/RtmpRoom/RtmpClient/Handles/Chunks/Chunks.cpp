@@ -52,17 +52,23 @@ int CChunks::OnChunk(uint8_t* src, const int srcLength)
 	if (dataLen == 0)
 		goto failure;
 
+
 	//success,refresh m_NewHeader and m_NewMsg
 	DELETE_PTR(m_NewHeader)
 	m_NewHeader = pHeader;
-
-	if (pMsg)
+	if (pMsg)		//new msg
 	{
-
+		DELETE_PTR(m_NewMsg)
+		m_NewMsg = pMsg;
 	}
-		
 
-
+	//append chunk data into m_NewMsg
+	m_NewMsg->Append(src+headerLen,dataLen);
+	if (m_NewMsg->GetRemainSize() == 0)
+	{
+		HandleMessage(m_NewMsg);
+		m_NewMsg = NULL;
+	}
 
 	return (headerLen + dataLen);
 

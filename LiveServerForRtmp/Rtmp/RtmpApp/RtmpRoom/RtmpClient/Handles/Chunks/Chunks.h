@@ -4,6 +4,9 @@
 #include "ChunkHeader/ChunkHeader.h"
 #include "RtmpMessage/RtmpMessage.h"
 
+class CChunks;
+class IMessageEvent;
+
 class IMessageEvent : public IHandleBaseEvent
 {
 protected:
@@ -12,6 +15,7 @@ public:
 	IMessageEvent() = default;
 
 	virtual bool OnSendMessage(uint8_t* pData, const int dataLen) = 0;
+	
 };
 
 class CChunks 
@@ -26,12 +30,6 @@ private:
 	CChunkHeader* OnChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen);
 	CBaseMessage* OnMessage(CChunkHeader* pHeader);
 	int OnChunkData( CBaseMessage *pMsg, const int srcLength);
-	
-
-
-	//int ParseChunk(uint8_t* src, const int srcLength,int* outHeaderLen,int* outDataLen,CBaseMessage** outMsg);
-	//CBaseMessage* ParseMessage(CChunkHeader* pHeader , uint8_t* src, const int srcLength);
-
 
 	void HandleMessage(CBaseMessage* pMsg);
 	void HandleSetChunkSize(CSetChunkSize* pMsg);
