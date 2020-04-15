@@ -41,7 +41,8 @@ enum ObjectEncoding
 	AMF0 = 0 , AMF3 = 3
 };
 
-struct ConnectObject
+
+struct ConnObject
 {
 	string app;
 	string flashver;
@@ -55,17 +56,17 @@ struct ConnectObject
 	ObjectEncoding objEncoding;
 };
 
-struct ConnectOptionalUserArguments
+struct ConnOptiUserArgu
 {
 	
 };
 
-struct ConnectCommand
+struct ConnCmd
 {
 	string name;
 	uint32_t transactionID;
-	ConnectObject obj;
-	ConnectOptionalUserArguments option;
+	ConnObject obj;
+	ConnOptiUserArgu option;
 };
 
 class CConnectCommand
@@ -74,5 +75,9 @@ private:
 	CConnectCommand() = default;
 	~CConnectCommand() = default;
 public:
-	static ConnectCommand* Parse(uint8_t* pData,uint32_t dataLen, AMFType aType);
+	static ConnCmd* Parse(uint8_t* pData,uint32_t dataLen, AMFType aType);
+	static void ConnCmd_Free(ConnCmd** ppCC);
+protected:
+	static ConnCmd* ParseAMF0(uint8_t* pData, uint32_t dataLen);
+	static ConnCmd* ParseAMF3(uint8_t* pData, uint32_t dataLen);
 };

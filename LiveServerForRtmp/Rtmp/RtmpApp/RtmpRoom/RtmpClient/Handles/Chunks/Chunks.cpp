@@ -52,7 +52,6 @@ int CChunks::OnChunk(uint8_t* src, const int srcLength)
 	if (dataLen == 0)
 		goto failure;
 
-
 	//success,refresh m_NewHeader and m_NewMsg
 	DELETE_PTR(m_NewHeader)
 	m_NewHeader = pHeader;
@@ -182,42 +181,42 @@ void CChunks::HandleMessage(CBaseMessage* pMsg)
 {
 	switch (pMsg->GetType())
 	{
-	case RtmpMessageType::INVALID:
+	case CBaseMessage::MessageType::INVALID:
 		break;
-	case RtmpMessageType::SET_CHUNK_SIZE:
+	case CBaseMessage::MessageType::SET_CHUNK_SIZE:
 		HandleSetChunkSize(dynamic_cast<CSetChunkSize*>(pMsg));
 		break;
-	case RtmpMessageType::ABORT_MESSAGE:
+	case CBaseMessage::MessageType::ABORT_MESSAGE:
 		HandleAbortMessage(dynamic_cast<CAbortMessage*>(pMsg));
 		break;
-	case RtmpMessageType::ACKNOWLEDGEMENT:
+	case CBaseMessage::MessageType::ACKNOWLEDGEMENT:
 		HandleAcknowledgement(dynamic_cast<CAcknowledgement*>(pMsg));
 		break;
-	case RtmpMessageType::WINDOW_ACKNOWLEDGEMENT_SIZE:
+	case CBaseMessage::MessageType::WINDOW_ACKNOWLEDGEMENT_SIZE:
 		HandleWindowAcknowledgementSize(dynamic_cast<CWindowAcknowledgementSize*>(pMsg));
 		break;
-	case RtmpMessageType::SET_PEER_BADNWIDTH:
+	case CBaseMessage::MessageType::SET_PEER_BADNWIDTH:
 		HandleSetPeerBandwidth(dynamic_cast<CSetPeerBandwidth*>(pMsg));
 		break;
-	case RtmpMessageType::USER_CONTROL_MESSAGES:
+	case CBaseMessage::MessageType::USER_CONTROL_MESSAGES:
 		HandleUserControlMessages(dynamic_cast<CUserControlMessages*>(pMsg));
 		break;
-	case RtmpMessageType::COMMAND_MESSAGE:
+	case CBaseMessage::MessageType::COMMAND_MESSAGE:
 		HandleCommandMessage(dynamic_cast<CCommandMessage*>(pMsg));
 		break;
-	case RtmpMessageType::DATA_MESSAGE:
+	case CBaseMessage::MessageType::DATA_MESSAGE:
 		HandleDataMessage(dynamic_cast<CDataMessage*>(pMsg));
 		break;
-	case RtmpMessageType::SHARED_OBJECT_MESSAGE:
+	case CBaseMessage::MessageType::SHARED_OBJECT_MESSAGE:
 		HandleSharedObjectMessage(dynamic_cast<CSharedObjectMessage*>(pMsg));
 		break;
-	case RtmpMessageType::AUDIO_MESSAGE:
+	case CBaseMessage::MessageType::AUDIO_MESSAGE:
 		HandleAudioMessage(dynamic_cast<CAudioMessage*>(pMsg));
 		break;
-	case RtmpMessageType::VIDEO_MESSAGE:
+	case CBaseMessage::MessageType::VIDEO_MESSAGE:
 		HandleVideoMessage(dynamic_cast<CVideoMessage*>(pMsg));
 		break;
-	case RtmpMessageType::AGGREGATE_MESSAGE:
+	case CBaseMessage::MessageType::AGGREGATE_MESSAGE:
 		HandleAggregateMessage(dynamic_cast<CAggregateMessage*>(pMsg));
 		break;
 	default:
@@ -229,7 +228,7 @@ void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 {
 	if (!pMsg)	return ;
 
-	m_ChunkSize = pMsg->GetChunkSize();
+	m_ChunkSize = pMsg->GetContent().chunkSize;
 	delete pMsg;
 }
 
@@ -237,7 +236,7 @@ void CChunks::HandleAbortMessage(CAbortMessage* pMsg)
 {
 	if (!pMsg)	return;
 
-	uint32_t chunkStreamID = pMsg->GetChunkStreamID();
+	
 	
 }
 

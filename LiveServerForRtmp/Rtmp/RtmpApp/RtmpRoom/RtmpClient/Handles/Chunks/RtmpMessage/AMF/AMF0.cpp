@@ -10,20 +10,19 @@ void UTF8_free(UTF8 &utf8)
 	utf8.buffLength = 0;
 }
 
-
 void AMF0Object_free(AMF0Object &amfObject)
 {
 	int i = 0;
-	for (i = 0;i < amfObject.objCount;i++)
+	for (i = 0;i < amfObject.MemCount;i++)
 	{
-		UTF8_free(amfObject.pObjs[i].name);
-		AMF0Data_free(amfObject.pObjs[i].data);
+		UTF8_free(amfObject.pMems[i].name);
+		AMF0Data_free(amfObject.pMems[i].value);
 	}
 
-	if(amfObject.pObjs)
-		delete[] amfObject.pObjs;
-	amfObject.pObjs = NULL;
-	amfObject.objCount = 0;
+	if(amfObject.pMems)
+		delete[] amfObject.pMems;
+	amfObject.pMems = NULL;
+	amfObject.MemCount = 0;
 }
 
 void AMF0EcmaArray_free(AMF0EcmaArray &ecma)
@@ -282,8 +281,6 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 	return pamf;
 }
 
-
-
 int CAMF0::ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset)
 {
 	uint8_t *ptr = pData;
@@ -332,8 +329,8 @@ int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, in
 	int i = 0;
 	
 	AMF0Data *pValue = NULL;
-	vector<Obj> objs;
-	Obj obj;
+	vector<ObjectMember> mems;
+	ObjectMember mem;
 	UTF8 name; 
 	
 	while (1)
@@ -357,26 +354,26 @@ int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, in
 			goto PARSE_ERR;
 		ptr += offset;
 
-		obj.name = name;
-		obj.data = *pValue;
-		objs.push_back(obj);
+		mem.name = name;
+		mem.value = *pValue;
+		mems.push_back(mem);
 	}
 
-	amfObj.objCount = objs.size();
-	amfObj.pObjs = new Obj[objs.size()];
-	for (i=0;i<objs.size();i++)
-		amfObj.pObjs[i] = objs.at(i);
+	amfObj.MemCount = mems.size();
+	amfObj.pMems = new ObjectMember[amfObj.MemCount];
+	for (i=0;i<amfObj.MemCount;i++)
+		amfObj.pMems[i] = mems.at(i);
 	*outOffset = ptr - start;
 
 	return SAR_OK;
 
 PARSE_ERR:
-	for (i = 0;i<objs.size(); i++)
+	for (i = 0;i<mems.size(); i++)
 	{
-		AMF0Data_free(objs.at(i).data);
-		UTF8_free(objs.at(i).name);
+		AMF0Data_free(mems.at(i).value);
+		UTF8_free(mems.at(i).name);
 	}
-	objs.clear();
+	mems.clear();
 	*outOffset = 0;
 	return ret;
 }
@@ -455,7 +452,6 @@ int CAMF0::ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0EcmaArray &ecma
 PARSE_ERR:
 
 	return ret; 
-
 }
 
 int CAMF0::ParseObjectEnd(uint8_t *pData, const int dataLen, int* outOffset)

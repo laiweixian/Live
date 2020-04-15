@@ -38,16 +38,16 @@ struct UTF8
 	uint64_t buffLength;
 };
 
-struct Obj
+struct ObjectMember
 {
 	UTF8 name;
-	AMF0Data data;
+	AMF0Data value;
 };
 
 struct AMF0Object
 {
-	Obj *pObjs;
-	uint32_t objCount;
+	ObjectMember *pMems;
+	uint32_t MemCount;
 };
 
 struct AMF0EcmaArray
@@ -81,7 +81,6 @@ enum AMF0Type
 	TYPE_OBJECT,INVALID = 0xFF
 };
 
-
 struct AMF0Data
 {
 	AMF0Type dType;
@@ -102,6 +101,8 @@ struct AMF0Data
 	};
 };
 
+
+
 class CAMF0
 {
 private:
@@ -111,8 +112,6 @@ private:
 public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
 	void Destroy();
-
-
 
 private:
 	int Init(uint8_t *pData, const int dataLen);
@@ -138,6 +137,34 @@ private:
 	static int ParseUTF8(uint8_t *pData,const int dataLen,UTF8& utf8,int *outOffset);
 	static int ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset);
 public:
-	vector<AMF0Data*> m_Amfs;;
+	vector<AMF0Data*> m_Amfs;
 };
 
+
+static void UTF8ToString(string &str, UTF8 utf8)
+{
+	char *c = NULL;
+
+	c = new char[utf8.buffLength+1];
+	memset(c,0, utf8.buffLength + 1);
+	memcpy(c,utf8.buff, utf8.buffLength);
+
+	str = c;
+	
+	delete[] c;
+}
+
+static bool UTF8IsEqual(const char* str, UTF8 utf8)
+{
+	char *c = NULL;
+	int ret = 0;
+
+	c = new char[utf8.buffLength + 1];
+	memset(c, 0, utf8.buffLength + 1);
+	memcpy(c, utf8.buff, utf8.buffLength);
+
+	ret = strcmp(str,c);
+	delete[] c;
+
+	return (ret == 0);
+}
