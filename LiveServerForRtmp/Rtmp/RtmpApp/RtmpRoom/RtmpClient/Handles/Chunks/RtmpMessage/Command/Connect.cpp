@@ -50,30 +50,35 @@ ConnCmd* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t dataLen)
 	valid &= (pamf->m_Amfs.at(3)->dType == AMF0Type::OBJECT);
 	if (valid == false)				goto failure;				//all amf0 type not match
 
+	pCC = new ConnCmd;
+
 	//command name
 	valid = UTF8IsEqual(commandName, pamf->m_Amfs.at(0)->data_string);
 	if (valid == false)				goto failure;				//command name is not match connect
+	UTF8ToString(pCC->name, pamf->m_Amfs.at(0)->data_string);
 
 	//transaction id
 	valid = pamf->m_Amfs.at(1)->data_num == 1;				
 	if (valid == false)				goto failure;				//command transaction id is not match connect
-	
+	pCC->transactionID = pamf->m_Amfs.at(1)->data_num;
+
 	//command object
 	valid = pamf->m_Amfs.at(2)->data_object.MemCount == 10;
 	if (valid == false)				goto failure;				//command object count not match 
-	valid &= UTF8IsEqual(app, pamf->m_Amfs.at(2)->data_object.pMems[0].name);
-	valid &= UTF8IsEqual(flashver, pamf->m_Amfs.at(2)->data_object.pMems[1].name);
-	valid &= UTF8IsEqual(swfUrl, pamf->m_Amfs.at(2)->data_object.pMems[2].name);
-	valid &= UTF8IsEqual(tcUrl, pamf->m_Amfs.at(2)->data_object.pMems[3].name);
-	valid &= UTF8IsEqual(fpad, pamf->m_Amfs.at(2)->data_object.pMems[4].name);
-	valid &= UTF8IsEqual(audioCodecs, pamf->m_Amfs.at(2)->data_object.pMems[5].name);
-	valid &= UTF8IsEqual(videoCodecs, pamf->m_Amfs.at(2)->data_object.pMems[6].name);
-	valid &= UTF8IsEqual(videoFunction, pamf->m_Amfs.at(2)->data_object.pMems[7].name);
-	valid &= UTF8IsEqual(pageUrl, pamf->m_Amfs.at(2)->data_object.pMems[8].name);
-	valid &= UTF8IsEqual(objectEncoding, pamf->m_Amfs.at(2)->data_object.pMems[9].name);
+	valid &= UTF8IsEqual(app, pamf->m_Amfs.at(2)->data_object.pMems[0].name);			valid &= pamf->m_Amfs.at(2)->data_object.pMems[0].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(flashver, pamf->m_Amfs.at(2)->data_object.pMems[1].name);		valid &= pamf->m_Amfs.at(2)->data_object.pMems[1].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(swfUrl, pamf->m_Amfs.at(2)->data_object.pMems[2].name);		valid &= pamf->m_Amfs.at(2)->data_object.pMems[2].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(tcUrl, pamf->m_Amfs.at(2)->data_object.pMems[3].name);			valid &= pamf->m_Amfs.at(2)->data_object.pMems[3].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(fpad, pamf->m_Amfs.at(2)->data_object.pMems[4].name);			valid &= pamf->m_Amfs.at(2)->data_object.pMems[4].value.dType == AMF0Type::BOOLEAN;
+	valid &= UTF8IsEqual(audioCodecs, pamf->m_Amfs.at(2)->data_object.pMems[5].name);	valid &= pamf->m_Amfs.at(2)->data_object.pMems[5].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoCodecs, pamf->m_Amfs.at(2)->data_object.pMems[6].name);	valid &= pamf->m_Amfs.at(2)->data_object.pMems[6].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoFunction, pamf->m_Amfs.at(2)->data_object.pMems[7].name);	valid &= pamf->m_Amfs.at(2)->data_object.pMems[7].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(pageUrl, pamf->m_Amfs.at(2)->data_object.pMems[8].name);		valid &= pamf->m_Amfs.at(2)->data_object.pMems[8].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(objectEncoding, pamf->m_Amfs.at(2)->data_object.pMems[9].name);valid &= pamf->m_Amfs.at(2)->data_object.pMems[9].value.dType == AMF0Type::NUMBER;
 	if (valid == false)				goto failure;				// has one command object member no match
 	
-	//
+
+	UTF8ToString(pCC->obj.app, pamf->m_Amfs.at(2)->data_object.pMems[0].value.data_string);
 	
 
 
