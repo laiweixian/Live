@@ -1,7 +1,7 @@
 #include "BaseMessage.h"
 
-CBaseMessage::CBaseMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
-		 m_AppendLength(0)
+CBaseMessage::CBaseMessage(uint32_t csid, uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
+		 m_CSID(csid),m_AppendLength(0)
 {
 	m_Header.timestamp = ts;
 	m_Header.messageLength = msgLength;

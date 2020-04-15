@@ -1,6 +1,7 @@
 #include "AggregateMessage.h"
 
-CAggregateMessage::CAggregateMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) : CBaseMessage(ts, msgLength, msgTypeId, msgStreamId)
+CAggregateMessage::CAggregateMessage(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) : 
+	CBaseMessage(csid,ts, msgLength, msgTypeId, msgStreamId)
 {
 
 }
@@ -10,8 +11,8 @@ CAggregateMessage::~CAggregateMessage()
 
 }
 
-RtmpMessageType CAggregateMessage::GetType()
+CBaseMessage::MessageType CAggregateMessage::GetType()
 {
-	return RtmpMessageType::AGGREGATE_MESSAGE;
+	return CBaseMessage::MessageType::AGGREGATE_MESSAGE;
 }
 

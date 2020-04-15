@@ -2,15 +2,22 @@
 
 #include "BaseMessage.h"
 
+#define DECLARE_ABORT_MESSAGE	\
+	struct Content{uint32_t chunkStreamID;};
+
+/*-----------------------------------------------------------------------------------------*/
 class CAbortMessage : public CBaseMessage
 {
 public:
-	CAbortMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
+	DECLARE_ABORT_MESSAGE
+	CAbortMessage(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CAbortMessage();
 
-	//property
-	int GetProperty(uint32_t* pChunkStreamID);
-
 	//BaseMessage
-	RtmpMessageType GetType();
+	CBaseMessage::MessageType GetType();
+
+	//property
+	CAbortMessage::Content GetContent();
+private:
+	CAbortMessage::Content m_Content;
 };

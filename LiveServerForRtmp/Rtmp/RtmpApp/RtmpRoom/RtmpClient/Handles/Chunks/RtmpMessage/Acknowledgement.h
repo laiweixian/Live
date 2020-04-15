@@ -2,15 +2,22 @@
 
 #include "BaseMessage.h"
 
+#define DECLARE_ACKNOWLEDGEMENT	\
+	struct Content{uint32_t sequenceNumber;};
+
+/*-----------------------------------------------------------------------------------------*/
 class CAcknowledgement : public CBaseMessage
 {
 public:
-	CAcknowledgement(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
+	DECLARE_ACKNOWLEDGEMENT
+	CAcknowledgement(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CAcknowledgement();
 
-	//property
-	int GetProperty(uint32_t* pSequenceNumber);
-
 	//CBaseMessage
-	RtmpMessageType GetType();
+	CBaseMessage::MessageType GetType();
+
+	//property
+	CAcknowledgement::Content GetContent();
+private:
+	CAcknowledgement::Content m_Content;
 };

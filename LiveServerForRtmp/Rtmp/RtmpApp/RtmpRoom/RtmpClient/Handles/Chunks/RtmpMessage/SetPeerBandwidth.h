@@ -2,16 +2,23 @@
 
 #include "BaseMessage.h"
 
+#define DECLARE_SET_PEER_BANDWIDTH \
+	struct Content{uint32_t acknowledgementWindowSize;uint8_t limitType;};
+	
+/*-----------------------------------------------------------------------------------------*/
 class CSetPeerBandwidth : public CBaseMessage
 {
 public:
-	CSetPeerBandwidth(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
+	DECLARE_SET_PEER_BANDWIDTH
+
+	CSetPeerBandwidth(uint32_t csid, uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CSetPeerBandwidth();
 
-	//property
-	int GetProperty(uint32_t* pAcknowledgementWindowSize,uint8_t* pLimitType);
-
 	//CBaseMessage
-	RtmpMessageType GetType();
+	CBaseMessage::MessageType GetType();
 	
+	//property
+	CSetPeerBandwidth::Content GetContent();
+private:
+	CSetPeerBandwidth::Content m_Content;
 };

@@ -1,9 +1,10 @@
 #include "UserControlMessages.h"
 
-CUserControlMessages::CUserControlMessages(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :\
-CBaseMessage(ts, msgLength, msgTypeId, msgStreamId)
+CUserControlMessages::CUserControlMessages(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :\
+CBaseMessage(csid,ts, msgLength, msgTypeId, msgStreamId)
 {
-
+	m_Content.eType = EventType::NONE;
+	m_Content.eData = {0};
 }
 
 CUserControlMessages::~CUserControlMessages()
@@ -11,9 +12,14 @@ CUserControlMessages::~CUserControlMessages()
 
 }
 
-int CUserControlMessages::GetProperty(UserControlEvent* pEvent)
+CBaseMessage::MessageType CUserControlMessages::GetType()
 {
-	UserControlEvent event ;
+	return CBaseMessage::MessageType::USER_CONTROL_MESSAGES;
+}
+
+CUserControlMessages::Content CUserControlMessages::GetContent()
+{
+	CUserControlMessages::Content event;
 	uint16_t eType;
 	uint32_t streamID = 0, bufferLength = 0, ts = 0;
 
@@ -21,13 +27,13 @@ int CUserControlMessages::GetProperty(UserControlEvent* pEvent)
 	eType = ::BigToHost16(&eType);
 	switch (eType)
 	{
-	case EventType::INVALID:
-		event.eType = EventType::INVALID;
+	case EventType::NONE:
+		event.eType = EventType::NONE;
 		break;
 
 	case EventType::STREAM_BEGIN:
 		event.eType = EventType::STREAM_BEGIN;
-		memcpy(&streamID,m_Payload.buff+2,4);
+		memcpy(&streamID, m_Payload.buff + 2, 4);
 		streamID = ::BigToHost32(&streamID);
 		event.eData.data_stream_begin = streamID;
 		break;
@@ -50,9 +56,9 @@ int CUserControlMessages::GetProperty(UserControlEvent* pEvent)
 		event.eType = EventType::SET_BUFFER_LENGTH;
 		memcpy(&streamID, m_Payload.buff + 2, 4);
 		streamID = ::BigToHost32(&streamID);
-		memcpy(&bufferLength,m_Payload.buff+2+4,4);
+		memcpy(&bufferLength, m_Payload.buff + 2 + 4, 4);
 		bufferLength = ::BigToHost32(&bufferLength);
-	
+
 		event.eData.data_set_buffer_length.streamid = streamID;
 		event.eData.data_set_buffer_length.buffer_length = bufferLength;
 		break;
@@ -77,16 +83,11 @@ int CUserControlMessages::GetProperty(UserControlEvent* pEvent)
 		event.eData.data_ping_response = ts;
 		break;
 	default:
-		return SAR_FAILURE;
+	
 		break;
 	}
 
-	memcpy(pEvent,&event,sizeof(UserControlEvent));
-	return SAR_OK;
-}
-
-RtmpMessageType CUserControlMessages::GetType()
-{
-	return RtmpMessageType::USER_CONTROL_MESSAGES;
+	m_Content = event;
+	return m_Content;
 }
 

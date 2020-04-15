@@ -1,7 +1,7 @@
 #include "CommandMessage.h"
 
-CCommandMessage::CCommandMessage(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
-CBaseMessage(ts, msgLength, msgTypeId, msgStreamId, inform)
+CCommandMessage::CCommandMessage(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
+CBaseMessage(csid,ts, msgLength, msgTypeId, msgStreamId)
 {
 
 }
@@ -11,8 +11,8 @@ CCommandMessage::~CCommandMessage()
 
 }
 
-RtmpMessageType CCommandMessage::GetType()
+CBaseMessage::MessageType CCommandMessage::GetType()
 {
-	return RtmpMessageType::COMMAND_MESSAGE;
+	return CBaseMessage::MessageType::COMMAND_MESSAGE;
 }
 

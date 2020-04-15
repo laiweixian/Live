@@ -1,7 +1,7 @@
 #include "SetChunkSize.h"
 
-CSetChunkSize::CSetChunkSize(uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId):\
-	CBaseMessage(ts,msgLength,msgTypeId,msgStreamId)
+CSetChunkSize::CSetChunkSize(uint32_t csid, uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId):\
+	CBaseMessage(csid,ts,msgLength,msgTypeId,msgStreamId),m_Content({0})
 {
 
 }
@@ -11,18 +11,16 @@ CSetChunkSize::~CSetChunkSize()
 
 }
 
-RtmpMessageType CSetChunkSize::GetType()
+CBaseMessage::MessageType CSetChunkSize::GetType()
 {
-	return RtmpMessageType::SET_CHUNK_SIZE;
+	return CBaseMessage::MessageType::SET_CHUNK_SIZE;
 }
 
-
-int CSetChunkSize::GetProperty(uint32_t* pChunkSize)
+CSetChunkSize::Content CSetChunkSize::GetContent()
 {
 	uint32_t chunkSize = 0;
 	memcpy(&chunkSize, m_Payload.buff, m_Payload.buffLength);
-	chunkSize = ::BigToHost32(&chunkSize);
-
-	*pChunkSize = chunkSize;
-	return SAR_OK;
+	m_Content.chunkSize = ::BigToHost32(&chunkSize);
+	return m_Content;
 }
+
