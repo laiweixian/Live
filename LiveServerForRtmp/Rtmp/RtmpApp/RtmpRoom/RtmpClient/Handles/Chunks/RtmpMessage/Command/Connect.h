@@ -76,26 +76,3 @@ private:
 public:
 	static ConnectCommand* Parse(uint8_t* pData,uint32_t dataLen, AMFType aType);
 };
-
-
-ConnectCommand* CConnectCommand::Parse(uint8_t* pData, uint32_t dataLen, AMFType aType)
-{
-	ConnectCommand* pCommand = NULL;
-	const CAMF0* amf0;
-
-	switch (aType)
-	{
-	case AMF_0:
-		amf0 = CAMF0::CreateAMF0(pData,dataLen);
-		break;
-	case AMF_3:
-		break;
-	case AMF_NONE:
-		return NULL;
-		break;
-	default:
-		break;
-	}
-
-
-}

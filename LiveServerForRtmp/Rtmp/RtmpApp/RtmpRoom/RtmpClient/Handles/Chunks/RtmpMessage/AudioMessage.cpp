@@ -16,3 +16,24 @@ CBaseMessage::MessageType CAudioMessage::GetType()
 	return CBaseMessage::MessageType::AUDIO_MESSAGE;
 }
 
+CAudioMessage::Content* CAudioMessage::GetContent()
+{
+	CAudioMessage::Content *pContent = NULL;
+
+	pContent = new CAudioMessage::Content;
+	pContent->buffSize = m_Header.messageLength;
+	pContent->buff = new uint8_t[pContent->buffSize];
+	memcpy(pContent->buff,m_Payload.buff, pContent->buffSize);
+	return pContent;
+}
+
+void CAudioMessage::Content_free(CAudioMessage::Content** ppContent)
+{
+	if (*ppContent == NULL)	return;
+	if ((*ppContent)->buff)	delete[](*ppContent)->buff;
+	(*ppContent)->buff = NULL;
+	(*ppContent)->buffSize = 0;
+
+	*ppContent = NULL;
+}
+

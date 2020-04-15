@@ -230,5 +230,8 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\Connect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

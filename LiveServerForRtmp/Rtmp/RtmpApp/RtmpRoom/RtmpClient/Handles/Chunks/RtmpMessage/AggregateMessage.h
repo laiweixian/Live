@@ -3,6 +3,7 @@
 #include "BaseMessage.h"
 
 /*-----------------------------------------------------------------------------------------*/
+//数个message的集合 ,例如(abort message,video message,audio message, set chunk size message,and so on)
 class CAggregateMessage : public CBaseMessage
 {
 
