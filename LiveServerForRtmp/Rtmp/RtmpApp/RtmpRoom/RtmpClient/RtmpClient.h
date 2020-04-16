@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Handles/Handshake/Handshake.h"
-#include "Handles/Message/Messages.h"
+#include "Handles/Handles.h"
 
-
-class CRtmpClient : public CHandshake , public CMessages
+class CRtmpClient 
 {
 public:
 	CRtmpClient(uint32_t chunkSize);
@@ -13,5 +11,6 @@ public:
 
 
 private:
-	
+	CHandshake m_Handshake;
+	CChunks	   m_Chunks;
 };
