@@ -65,10 +65,10 @@ void AMF0Data_free(AMF0Data &amfData)
 	case AMF0Type::BOOLEAN:
 		break;
 	case AMF0Type::STRING:
-		UTF8_free(amfData.data_string);
+		UTF8_free(amfData.dString);
 		break;
 	case AMF0Type::OBJECT:
-		AMF0Object_free(amfData.data_object);
+		AMF0Object_free(amfData.dObject);
 		break;
 	case AMF0Type::MOVIECLIP:
 		break;
@@ -79,27 +79,27 @@ void AMF0Data_free(AMF0Data &amfData)
 	case AMF0Type::REFERENCE:
 		break;
 	case AMF0Type::ECMA_ARRAY:
-		AMF0EcmaArray_free(amfData.data_ecma_array);
+		AMF0EcmaArray_free(amfData.dEcmaArray);
 		break;
 	case AMF0Type::OBJECT_END:
 		break;
 	case AMF0Type::STRICT_ARRAY:
-		AMF0StrictArray_free(amfData.data_strict_array);
+		AMF0StrictArray_free(amfData.dStrictArray);
 		break;
 	case AMF0Type::DATE:
 		break;
 	case AMF0Type::LONG_STRING:
-		UTF8_free(amfData.data_string_long);
+		UTF8_free(amfData.dStringLong);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		break;
 	case AMF0Type::RECORDSET:
 		break;
 	case AMF0Type::XML_DOCUMENT:
-		UTF8_free(amfData.data_xml_document);
+		UTF8_free(amfData.dXmlDocument);
 		break;
 	case AMF0Type::TYPE_OBJECT:
-		AMF0TypeObject_free(amfData.data_type_object);
+		AMF0TypeObject_free(amfData.dTypeObject);
 		break;
 
 	default:
@@ -199,19 +199,19 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 	{
 	case AMF0Type::NUMBER:
 		amfType = AMF0Type::NUMBER;
-		ret = CAMF0::ParseNumber(ptr,end-ptr,pamf->data_num,&offset);
+		ret = CAMF0::ParseNumber(ptr,end-ptr,pamf->dNumber,&offset);
 		break;
 	case AMF0Type::BOOLEAN:
 		amfType = AMF0Type::BOOLEAN;
-		ret = CAMF0::ParseBoolean(ptr, end - ptr, pamf->data_bool, &offset);
+		ret = CAMF0::ParseBoolean(ptr, end - ptr, pamf->dBoolean, &offset);
 		break;
 	case AMF0Type::STRING:
 		amfType = AMF0Type::STRING;
-		ret = CAMF0::ParseString(ptr,end-ptr,pamf->data_string,&offset);
+		ret = CAMF0::ParseString(ptr,end-ptr,pamf->dString,&offset);
 		break;
 	case AMF0Type::OBJECT:
 		amfType = AMF0Type::OBJECT;
-		ret = CAMF0::ParseObject(ptr,end-ptr,pamf->data_object,&offset);
+		ret = CAMF0::ParseObject(ptr,end-ptr,pamf->dObject,&offset);
 		break;
 	case AMF0Type::MOVIECLIP:
 		amfType = AMF0Type::MOVIECLIP;
@@ -227,11 +227,11 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::REFERENCE:
 		amfType = AMF0Type::REFERENCE;
-		ret = CAMF0::ParseReference(ptr,end-ptr,pamf->data_reference,&offset);
+		ret = CAMF0::ParseReference(ptr,end-ptr,pamf->dReference,&offset);
 		break;
 	case AMF0Type::ECMA_ARRAY:
 		amfType = AMF0Type::ECMA_ARRAY;
-		ret = CAMF0::ParseEcmaArray(ptr,end-ptr,pamf->data_ecma_array,&offset);
+		ret = CAMF0::ParseEcmaArray(ptr,end-ptr,pamf->dEcmaArray,&offset);
 		break;
 	case AMF0Type::OBJECT_END:
 		amfType = AMF0Type::OBJECT_END;
@@ -239,15 +239,15 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::STRICT_ARRAY:
 		amfType = AMF0Type::STRICT_ARRAY;
-		ret = CAMF0::ParseStrictArray(ptr,end-ptr,pamf->data_strict_array,&offset);
+		ret = CAMF0::ParseStrictArray(ptr,end-ptr,pamf->dStrictArray,&offset);
 		break;
 	case AMF0Type::DATE:
 		amfType = AMF0Type::DATE;
-		ret = CAMF0::ParseDate(ptr,end-ptr,pamf->data_date,&offset);
+		ret = CAMF0::ParseDate(ptr,end-ptr,pamf->dDate,&offset);
 		break;
 	case AMF0Type::LONG_STRING:
 		amfType = AMF0Type::LONG_STRING;
-		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->data_string_long,&offset);
+		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->dStringLong,&offset);
 		break;
 	case AMF0Type::UNSUPPORTED:
 		amfType = AMF0Type::UNSUPPORTED;
@@ -259,11 +259,11 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 		break;
 	case AMF0Type::XML_DOCUMENT:
 		amfType = AMF0Type::XML_DOCUMENT;
-		ret = CAMF0::ParseXmlDocument(ptr,end-ptr,pamf->data_xml_document,&offset);
+		ret = CAMF0::ParseXmlDocument(ptr,end-ptr,pamf->dXmlDocument,&offset);
 		break;
 	case AMF0Type::TYPE_OBJECT:
 		amfType = AMF0Type::TYPE_OBJECT;
-		ret = CAMF0::ParseTypeObject(ptr,end-ptr,pamf->data_type_object,&offset);
+		ret = CAMF0::ParseTypeObject(ptr,end-ptr,pamf->dTypeObject,&offset);
 		break;
 	default:
 		break;

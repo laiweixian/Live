@@ -49,11 +49,11 @@ struct ConnObject
 	string swfUrl;
 	string tcUrl;
 	bool fpad;
-	AudioCodes audioCodes;
-	VideoCodes videoCodes;
-	VideoFunction videoFunc;
+	uint16_t audioCodes;
+	uint16_t videoCodes;
+	uint16_t videoFunction;
 	string pageUrl;
-	ObjectEncoding objEncoding;
+	uint16_t objectEncoding;
 };
 
 struct ConnOptiUserArgu
@@ -69,15 +69,22 @@ struct ConnCmd
 	ConnOptiUserArgu option;
 };
 
+void ConnCmd_Free(ConnCmd** ppCC);
+
 class CConnectCommand
 {
 private:
-	CConnectCommand() = default;
-	~CConnectCommand() = default;
-public:
-	static ConnCmd* Parse(uint8_t* pData,uint32_t dataLen, AMFType aType);
-	static void ConnCmd_Free(ConnCmd** ppCC);
-protected:
+	CConnectCommand(AMFType aType) ;
+	~CConnectCommand() ;
+
 	static ConnCmd* ParseAMF0(uint8_t* pData, uint32_t dataLen);
 	static ConnCmd* ParseAMF3(uint8_t* pData, uint32_t dataLen);
+
+public:
+	static CConnectCommand* Create(uint8_t* pData, uint32_t dataLen, AMFType aType);
+
+	void GenRespose();
+private:
+	AMFType m_AmfType;
+	ConnCmd *m_ConnCmd;
 };

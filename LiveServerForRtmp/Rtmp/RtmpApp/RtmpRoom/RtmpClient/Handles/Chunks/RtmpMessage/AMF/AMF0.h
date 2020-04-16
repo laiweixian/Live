@@ -14,7 +14,7 @@ typedef uint32_t	U32;
 typedef double		DOUBLE;
 
 struct UTF8;
-struct Obj;
+struct ObjectMember;
 struct AMF0Object;
 struct AMF0EcmaArray;
 struct AMF0StrictArray;
@@ -86,22 +86,20 @@ struct AMF0Data
 	AMF0Type dType;
 	union 
 	{
-		DOUBLE data_num;					//NUMBER
-		U8	   data_bool;					//BOOLEAN
-		UTF8   data_string;					//UTF-8 CHAR
-		AMF0Object data_object;				//OBJECT
-		U16		data_reference;				//REFERENCE 
-		AMF0EcmaArray data_ecma_array;		//ECMA ARRAY
-		AMF0StrictArray data_strict_array;	//STRICT ARRAY
-		DOUBLE	data_date;					//DATE
-		UTF8	data_string_long;				//LONG UTF-8 CHAR
-		UTF8	data_xml_document;			//XML
-		AMF0TypeObject data_type_object;	//TYPE OBJECT 
-		AMF0Reserved *data_reserved;		//reserved
+		DOUBLE dNumber;					//NUMBER
+		U8	   dBoolean;					//BOOLEAN
+		UTF8   dString;					//UTF-8 CHAR
+		AMF0Object dObject;				//OBJECT
+		U16		dReference;				//REFERENCE 
+		AMF0EcmaArray dEcmaArray;		//ECMA ARRAY
+		AMF0StrictArray dStrictArray;	//STRICT ARRAY
+		DOUBLE	dDate;					//DATE
+		UTF8	dStringLong;				//LONG UTF-8 CHAR
+		UTF8	dXmlDocument;			//XML
+		AMF0TypeObject dTypeObject;	//TYPE OBJECT 
+		AMF0Reserved *dReserved;		//reserved
 	};
 };
-
-
 
 class CAMF0
 {
@@ -113,6 +111,7 @@ public:
 	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
 	void Destroy();
 
+	
 private:
 	int Init(uint8_t *pData, const int dataLen);
 	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);
