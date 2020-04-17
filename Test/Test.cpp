@@ -13,6 +13,8 @@ void SetInt(int *i)
 	*i = 100;
 }
 
+
+
 int main()
 {
 	int *i = NULL;

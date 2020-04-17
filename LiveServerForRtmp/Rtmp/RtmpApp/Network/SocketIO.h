@@ -2,72 +2,81 @@
 
 #include "stdafx.h"
 
+#define SOCKET_OK	0	
+#define ERROR_SOCK_INIT	-1
+#define ERROR_SOCK_CREATE -2
+#define ERROR_SOCK_NON_BLOCAK	-3
+#define ERROR_SOCK_BIND	-4
+#define ERROR_SOCK_LISTEN	-5	
 
+#define DECLARE_SOCKET_EVENT	\
+		struct Optional{		\
+			char ip[100];		\
+			int port;			\
+			int backlog;		\
+			int timeout;		\
+			int maxConnect;};
 
-#define DEFAULT_MAX_CONN	100
-#define DEFAULT_TIME_OUT	500
-#define DEFAULT_BACK_LOG	100
+#define DECLARE_CONNECTER		\
+	struct Connecter{int ioid;	\
+					 SOCKET sock;\
+					 sockaddr_in addr;};
 
-#define SOCKET_INIT_ERR -1
-#define SOCKET_CREATE_ERR -2
-#define SOCKET_SET_CMD_ERROR -3
-#define SOCKET_BIND_ERR -4
-#define SOCKET_LISTEN_ERR -5
-#define NO_LISTEN_SOCKET -6
-
-
-
-enum DispatchType
+class ISocketEvent
 {
-	CONNECT,READ,WRITE,CLOSE,IO_ERR
+protected:
+	ISocketEvent() = default;
+	virtual ~ISocketEvent() = default;
+
+public:
+	virtual	void OnConnect(const int ioID) = 0;
+	virtual void OnReceive(const int ioID)= 0;
+	virtual void OnClose(const int ioID) = 0;
+	virtual void OnError(const int ioID,const int errorCode) = 0;
 };
 
-struct Connecter
-{
-	int ioid;
-	SOCKET sockfd;
-	char*	ip;
+class ISocket {
+public:
+	DECLARE_SOCKET_EVENT
+	ISocket(ISocketEvent *pEvent);
+	~ISocket();
 
-	char receiveBuff[1024];
-	int	 receiveBuffLen;
+public:
+	virtual int Open(ISocket::Optional opti) = 0;
+	virtual void Loop() = 0;
+	virtual int Read(const int ioID,const void *src,size_t size) = 0;
+	virtual int Write(const int ioID,const void *src, size_t size) = 0;
+	virtual int Close(const int ioID) =0;
+	
+protected:
+	ISocketEvent *m_Event;
+	ISocket::Optional m_Optional;
 };
 
-
-
-class CSocketIO 
+class CSocketIO : public ISocket
 {
 public:
-	CSocketIO();
+	CSocketIO(ISocketEvent *pEvent);
 	~CSocketIO();
 
-	int Open() ;
-	int Read(const int ioId, char *buff, const int buffLen) ;
-	int Write(const int ioId, char *buff, const int buffLen) ;
-	int Close(const int ioId);
-
-	//property
-	char* GetIp();
-	int GetPort();
-
-	ULONG ThreadHandle();
+	//ISocket
+	int Open(ISocket::Optional opti) ;
+	int Read(const int ioID, const void *src, size_t size);
+	int Write(const int ioID, const void *src, size_t size);
+	int Close(const int ioID) ;
+	void Loop();
 
 private:
-	
-	ULONG InitSocket();
 	static int SetSocketNonblock(SOCKET sock);
-	
-	//
-	int CheckAccept();
+	int CheckConnect();
 	int CheckReceive();
-	int Dispatch(DispatchType dType, const int ioId);
-private:
-	char m_Ip[100];
-	int  m_Port;
-	int  m_MaxConnect;
-	int  m_TimeOut;
-	int  m_Backlog;
 
-	int		m_ConnectIndex;
-	SOCKET m_ListenFd;
-	vector<Connecter*> m_Connects;
+	void CloseSocketServer();
+	int GenIOID();
+private:
+	DECLARE_CONNECTER
+	
+	SOCKET m_ListSock;
+	ISocket::Optional m_Optional;
+	vector<Connecter*> m_Connecters;
 };
