@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include "Global/Codes.h"
 #include "Global/Funcs.h"
+#include "Global/Stru.h"
 using namespace std;
 
 

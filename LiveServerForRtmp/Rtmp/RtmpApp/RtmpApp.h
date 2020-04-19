@@ -4,16 +4,26 @@
 #include "Network/SocketIO.h"
 #include "RtmpRoom/RtmpRoom.h"
 
-class CRtmpApp 
+#define DECLARE_RTMP_APP	\
+	struct AppOptional{string name;string ip;int port;};
+
+class CRtmpApp : public ISocketEvent
 {
 public:
-	CRtmpApp(const char* appName,const char* ip,const int port);
+	DECLARE_RTMP_APP
+	CRtmpApp(AppOptional appOpt);
 	~CRtmpApp();
 
-	void Init();
+public:	
+	//ISocketEvent
+	void OnConnect(const int ioID) = 0;
+	void OnReceive(const int ioID) = 0;
+	void OnClose(const int ioID) = 0;
+	void OnError(const int ioID, const int errorCode) = 0;
 
 private:
-	CSocketIO *m_IO;
-	vector<CRtmpRoom*> m_Rooms;
-	CRtmpRoom *m_TempRoom;
+	CRtmpApp::AppOptional m_Option;
+	CSocketIO			  m_IO;
+
+	
 };

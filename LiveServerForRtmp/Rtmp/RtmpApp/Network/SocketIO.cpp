@@ -1,182 +1,26 @@
 #include "SocketIO.h"
 
-CSocketIO::CSocketIO()
+#define DEFAULT_BUFF_LENGTH	1024
+
+
+ISocket::ISocket(ISocketEvent *pEvent) : m_Event(pEvent)
 {
-	
+
+}
+
+ISocket::~ISocket()
+{
+
+}
+
+CSocketIO::CSocketIO(ISocketEvent *pEvent) : ISocket(pEvent), m_ListSock(INVALID_SOCKET)
+{
+
 }
 
 CSocketIO::~CSocketIO()
 {
 
-}
-
-
-char* CSocketIO::GetIp()
-{
-	return m_Ip;
-}
-
-int CSocketIO::GetPort()
-{
-	return m_Port;
-}
-
-int CSocketIO::Open()
-{
-	return InitSocket();
-}
-
-int CSocketIO::Read(const int ioId, char *buff, const int buffLen)
-{
-	Connecter *conn = NULL;
-	auto it = m_Connects.begin();
-	SOCKET fd = INVALID_SOCKET;
-	int readLen = 0,remainLen = 0;
-	char *temp0 = NULL,*temp1 = NULL;
-
-	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
-	{
-		conn = *it;
-		if (conn->ioid == ioId)
-			fd = conn->sockfd;
-	}
-
-	if (fd == INVALID_SOCKET)
-		return 0;
-
-	//
-	if (buffLen >= conn->receiveBuffLen)
-	{
-		readLen = conn->receiveBuffLen;
-		memcpy(buff, conn->receiveBuff, readLen);
-		memset(conn->receiveBuff, 0, readLen);
-		conn->receiveBuffLen = 0;
-	}
-	else
-	{
-		readLen = buffLen;
-		temp0 = new char[readLen];
-		memcpy(temp0,conn->receiveBuff,readLen);
-		
-		remainLen = conn->receiveBuffLen - readLen;
-		temp1 = new char[remainLen];
-		memcpy(temp1, conn->receiveBuff + readLen , remainLen);
-
-		memset(conn->receiveBuff,0, conn->receiveBuffLen);
-		memcpy(conn->receiveBuff,temp1,remainLen);
-		conn->receiveBuffLen = remainLen;
-	
-		memcpy(buff,temp0,readLen);
-		delete[] temp0 ; delete[] temp1;
-	}
-
-	return readLen;
-}
-
-int CSocketIO::Write(const int ioId, char *buff, const int buffLen)
-{
-	Connecter *temp = NULL;
-	auto it = m_Connects.begin();
-	SOCKET fd = INVALID_SOCKET;
-	int writeLen = 0;
-
-	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
-	{
-		temp = *it;
-		if (temp->ioid == ioId)
-			fd = temp->sockfd;
-	}
-
-	if (fd == INVALID_SOCKET)
-		return 0;
-
-	writeLen = send(fd, buff, buffLen, 0);
-	return writeLen;
-}
-
-int CSocketIO::Close(const int ioId)
-{
-	Connecter *temp = NULL;
-	auto it = m_Connects.begin();
-	SOCKET fd = INVALID_SOCKET;
-
-	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
-	{
-		temp = *it;
-		if (temp->ioid == ioId)
-			fd = temp->sockfd;
-	}
-
-	if (fd == INVALID_SOCKET)
-		return 0;
-
-	return closesocket(fd);
-}
-
-ULONG CSocketIO::InitSocket()
-{
-	//initialize winsock
-	WSADATA wsa;
-	int iResult;
-	ULONG ret;
-	SOCKET listenSocket = INVALID_SOCKET;
-	sockaddr_in service;
-
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsa);
-	if (iResult != NO_ERROR)
-		goto sock_init_err;
-
-	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (listenSocket == INVALID_SOCKET)
-		goto sock_create_err;
-	m_ListenFd = listenSocket;
-
-	//set listen fd nonblocking
-	iResult = SetSocketNonblock(listenSocket);
-	if (iResult == SOCKET_ERROR)
-		goto sock_cmd_err;
-
-	//ready ip address and port 
-	service.sin_family = AF_INET;
-	service.sin_port = htons(m_Port);
-	service.sin_addr.s_addr = inet_addr(m_Ip);
-	iResult = bind(listenSocket, (sockaddr*)&service, sizeof(service));
-	if (iResult == SOCKET_ERROR)
-		goto sock_bind_err;
-
-	iResult = listen(listenSocket, m_Backlog);
-	if (iResult == SOCKET_ERROR)
-		goto sock_listen_err;
-
-	return SAR_OK;
-	//
-sock_init_err:
-	WSACleanup();
-	return SOCKET_INIT_ERR;
-
-sock_create_err:
-	WSACleanup();
-	closesocket(listenSocket);
-	m_ListenFd = INVALID_SOCKET;
-	return SOCKET_CREATE_ERR;
-
-sock_cmd_err:
-	WSACleanup();
-	closesocket(listenSocket);
-	m_ListenFd = INVALID_SOCKET;
-	return SOCKET_SET_CMD_ERROR;
-
-sock_bind_err:
-	WSACleanup();
-	closesocket(listenSocket);
-	m_ListenFd = INVALID_SOCKET;
-	return SOCKET_BIND_ERR;
-
-sock_listen_err:
-	WSACleanup();
-	closesocket(listenSocket);
-	m_ListenFd = INVALID_SOCKET;
-	return SOCKET_LISTEN_ERR;
 }
 
 int CSocketIO::SetSocketNonblock(SOCKET sock)
@@ -186,95 +30,198 @@ int CSocketIO::SetSocketNonblock(SOCKET sock)
 	return ioctlsocket(sock, sockCmd, &arg);
 }
 
-ULONG CSocketIO::ThreadHandle()
+int CSocketIO::Open(ISocket::Optional opti)
 {
-	int ret = 0;
+	WSADATA wsa;
+	int ret ;
+	ULONG ret;
+	SOCKET listenSocket = INVALID_SOCKET;
+	sockaddr_in service;
 
-	ret = CheckAccept();
-	ret = CheckReceive();
+	//initialize winsock
+	ret = WSAStartup(MAKEWORD(2, 2), &wsa);
+	if (ret != NO_ERROR)
+		goto sock_init_err;
 
+	//create socket
+	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (listenSocket == INVALID_SOCKET)
+		goto sock_create_err;
 
-	return 0;
+	// set socket non block
+	ret = CSocketIO::SetSocketNonblock(listenSocket);
+	if (ret == SOCKET_ERROR)
+		goto sock_nonblock_err;
+
+	//bind socket
+	service.sin_family = AF_INET;
+	service.sin_port = htons(opti.port);
+	service.sin_addr.s_addr = inet_addr(opti.ip);
+	ret = bind(listenSocket, (sockaddr*)&service, sizeof(service));
+	if (ret == SOCKET_ERROR)
+		goto sock_bind_err;
+
+	//set listen backlog
+	ret = listen(listenSocket, opti.backlog);
+	if (ret == SOCKET_ERROR)
+		goto sock_listen_err;
+
+	m_ListSock = listenSocket;
+	m_Optional = opti;
+
+	return SOCKET_OK;
+
+sock_init_err:
+	WSACleanup();
+	return ERROR_SOCK_INIT;
+sock_create_err:
+	WSACleanup();
+	closesocket(listenSocket);
+	return ERROR_SOCK_CREATE;
+sock_nonblock_err:
+	WSACleanup();
+	closesocket(listenSocket);
+	return ERROR_SOCK_NON_BLOCAK;
+sock_bind_err:
+	WSACleanup();
+	closesocket(listenSocket);
+	return ERROR_SOCK_BIND;
+sock_listen_err:
+	WSACleanup();
+	closesocket(listenSocket);
+	return ERROR_SOCK_LISTEN;
 }
 
-int CSocketIO::CheckAccept()
+int CSocketIO::Read(const int ioID, const void *src, size_t srcSize,int *outSize)
 {
-	SOCKET userSock = INVALID_SOCKET;
-	sockaddr_in userAddr;
-	int len = sizeof(userAddr);
-	char* userIp = NULL;
+	auto it = m_Connecters.begin();
+	Connecter *pConn = NULL;
+	int readLen = 0;
+
+	for (it = m_Connecters.begin(); it != m_Connecters.end(); it++)
+	{
+		if ((*it)->ioid == ioID)
+			pConn = *it;
+	}
+		
+	if (pConn == NULL)
+		return ERROR_SOCK_NO_EXIST;
+
+
+	
+	return SOCKET_OK;
+}
+
+int CSocketIO::Write(const int ioID, const void *src, size_t srcSize, int *outSize)
+{
+	auto it = m_Connecters.begin();
+	Connecter *pConn = NULL;
+
+	for (it = m_Connecters.begin(); it != m_Connecters.end(); it++)
+	{
+		if ((*it)->ioid == ioID)
+			pConn = *it;
+	}
+
+	if (pConn == NULL)
+		return ERROR_SOCK_NO_EXIST;
+
+	return SOCKET_OK;
+}
+
+int CSocketIO::Close(const int ioID)
+{
+
+}
+
+void CSocketIO::Loop()
+{
+	CheckConnect();
+	CheckReceive();
+}
+
+int CSocketIO::CheckConnect()
+{
+	SOCKET connSock = INVALID_SOCKET;
+	sockaddr_in addr;
+	int len = sizeof(sockaddr_in);
 	int errorCode;
 	Connecter *conn = NULL;
+	vector<int> newIds;
+	auto it = newIds.begin();
 
-	if (m_ListenFd == INVALID_SOCKET)
-		return NO_LISTEN_SOCKET;
-
-	userSock = accept(m_ListenFd, (sockaddr*)&userAddr, &len);
-	if (userSock == INVALID_SOCKET)
+	connSock = accept(m_ListSock, (sockaddr*)&addr, &len);
+	if (connSock == INVALID_SOCKET)
 	{
 		errorCode = WSAGetLastError();
 		if (errorCode != WSAEWOULDBLOCK)
 		{
-			WSACleanup();
-			closesocket(m_ListenFd);
-			m_ListenFd = INVALID_SOCKET;
+			CloseServer();
+			return -1;
 		}
 	}
 	else
 	{
-		CSocketIO::SetSocketNonblock(userSock);
-		m_ConnectIndex++;
-		userIp = inet_ntoa(userAddr.sin_addr);
+		CSocketIO::SetSocketNonblock(connSock);
 
 		conn = new Connecter;
-		memset(conn,0,sizeof(Connecter));
-		strcpy(conn->ip, userIp);
-		conn->sockfd = userSock;
-		conn->ioid = m_ConnectIndex;
-		m_Connects.push_back(conn);
-		Dispatch(CONNECT, conn->ioid);
+		conn->ioid = GenIOID();
+		conn->sock = connSock;
+		conn->addr = addr;
+		conn->cType = ConnType::ONLINE;
+		conn->buff = new uint8_t[DEFAULT_BUFF_LENGTH];
+		conn->buffLen = DEFAULT_BUFF_LENGTH;
+		conn->length = 0;
+		m_Connecters.push_back(conn);
+		newIds.push_back(conn->ioid);
 	}
 
+	//inform 
+	for (it = newIds.begin(); it != newIds.end(); it++)
+		m_Event->OnConnect(*it);
 	return 0;
 }
 
 int CSocketIO::CheckReceive()
 {
-	Connecter *conn = NULL;
-	auto it = m_Connects.begin();
-	int readLen = 0 , remainLen = 0;
-	int errorCode = 0;
+	auto it = m_Connecters.begin();
+	int errorCode;
+	Connecter *pConn = NULL;
+	int remainSize = 0;
+	uint8_t *ptr = NULL;
+	int length = 0;
 
-	for (it = m_Connects.begin(); it != m_Connects.end(); it++)
+	vector<int> closeInfos;
+	vector<int> recvInfos;
+	vector<int>::iterator it;
+
+	for (it=m_Connecters.begin();it!= m_Connecters.end();it++)
 	{
-		conn = *it;
-		remainLen = 1024 - conn->receiveBuffLen;
-		if(remainLen <= 0)
+		pConn = *it;
+		remainSize = pConn->buffLen - pConn->length;
+		if (remainSize <= 0)
 			continue;
-		readLen = recv(conn->sockfd,conn->receiveBuff+conn->receiveBuffLen,remainLen,0);
-		if (readLen == 0)
+		ptr = pConn->buff + pConn->length;
+		length = ::recv(pConn->sock, (char*)ptr,remainSize,0);
+		if (length == 0)
 		{
-			Dispatch(CLOSE, conn->ioid);
+			pConn->cType = OUTLINE;
+			m_Event->OnClose(pConn->ioid);
 		}
-		else if (readLen > 0)
+		else if (length > 0)
 		{
-			conn->receiveBuffLen += readLen;
-			Dispatch(READ,conn->ioid);
+			pConn->length += length;
+			m_Event->OnReceive(pConn->ioid);
 		}
 		else
 		{
 			errorCode = WSAGetLastError();
 			if (errorCode == WSAEWOULDBLOCK)
 				continue;
-			else
-				Dispatch(IO_ERR,conn->ioid);
+			else{
+				pConn->cType = CSocketIO::ConnType::ERR;
+				m_Event->OnError(pConn->ioid, errorCode);
+			}
 		}
 	}
-
-	return 0;
-}
-
-int CSocketIO::Dispatch(DispatchType dType,const int ioId)
-{
-	return 0;
 }

@@ -3,11 +3,14 @@
 #include "stdafx.h"
 
 #define SOCKET_OK	0	
-#define ERROR_SOCK_INIT	-1
-#define ERROR_SOCK_CREATE -2
-#define ERROR_SOCK_NON_BLOCAK	-3
-#define ERROR_SOCK_BIND	-4
-#define ERROR_SOCK_LISTEN	-5	
+#define ERROR_SOCK_INIT				-1
+#define ERROR_SOCK_CREATE			-2
+#define ERROR_SOCK_NON_BLOCAK		-3
+#define ERROR_SOCK_BIND				-4
+#define ERROR_SOCK_LISTEN			-5	
+#define ERROR_SOCK_NO_EXIST			-6
+
+
 
 #define DECLARE_SOCKET_EVENT	\
 		struct Optional{		\
@@ -17,10 +20,14 @@
 			int timeout;		\
 			int maxConnect;};
 
-#define DECLARE_CONNECTER		\
-	struct Connecter{int ioid;	\
-					 SOCKET sock;\
-					 sockaddr_in addr;};
+#define DECLARE_CONNECTER enum ConnType{NONE,ONLINE,OUTLINE,ERR};\
+	struct Connecter{int ioid;			\
+					 SOCKET sock;		\
+					 sockaddr_in addr;	\
+					 ConnType cType;	\
+					 uint8_t *buff;		\
+					 uint32_t buffLen;	\
+					 uint32_t length;};
 
 class ISocketEvent
 {
@@ -44,8 +51,8 @@ public:
 public:
 	virtual int Open(ISocket::Optional opti) = 0;
 	virtual void Loop() = 0;
-	virtual int Read(const int ioID,const void *src,size_t size) = 0;
-	virtual int Write(const int ioID,const void *src, size_t size) = 0;
+	virtual int Read(const int ioID,const void *src,size_t srcSize,int *outSize) = 0;
+	virtual int Write(const int ioID,const void *src, size_t srcSize,int *outSize) = 0;
 	virtual int Close(const int ioID) =0;
 	
 protected:
@@ -61,8 +68,8 @@ public:
 
 	//ISocket
 	int Open(ISocket::Optional opti) ;
-	int Read(const int ioID, const void *src, size_t size);
-	int Write(const int ioID, const void *src, size_t size);
+	int Read(const int ioID, const void *src, size_t srcSize,int *outSize);
+	int Write(const int ioID, const void *src, size_t srcSize, int *outSize);
 	int Close(const int ioID) ;
 	void Loop();
 
@@ -71,7 +78,7 @@ private:
 	int CheckConnect();
 	int CheckReceive();
 
-	void CloseSocketServer();
+	void CloseServer();
 	int GenIOID();
 private:
 	DECLARE_CONNECTER

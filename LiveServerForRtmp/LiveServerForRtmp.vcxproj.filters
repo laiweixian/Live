@@ -156,6 +156,12 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handles.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Global\Stru.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRooms.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -171,9 +177,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Config\Config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.cpp">
@@ -236,7 +239,7 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\Connect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\Network\Sock.cpp">
+    <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
