@@ -18,17 +18,20 @@ protected:
 	IRtmpClientEvent() = default;
 	~IRtmpClientEvent() = default;
 public:
-	
+
 };
 
 class IRtmpClient
 {
 protected:
-	IRtmpClient(int id, IRtmpClientCall* pCall,IRtmpClientEvent* pEvent);
+	IRtmpClient(int id, IRtmpClientCall* pCall, IRtmpClientEvent* pEvent) : \
+				m_id(id),m_pCall(pCall),m_pEvent(pEvent){}
 	~IRtmpClient() = default;
 public:
-	virtual int GetId() final;
-	virtual int OnReceive(uint8_t *src,const int srcLen) = 0;
+	virtual void Destroy() = 0;
+	virtual int GetId() final{return m_id;}
+	
+	virtual int OnReceive(uint8_t *src, const int srcLen) = 0;
 
 protected:
 	int m_id;
@@ -37,23 +40,26 @@ protected:
 };
 
 
-
-
-class CRtmpClient : public IHandshakeEvent , public IHandshakeCall ,	
+class CRtmpClient : public IRtmpClient,
+					public IHandshakeEvent , public IHandshakeCall ,	
 				    public IMessageEvent , public IMessageCall
 {
-public:
-	CRtmpClient();
+private:
+	CRtmpClient(int id, IRtmpClientCall* pCall, IRtmpClientEvent* pEvent,uint32_t chunkSize);
 	~CRtmpClient();
 
-	//interface
 public:
+	static IRtmpClient* Create(int id, IRtmpClientCall* pCall, IRtmpClientEvent* pEvent,const uint32_t chunkSize = 128);
+	void Destroy();
+	int OnReceive(uint8_t *src, const int srcLen) ;
+
+private:
 	//IHandshakeEvent
 	void OnC0();
 	void OnC1();
 	void OnC2();
 	//IHandshakeCall
-	int SendHandshakePacket(uint8_t *src, const int srcLen) = 0;
+	int SendHandshakePacket(uint8_t *src, const int srcLen);
 
 	//IMessageEvent
 	void OnSetChunkSize() ;
@@ -74,7 +80,5 @@ public:
 private:
 	CHandshake m_Handshake;
 	CChunks	   m_Chunks;
-
-	//统计信息
 
 };
