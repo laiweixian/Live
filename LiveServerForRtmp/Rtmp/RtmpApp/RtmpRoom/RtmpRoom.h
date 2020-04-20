@@ -4,15 +4,22 @@
 
 #include "RtmpClient/RtmpClient.h"
 
-class CRtmpRoom
+class CRtmpRoom 
 {
 public:
-	CRtmpRoom(const char* roomName, CRtmpClient* pMaster);
+	CRtmpRoom();
 	~CRtmpRoom();
 
-	void JoinIn(CRtmpClient* pClient);
+	void SetOwner(CRtmpClient* pOwner, const char* name);
 	
+	
+
+
+	
+	
+
 private:
-	vector<CRtmpClient*> m_Clients;
+	CRtmpClient *m_Owner;
+	vector<CRtmpClient*> m_Players;
 
 };

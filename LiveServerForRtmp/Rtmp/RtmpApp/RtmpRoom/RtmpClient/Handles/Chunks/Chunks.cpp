@@ -2,8 +2,9 @@
 
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 	
-CChunks::CChunks(IMessageEvent *pEvent, const uint32_t chunkSize) : \
-	m_Event(pEvent),m_ChunkSize(chunkSize),m_NewHeader(NULL),m_NewMsg(NULL)
+CChunks::CChunks(IMessageCall* pCall, IMessageEvent* pEvent, const uint32_t chunkSize) : \
+	m_pCall(pCall),m_pEvent(pEvent),m_ChunkSize(chunkSize),\
+	m_NewHeader(NULL),m_NewMsg(NULL)
 {
 
 }
@@ -230,14 +231,13 @@ void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 
 	m_ChunkSize = pMsg->GetContent().chunkSize;
 	delete pMsg;
+
+	if (m_pEvent)	m_pEvent->SetChunkSize();
 }
 
 void CChunks::HandleAbortMessage(CAbortMessage* pMsg)
 {
 	if (!pMsg)	return;
-
-	
-	
 }
 
 void CChunks::HandleAcknowledgement(CAcknowledgement* pMsg)

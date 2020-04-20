@@ -11,7 +11,6 @@
 #define ERROR_SOCK_NO_EXIST			-6
 
 
-
 #define DECLARE_SOCKET_EVENT	\
 		struct Optional{		\
 			char ip[100];		\

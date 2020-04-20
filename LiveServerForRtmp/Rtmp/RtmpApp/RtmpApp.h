@@ -16,10 +16,10 @@ public:
 
 public:	
 	//ISocketEvent
-	void OnConnect(const int ioID) = 0;
-	void OnReceive(const int ioID) = 0;
-	void OnClose(const int ioID) = 0;
-	void OnError(const int ioID, const int errorCode) = 0;
+	void OnConnect(const int ioID) ;
+	void OnReceive(const int ioID) ;
+	void OnClose(const int ioID) ;
+	void OnError(const int ioID, const int errorCode) ;
 
 private:
 	CRtmpApp::AppOptional m_Option;

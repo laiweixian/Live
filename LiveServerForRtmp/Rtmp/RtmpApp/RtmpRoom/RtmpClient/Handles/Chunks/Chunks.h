@@ -11,17 +11,35 @@ class IMessageEvent : public IHandleBaseEvent
 {
 protected:
 	virtual ~IMessageEvent() = default;
-public:
 	IMessageEvent() = default;
+public:
+	virtual void OnSetChunkSize() = 0;
+	virtual void OnAbortMessage() = 0;
+	virtual void OnAcknowledgement() = 0;
+	virtual void OnWindowAcknowledgementSize() = 0;
+	virtual void OnSetPeerBandwidth() = 0;
+	virtual void OnUserControlMessages() = 0;
+	virtual void OnCommandMessage(CCommandMessage* pMsg) = 0;
+	virtual void OnDataMessage() = 0;
+	virtual void OnSharedObjectMessage() = 0;
+	virtual void OnAudioMessage(CAudioMessage* pMsg) = 0;
+	virtual void OnVideoMessage(CVideoMessage* pMsg) = 0;
+	virtual void OnAggregateMessage() = 0;
+};
 
-	virtual bool OnSendMessage(uint8_t* pData, const int dataLen) = 0;
-	
+class IMessageCall
+{
+protected:
+	IMessageCall() = default; 
+	~IMessageCall() = default;
+private:
+	virtual int SendChunk(uint8_t *src,const int srcLen) = 0;
 };
 
 class CChunks 
 {
 public:
-	CChunks(IMessageEvent* pEvent,const uint32_t chunkSize = 128);
+	CChunks(IMessageCall* pCall,IMessageEvent* pEvent,const uint32_t chunkSize = 128);
 	~CChunks();
 
 	int OnChunks(uint8_t* src, const int srcLength);
@@ -46,7 +64,8 @@ private:
 	void HandleAggregateMessage(CAggregateMessage* pMsg);
 
 private:
-	IMessageEvent *m_Event;
+	IMessageCall *m_pCall;
+	IMessageEvent *m_pEvent;
 	uint32_t m_ChunkSize;
 
 	CChunkHeader *m_NewHeader;

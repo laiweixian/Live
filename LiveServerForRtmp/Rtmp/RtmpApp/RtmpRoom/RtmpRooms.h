@@ -10,4 +10,8 @@ public:
 	~CRtmpRooms();
 
 	
+
+private:
+	vector<CRtmpRoom*> m_Rooms;
+	CRtmpRoom*		   m_TempRoom;
 };
