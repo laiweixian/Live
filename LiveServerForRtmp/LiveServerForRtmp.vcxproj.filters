@@ -51,9 +51,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handle.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\AMF\AMF.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -153,13 +150,13 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handles.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Global\Stru.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRooms.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\BaseHandle.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

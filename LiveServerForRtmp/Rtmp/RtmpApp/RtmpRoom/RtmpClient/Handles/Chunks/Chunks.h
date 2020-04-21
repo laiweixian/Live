@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Handle.h"
+#include "../BaseHandle.h"
 #include "ChunkHeader/ChunkHeader.h"
 #include "RtmpMessage/RtmpMessage.h"
 
@@ -47,8 +47,8 @@ public:
 private:
 	int ReceChunk(uint8_t* src, const int srcLength);
 	CChunkHeader* ReceChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen);
-	CBaseMessage* ReceMessage(CChunkHeader* pHeader);
-	int ReceMessagePayload(CBaseMessage *pMsg,uint8_t* src,const int srcLen);
+	bool ReceChunkData(CChunkHeader* pHeader, uint8_t* src, const int srcLen,int* outDataLen);
+
 	void PushMessage(CBaseMessage *pMsg);
 	void PushChunkHeader(CChunkHeader *pHeader);
 

@@ -153,8 +153,7 @@
     <ClInclude Include="Global\Stru.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handle.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handles.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\BaseHandle.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\Chunks.h" />

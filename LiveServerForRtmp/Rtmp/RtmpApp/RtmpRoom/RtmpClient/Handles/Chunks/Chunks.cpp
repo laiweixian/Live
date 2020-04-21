@@ -40,33 +40,25 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 int CChunks::ReceChunk(uint8_t* src, const int srcLength)
 {
 	CChunkHeader *pHeader = NULL;
-	CBaseMessage *pMsg = NULL ,*pTempMsg = NULL;
+	bool receMsg = false;
 	int headerLen = 0 , dataLen = 0;
 
-	//check chunk header is complete
+	//receive chunk head
 	pHeader = ReceChunkHeader(src,srcLength,&headerLen);
 	if (pHeader == NULL)
 		goto failure;
 
-	//check new message
-	pMsg = ReceMessage(pHeader);
-	pTempMsg = (pMsg == NULL ? m_Message : pMsg);
-	
-	//check chunk data is complete
-	dataLen = ReceMessagePayload(pTempMsg,src+headerLen,srcLength-headerLen);
-	if (dataLen == 0)
+	//receive chunk data
+	receMsg = ReceChunkData(pHeader,src+headerLen,srcLength-headerLen,&dataLen);
+	if (!receMsg)
 		goto failure;
 
 	//refersh
 	PushChunkHeader(pHeader);
-	if (pMsg)
-		PushMessage(pMsg);
-
 	return (headerLen + dataLen);
 
 failure:
 	DELETE_PTR(pHeader)
-	DELETE_PTR(pMsg)
 	return 0;
 }
 
@@ -82,45 +74,7 @@ CChunkHeader* CChunks::ReceChunkHeader(uint8_t* src, const int srcLength, int* o
 	pHeader = CChunkHeader::Parse(src, srcLength, &headerLen);
 	if (pHeader == NULL)
 		goto null_chunk;
-
-	header = pHeader->GetHead();
-	switch (header.fmt)
-	{
-	case 0x00:
-		break;
-	case 0x01:
-		header.timestamp = m_ChunkHeader->GetHead().timestamp + header.timestampDelta;
-		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
-
-		delete pHeader;
-		pHeader = CChunkHeader::Parse(header);
-		break;
-
-	case 0x02:
-		header.timestamp = m_ChunkHeader->GetHead().timestamp + header.timestampDelta;
-		header.messageLength = m_ChunkHeader->GetHead().messageLength;
-		header.messageTypeID = m_ChunkHeader->GetHead().messageTypeID;
-		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
-
-		delete pHeader;
-		pHeader = CChunkHeader::Parse(header);
-		break;
-
-	case 0x03:
-		header.timestamp = m_ChunkHeader->GetHead().timestamp + m_ChunkHeader->GetHead().timestampDelta;
-		header.timestampDelta = m_ChunkHeader->GetHead().timestampDelta;
-		header.messageLength = m_ChunkHeader->GetHead().messageLength;
-		header.messageTypeID = m_ChunkHeader->GetHead().messageTypeID;
-		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
-		header.extendedTimestamp = m_ChunkHeader->GetHead().extendedTimestamp;
-
-		delete pHeader;
-		pHeader = CChunkHeader::Parse(header);
-		break;
-
-	default:
-		break;
-	}
+	pHeader->CopyFrom(m_ChunkHeader);
 
 	*outHeadLen = headerLen;
 	return pHeader;
@@ -129,48 +83,49 @@ null_chunk:
 	return NULL;
 }
 
-CBaseMessage* CChunks::ReceMessage(CChunkHeader* pHeader)
+bool CChunks::ReceChunkData(CChunkHeader* pHeader, uint8_t* src, const int srcLen, int* outDataLen)
 {
 	const CChunkHeader::Head header = pHeader->GetHead();
-	bool isNewMsg = false;
-	CBaseMessage* pNewMsg = NULL;
+	bool newMsg = false;
+	CBaseMessage* pMsg = NULL;
+	int dataLen = 0;
 
 	switch (header.fmt)
 	{
-	case 0x00:	isNewMsg = true;	break;
-	case 0x01:	isNewMsg = true;	break;
-	case 0x02:	isNewMsg = true;	break;
+	case 0x00:	newMsg = true;	break;
+	case 0x01:	newMsg = true;	break;
+	case 0x02:	newMsg = true;	break;
 	case 0x03:	
 		if (m_Message == NULL)
-			isNewMsg = true;
+			newMsg = true;
 		else
-			isNewMsg = (m_Message->GetRemainSize() == 0);
-	
+			newMsg = (m_Message->GetRemainSize() == 0);
 		break;
 	default:
-		return false;
+		goto failure;
 		break;
 	}
 
-	if (isNewMsg)
-		pNewMsg = CRtmpMessage::CreateMessage(header.csid,		 \
-												header.timestamp,	  \
-												header.messageLength, \
-												header.messageTypeID, \
-												header.messageStreamID);
-	return pNewMsg;
-}
+	if (newMsg)
+		pMsg = CRtmpMessage::CreateMessage(header.csid,header.timestamp,header.messageLength,header.messageTypeID,header.messageStreamID);
+	else 
+		pMsg = m_Message;
 
-int CChunks::ReceMessagePayload(CBaseMessage *pMsg, uint8_t* src, const int srcLen)
-{
-	int dataLen = 0;
-	
 	dataLen = pMsg->GetRemainSize() > m_ChunkSize ? m_ChunkSize : pMsg->GetRemainSize();
 	if (dataLen > srcLen)
-		return 0;
+		goto failure;
+
 	pMsg->Append(src,dataLen);
-	return dataLen;
+	*outDataLen = dataLen;	
+	if (newMsg) PushMessage(pMsg);
+	return true;
+
+failure:
+	if (newMsg) delete pMsg;
+	*outDataLen = 0;
+	return false;
 }
+
 
 void CChunks::PushChunkHeader(CChunkHeader *pHeader)
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Handle.h"
+#include "../BaseHandle.h"
 
 #define HANDSHAKE_OK			0
 #define HANDSHAKE_FAILURE		1
@@ -11,7 +11,6 @@
 #define	ERROR_NO_EVENT			-5
 #define ERROR_NO_CALL			-6
 #define	ERROR_SEND_HANDSHAKE	-7
-
 
 #define DECLARE_HANDSHAKE					\
 		enum ReceType { NONE, C0, C1, C2 };	\

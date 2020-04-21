@@ -129,12 +129,37 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	return pValue;
 }
 
-CChunkHeader* CChunkHeader::Parse(CChunkHeader::Head header)
-{
-	CChunkHeader* pValue = new CChunkHeader;
 
-	pValue->m_Head = header;
-	return pValue;
+void CChunkHeader::CopyFrom(CChunkHeader* pSrc)
+{
+	switch (this->m_Head.fmt)
+	{
+	case 0x00:
+		// not omit
+		break;
+	case 0x01:
+		//omit message stream id
+		this->m_Head.timestamp = pSrc->m_Head.timestamp + this->m_Head.timestampDelta;
+		this->m_Head.messageStreamID = pSrc->m_Head.messageStreamID;
+		break;
+	case 0x02:
+		//omit message length,message type id,message stream id
+		this->m_Head.timestamp = pSrc->m_Head.timestamp + this->m_Head.timestampDelta;
+		this->m_Head.messageLength = pSrc->m_Head.messageLength;
+		this->m_Head.messageTypeID = pSrc->m_Head.messageTypeID;
+		this->m_Head.messageStreamID = pSrc->m_Head.messageStreamID;
+		break;
+	case 0x03:
+		//omit timestamp , message length,message type id,message stream id
+		this->m_Head.timestamp = pSrc->m_Head.timestamp + pSrc->m_Head.timestampDelta;
+		this->m_Head.timestampDelta = pSrc->m_Head.timestampDelta;
+		this->m_Head.messageLength = pSrc->m_Head.messageLength;
+		this->m_Head.messageTypeID = pSrc->m_Head.messageTypeID;
+		this->m_Head.messageStreamID = pSrc->m_Head.messageStreamID;
+		break;
+	default:
+		break;
+	}
 }
 
 CChunkHeader::Head CChunkHeader::GetHead()

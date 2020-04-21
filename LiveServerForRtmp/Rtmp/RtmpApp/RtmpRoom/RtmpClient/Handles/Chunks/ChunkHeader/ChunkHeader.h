@@ -22,10 +22,10 @@ public:
 	~CChunkHeader() ;
 
 	static CChunkHeader* Parse(uint8_t* src,const int srcLength,int* outLength);
-	static CChunkHeader* Parse(CChunkHeader::Head header);
+	void CopyFrom(CChunkHeader* pSrc);
 
 	CChunkHeader::Head GetHead();
-private:
+protected:
 	CChunkHeader::Head m_Head;
 };
 
