@@ -14,63 +14,78 @@ CHandshake::~CHandshake()
 
 }
 
-int CHandshake::OnHandshake(uint8_t* src, const int srcLength)
+int CHandshake::OnHandshake(uint8_t* src, const int srcLength, uint32_t *outLen)
 {
-	int ret = SAR_FAILURE;
+	int ret = HANDSHAKE_FAILURE;
 	int length = 0;
-	ret = ReiceivePacket((char*)src, srcLength,&length);
+	const bool receEnd = m_ReceType == ReceType::C2;
+	const bool sendEnd = m_SendType == SendType::S2;
 
-	if (ret != HANDSHAKE_OK)
-		return 0;
-	else 
-		return length;
+	if (receEnd && sendEnd)
+		goto ReceSendEnd;
+
+	ret = ReiceivePacket(src,srcLength,&length);
+	ret = SendPacket();
+
+	*outLen = length;
+	return HANDSHAKE_OK ;
+
+ReceSendEnd:
+	*outLen = 0;
+	return ERROR_HANDSHAKE_END;
+	
 }
 
-int CHandshake::ReiceivePacket(char* buff, const int buffLen, int *outLen)
+int CHandshake::ReiceivePacket(uint8_t* buff, const int buffLen, int *outLen)
 {
-	int result = SAR_FAILURE;
-	int c0Len = 0 , c1Len = 0 , c2Len = 0;
+	int result = HANDSHAKE_FAILURE;
+	int len = 0;
+	ReceType rType = ReceType::NONE;
 
-	if (m_ReceType == ReceType::NONE)
-	{
-		result = HANDSHAKE_OK;
-		result &= ReceiveC0(buff, buffLen, &c0Len);
-		result &= ReceiveC1(buff+c0Len,buffLen - c0Len,&c1Len);
-		if (result == HANDSHAKE_OK)
-		{
-			m_ReceType = C1;
-			SendS0_S1();
-
-			*outLen = c0Len + c1Len;
-			return result;
-		}
-	}
-	else if (m_ReceType == C1)
-	{
-		result = HANDSHAKE_OK;
-		result &= ReceiveC2(buff,buffLen,&c2Len);
-		if (result == HANDSHAKE_OK)
-		{
-			m_ReceType = C2;
-			SendS2();
-			*outLen = c2Len;
-			return result;
-		}
-	}
-	else
-	{
-		*outLen = 0 ;
-		return SAR_FAILURE;
-	}
+	if (buff == NULL || buffLen <= 0)	goto noData;
 	
-	*outLen = 0;
+	switch (m_ReceType)
+	{
+	case CHandshake::NONE:
+		result = ReceiveC0(buff, buffLen, &len);
+		rType = ReceType::C0;
+		break;
+	case CHandshake::C0:
+		result = ReceiveC1(buff, buffLen, &len);
+		rType = ReceType::C1;
+		break;
+	case CHandshake::C1:
+		result = ReceiveC2(buff, buffLen, &len);
+		rType = ReceType::C2;
+		break;
+	case CHandshake::C2:
+		rType = ReceType::C2;
+		goto receEnd;
+		break;
+	default:
+		rType = ReceType::C2;
+		goto receEnd;
+		break;
+	}
+
+	if (result != HANDSHAKE_OK)	goto outResult;
+
+	m_ReceType = rType;
+	*outLen += len;
+	return ReiceivePacket(buff+len,buffLen-len,outLen);
+
+receEnd:
+	*outLen += 0;
+	return HANDSHAKE_OK;
+outResult:
+	*outLen += 0;
 	return result;
-receive_complete:
+noData:
 	*outLen += 0;
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC0(char *buff, const int buffLen, int *outLen)
+int CHandshake::ReceiveC0(uint8_t *buff, const int buffLen, int *outLen)
 {	
 	const int length = sizeof(m_RecePack.data0);
 	if (buffLen < length)
@@ -79,13 +94,13 @@ int CHandshake::ReceiveC0(char *buff, const int buffLen, int *outLen)
 	if (*buff != RTMP_VERSION)
 		return ERROR_VERSION;
 
-	m_RecePack.data0[0] = *buff;
+	m_RecePack.data0 = *buff;
 
 	*outLen = length;
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC1(char *buff, const int buffLen, int *outLen)
+int CHandshake::ReceiveC1(uint8_t *buff, const int buffLen, int *outLen)
 {
 	const int length = sizeof(m_RecePack.data1);
 	if (buffLen < length)
@@ -97,7 +112,7 @@ int CHandshake::ReceiveC1(char *buff, const int buffLen, int *outLen)
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC2(char *buff, const int buffLen, int *outLen)
+int CHandshake::ReceiveC2(uint8_t *buff, const int buffLen, int *outLen)
 {
 	const int length = sizeof(m_RecePack.data2);
 	if (buffLen < length)
@@ -107,33 +122,92 @@ int CHandshake::ReceiveC2(char *buff, const int buffLen, int *outLen)
 	return HANDSHAKE_OK;
 }
 
-void CHandshake::SendS0_S1()
+int CHandshake::SendPacket()
 {
-	uint32_t timestamp;
-	char randomMark[1528] = {0};
-	const char zeroMark[4] = {0};
-	bool bSucc = true;
+	int result = HANDSHAKE_FAILURE;
+	const bool s0 = m_SendType == SendType::NONE && m_ReceType >= C0;
+	const bool s1 = m_SendType == SendType::S1 && m_ReceType >= C1;
+	const bool s2 = m_SendType == SendType::S2 && m_ReceType == C2;
 
-	m_SendPack.data0[0] = RTMP_VERSION;
+	if (s0)
+		result = SendS0();
+	else if (s1)
+		result = SendS1();
+	else if (s2)
+		result = SendS2();
+	else 
+		return HANDSHAKE_OK;
+
+	return SendPacket();
+}
+
+int CHandshake::SendS0()
+{
+	const bool isSend = m_SendType >= SendType::S0;
+	int length = 0;
+	uint8_t version = RTMP_VERSION;
+		
+	if (isSend)		goto SEND;
+
+	length = m_pCall->SendHandshake(&version,1);
+	if (length != 1)
+		return ERROR_SEND_HANDSHAKE;
+
+	m_SendType = SendType::S0;
+	m_SendPack.data0 = version;
+	return HANDSHAKE_OK;
+
+SEND:
+	return HANDSHAKE_OK;
+}
+int CHandshake::SendS1()
+{
+	const bool isSend = m_SendType >= SendType::S1;
+	int length = 0;
+	uint32_t timestamp;
+	uint8_t  s1[1536] = {0};
+
+	if (isSend)		goto SEND;
 
 	timestamp = GetTimestamp();
 	timestamp = HostToBig32(timestamp);
-	GenRamdomByte(randomMark, 1528);
-	memcpy(m_SendPack.data1, &timestamp, 4);
-	memcpy(m_SendPack.data1 + 4, zeroMark, 4);
-	memcpy(m_SendPack.data1 + 4+4, randomMark, 1528);
 
-	m_SendType = S1;
+	memcpy(s1, &timestamp, 4);				//timesamp
+	memset(s1 + 4, 0, 4);					//zero
+	GenRamdomByte((char*)(s1+4+4), 1528);	//random
+
+	length = m_pCall->SendHandshake(s1,1536);
+	if (length != 1536)
+		return ERROR_SEND_HANDSHAKE;
+
+	m_SendType = SendType::S1;
+	memcpy(m_SendPack.data1,s1,1536);
+	return HANDSHAKE_OK;
+
+SEND:
+	return HANDSHAKE_OK;
 }
 
-void CHandshake::SendS2()
+int CHandshake::SendS2()
 {
-	bool bSucc = true;
+	const bool isSend = m_SendType >= SendType::S2;
+	int length = 0;
+	uint8_t s2[1536] = {0};
 
-	memcpy(m_SendPack.data2, m_SendPack.data1, 4);;
-	memcpy(m_SendPack.data2 + 4, m_SendPack.data1, 4);
-	memcpy(m_SendPack.data2 + 4 + 4, m_SendPack.data1 + 8, 1528);
+	if (isSend)	goto SEND;
 
-	m_SendType = S2;
-}	
+	memcpy(s2, m_RecePack.data1, 4);				// c1 timestamp
+	memcpy(s2 + 4, m_SendPack.data1, 4);			// s1 timestamp
+	memcpy(s2 + 4 + 4, m_SendPack.data1 + 8, 1528);	// s1 random 
 
+	length = m_pCall->SendHandshake(s2, 1536);
+	if (length != 1536)
+		return ERROR_SEND_HANDSHAKE;
+
+	m_SendType = SendType::S2;
+	memcpy(m_SendPack.data2,s2,1536);
+	return HANDSHAKE_OK;
+
+SEND:
+	return HANDSHAKE_OK;
+}

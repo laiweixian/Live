@@ -35,9 +35,14 @@ void CRtmpClient::OnC1(){}
 void CRtmpClient::OnC2(){}
 
 //IHandshakeCall
-int CRtmpClient::SendHandshakePacket(uint8_t *src, const int srcLen)
+int CRtmpClient::SendHandshake(uint8_t *src, const int srcLen)
 {
 	return m_pCall->Send(this->GetId(),src,srcLen);
+}
+
+int CRtmpClient::CloseHandshake()
+{
+	return m_pCall->Close(this->GetId());
 }
 
 //IMessageEvent
@@ -45,46 +50,57 @@ void CRtmpClient::OnSetChunkSize()
 {
 
 }
+
 void CRtmpClient::OnAbortMessage()
 {
 
 }
+
 void CRtmpClient::OnAcknowledgement()
 {
 
 }
+
 void CRtmpClient::OnWindowAcknowledgementSize()
 {
 
 }
+
 void CRtmpClient::OnSetPeerBandwidth()
 {
 
 }
+
 void CRtmpClient::OnUserControlMessages()
 {
 
 }
+
 void CRtmpClient::OnCommandMessage(CCommandMessage* pMsg)
 {
 
 }
+
 void CRtmpClient::OnDataMessage()
 {
 
 }
+
 void CRtmpClient::OnSharedObjectMessage()
 {
 
 }
+
 void CRtmpClient::OnAudioMessage(CAudioMessage* pMsg)
 {
 
 }
+
 void CRtmpClient::OnVideoMessage(CVideoMessage* pMsg)
 {
 
 }
+
 void CRtmpClient::OnAggregateMessage()
 {
 
@@ -94,4 +110,9 @@ void CRtmpClient::OnAggregateMessage()
 int CRtmpClient::SendChunk(uint8_t *src, const int srcLen)
 {
 	return m_pCall->Send(this->GetId(),src,srcLen);
+}
+
+int CRtmpClient::CloseChunk()
+{
+	return m_pCall->Close(this->GetId());
 }

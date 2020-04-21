@@ -18,7 +18,7 @@ protected:
 	IRtmpClientEvent() = default;
 	~IRtmpClientEvent() = default;
 public:
-
+	
 };
 
 class IRtmpClient
@@ -30,19 +30,17 @@ protected:
 public:
 	virtual void Destroy() = 0;
 	virtual int GetId() final{return m_id;}
-	
 	virtual int OnReceive(uint8_t *src, const int srcLen) = 0;
-
 protected:
-	int m_id;
-	IRtmpClientCall *m_pCall;
-	IRtmpClientEvent *m_pEvent;
+	int					 m_id;
+	IRtmpClientCall		*m_pCall;
+	IRtmpClientEvent	*m_pEvent;
 };
 
 
 class CRtmpClient : public IRtmpClient,
-					public IHandshakeEvent , public IHandshakeCall ,	
-				    public IMessageEvent , public IMessageCall
+					public IHandshakeEvent, public IHandshakeCall ,	
+				    public IMessageEvent,	public IMessageCall
 {
 private:
 	CRtmpClient(int id, IRtmpClientCall* pCall, IRtmpClientEvent* pEvent,uint32_t chunkSize);
@@ -59,7 +57,8 @@ private:
 	void OnC1();
 	void OnC2();
 	//IHandshakeCall
-	int SendHandshakePacket(uint8_t *src, const int srcLen);
+	int SendHandshake(uint8_t *src, const int srcLen);
+	int CloseHandshake();
 
 	//IMessageEvent
 	void OnSetChunkSize() ;
@@ -74,11 +73,12 @@ private:
 	void OnAudioMessage(CAudioMessage* pMsg) ;
 	void OnVideoMessage(CVideoMessage* pMsg);
 	void OnAggregateMessage() ;
+	
 	//IMessageCall
 	int SendChunk(uint8_t *src, const int srcLen) ;
+	int CloseChunk();
 
 private:
 	CHandshake m_Handshake;
 	CChunks	   m_Chunks;
-
 };

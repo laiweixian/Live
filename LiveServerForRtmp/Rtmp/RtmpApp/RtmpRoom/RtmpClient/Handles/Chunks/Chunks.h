@@ -34,6 +34,7 @@ protected:
 	~IMessageCall() = default;
 private:
 	virtual int SendChunk(uint8_t *src,const int srcLen) = 0;
+	virtual int CloseChunk() = 0;
 };
 
 class CChunks 
