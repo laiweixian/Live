@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../AMF/AMF.h"
+#include "../../AMF/AMF.h"
 
 enum AudioCodes
 {

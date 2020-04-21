@@ -19,9 +19,8 @@ protected:
 	IRtmpClientEvent() = default;
 	~IRtmpClientEvent() = default;
 public:
-
-	
-	
+	virtual void OnConnectApplication(const int clientid,const char* appName) = 0;
+	virtual void 
 };
 
 class IRtmpClient

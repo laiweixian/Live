@@ -3,23 +3,24 @@
 #include "stdafx.h"
 #include "../AMF/AMF.h"
 
-#include "Call.h"
-#include "Close.h"
-#include "CloseStream.h"
-#include "Connect.h"
-#include "CreateStream.h"
-#include "DeleteStream.h"
-#include "Pause.h"
-#include "Play.h"
-#include "Play2.h"
-#include "Publish.h"
-#include "ReceiveAudio.h"
-#include "ReceiveVideo.h"
-#include "Seek.h"
+#include "NetConnection/Call.h"
+#include "NetConnection/Close.h"
+#include "NetConnection/Connect.h"
+#include "NetConnection/CreateStream.h"
+
+#include "NetStream/CloseStream.h"
+#include "NetStream/DeleteStream.h"
+#include "NetStream/Pause.h"
+#include "NetStream/Play.h"
+#include "NetStream/Play2.h"
+#include "NetStream/Publish.h"
+#include "NetStream/ReceiveAudio.h"
+#include "NetStream/ReceiveVideo.h"
+#include "NetStream/Seek.h"
 
 enum CommandType
 {
-	INVALID,
+	NONE,
 
 	//NetConnection
 	CONNECT, CALL, CLOSE, CREATE_STREAM,	
@@ -35,7 +36,7 @@ struct Command
 	CommandType cType;
 	union 
 	{
-		ConnectCommand command0;
+	
 
 	};
 };
