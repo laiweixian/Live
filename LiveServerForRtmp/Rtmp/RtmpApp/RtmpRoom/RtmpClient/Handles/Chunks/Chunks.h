@@ -45,10 +45,12 @@ public:
 
 	int OnChunks(uint8_t* src, const int srcLength);
 private:
-	int OnChunk(uint8_t* src, const int srcLength);
-	CChunkHeader* OnChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen);
-	CBaseMessage* OnMessage(CChunkHeader* pHeader);
-	int OnChunkData( CBaseMessage *pMsg, const int srcLength);
+	int ReceChunk(uint8_t* src, const int srcLength);
+	CChunkHeader* ReceChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen);
+	CBaseMessage* ReceMessage(CChunkHeader* pHeader);
+	int ReceMessagePayload(CBaseMessage *pMsg,uint8_t* src,const int srcLen);
+	void PushMessage(CBaseMessage *pMsg);
+	void PushChunkHeader(CChunkHeader *pHeader);
 
 	void HandleMessage(CBaseMessage* pMsg);
 	void HandleSetChunkSize(CSetChunkSize* pMsg);
@@ -69,6 +71,6 @@ private:
 	IMessageEvent *m_pEvent;
 	uint32_t m_ChunkSize;
 
-	CChunkHeader *m_NewHeader;
-	CBaseMessage *m_NewMsg;
+	CChunkHeader *m_ChunkHeader;
+	CBaseMessage *m_Message;
 };

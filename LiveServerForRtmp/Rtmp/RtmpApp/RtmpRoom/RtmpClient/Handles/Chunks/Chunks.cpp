@@ -4,15 +4,15 @@
 	
 CChunks::CChunks(IMessageCall* pCall, IMessageEvent* pEvent, const uint32_t chunkSize) : \
 	m_pCall(pCall),m_pEvent(pEvent),m_ChunkSize(chunkSize),\
-	m_NewHeader(NULL),m_NewMsg(NULL)
+	m_ChunkHeader(NULL), m_Message(NULL)
 {
 
 }
 
 CChunks::~CChunks()
 {
-	DELETE_PTR(m_NewMsg)
-	DELETE_PTR(m_NewHeader)
+	DELETE_PTR(m_ChunkHeader)
+	DELETE_PTR(m_Message)
 }
 
 int CChunks::OnChunks(uint8_t* src, const int srcLength)
@@ -25,50 +25,42 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 
 	while (srcLength > offset)
 	{
-		chunkLen = this->OnChunk(src+offset,srcLength-offset);
+		chunkLen = this->ReceChunk(src+offset,srcLength-offset);
 		if (chunkLen == 0)
 			break;
+
+		if(m_Message->GetRemainSize() == 0)
+			HandleMessage(m_Message);
+		
 		offset += chunkLen;
 	}
 	return offset;
 }
 
-int CChunks::OnChunk(uint8_t* src, const int srcLength)
+int CChunks::ReceChunk(uint8_t* src, const int srcLength)
 {
 	CChunkHeader *pHeader = NULL;
 	CBaseMessage *pMsg = NULL ,*pTempMsg = NULL;
 	int headerLen = 0 , dataLen = 0;
 
 	//check chunk header is complete
-	pHeader = OnChunkHeader(src,srcLength,&headerLen);
+	pHeader = ReceChunkHeader(src,srcLength,&headerLen);
 	if (pHeader == NULL)
 		goto failure;
 
 	//check new message
-	pMsg = OnMessage(pHeader);
-	pTempMsg = (pMsg == NULL ? m_NewMsg : pMsg);
+	pMsg = ReceMessage(pHeader);
+	pTempMsg = (pMsg == NULL ? m_Message : pMsg);
 	
 	//check chunk data is complete
-	dataLen = OnChunkData(pTempMsg,srcLength-headerLen);
+	dataLen = ReceMessagePayload(pTempMsg,src+headerLen,srcLength-headerLen);
 	if (dataLen == 0)
 		goto failure;
 
-	//success,refresh m_NewHeader and m_NewMsg
-	DELETE_PTR(m_NewHeader)
-	m_NewHeader = pHeader;
-	if (pMsg)		//new msg
-	{
-		DELETE_PTR(m_NewMsg)
-		m_NewMsg = pMsg;
-	}
-
-	//append chunk data into m_NewMsg
-	m_NewMsg->Append(src+headerLen,dataLen);
-	if (m_NewMsg->GetRemainSize() == 0)
-	{
-		HandleMessage(m_NewMsg);
-		m_NewMsg = NULL;
-	}
+	//refersh
+	PushChunkHeader(pHeader);
+	if (pMsg)
+		PushMessage(pMsg);
 
 	return (headerLen + dataLen);
 
@@ -78,7 +70,7 @@ failure:
 	return 0;
 }
 
-CChunkHeader* CChunks::OnChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen)
+CChunkHeader* CChunks::ReceChunkHeader(uint8_t* src, const int srcLength, int* outHeadLen)
 {
 	CChunkHeader *pHeader = NULL;
 	CChunkHeader::Head header = { 0 };
@@ -97,30 +89,30 @@ CChunkHeader* CChunks::OnChunkHeader(uint8_t* src, const int srcLength, int* out
 	case 0x00:
 		break;
 	case 0x01:
-		header.timestamp = m_NewHeader->GetHead().timestamp + header.timestampDelta;
-		header.messageStreamID = m_NewHeader->GetHead().messageStreamID;
+		header.timestamp = m_ChunkHeader->GetHead().timestamp + header.timestampDelta;
+		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
 
 		delete pHeader;
 		pHeader = CChunkHeader::Parse(header);
 		break;
 
 	case 0x02:
-		header.timestamp = m_NewHeader->GetHead().timestamp + header.timestampDelta;
-		header.messageLength = m_NewHeader->GetHead().messageLength;
-		header.messageTypeID = m_NewHeader->GetHead().messageTypeID;
-		header.messageStreamID = m_NewHeader->GetHead().messageStreamID;
+		header.timestamp = m_ChunkHeader->GetHead().timestamp + header.timestampDelta;
+		header.messageLength = m_ChunkHeader->GetHead().messageLength;
+		header.messageTypeID = m_ChunkHeader->GetHead().messageTypeID;
+		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
 
 		delete pHeader;
 		pHeader = CChunkHeader::Parse(header);
 		break;
 
 	case 0x03:
-		header.timestamp = m_NewHeader->GetHead().timestamp + m_NewHeader->GetHead().timestampDelta;
-		header.timestampDelta = m_NewHeader->GetHead().timestampDelta;
-		header.messageLength = m_NewHeader->GetHead().messageLength;
-		header.messageTypeID = m_NewHeader->GetHead().messageTypeID;
-		header.messageStreamID = m_NewHeader->GetHead().messageStreamID;
-		header.extendedTimestamp = m_NewHeader->GetHead().extendedTimestamp;
+		header.timestamp = m_ChunkHeader->GetHead().timestamp + m_ChunkHeader->GetHead().timestampDelta;
+		header.timestampDelta = m_ChunkHeader->GetHead().timestampDelta;
+		header.messageLength = m_ChunkHeader->GetHead().messageLength;
+		header.messageTypeID = m_ChunkHeader->GetHead().messageTypeID;
+		header.messageStreamID = m_ChunkHeader->GetHead().messageStreamID;
+		header.extendedTimestamp = m_ChunkHeader->GetHead().extendedTimestamp;
 
 		delete pHeader;
 		pHeader = CChunkHeader::Parse(header);
@@ -137,7 +129,7 @@ null_chunk:
 	return NULL;
 }
 
-CBaseMessage* CChunks::OnMessage(CChunkHeader* pHeader)
+CBaseMessage* CChunks::ReceMessage(CChunkHeader* pHeader)
 {
 	const CChunkHeader::Head header = pHeader->GetHead();
 	bool isNewMsg = false;
@@ -149,10 +141,11 @@ CBaseMessage* CChunks::OnMessage(CChunkHeader* pHeader)
 	case 0x01:	isNewMsg = true;	break;
 	case 0x02:	isNewMsg = true;	break;
 	case 0x03:	
-		if (m_NewMsg == NULL)
+		if (m_Message == NULL)
 			isNewMsg = true;
-		else 
-			isNewMsg = false;
+		else
+			isNewMsg = (m_Message->GetRemainSize() == 0);
+	
 		break;
 	default:
 		return false;
@@ -160,7 +153,7 @@ CBaseMessage* CChunks::OnMessage(CChunkHeader* pHeader)
 	}
 
 	if (isNewMsg)
-		pNewMsg = CRtmpMessage::CreateMessage( header.csid,		 \
+		pNewMsg = CRtmpMessage::CreateMessage(header.csid,		 \
 												header.timestamp,	  \
 												header.messageLength, \
 												header.messageTypeID, \
@@ -168,15 +161,30 @@ CBaseMessage* CChunks::OnMessage(CChunkHeader* pHeader)
 	return pNewMsg;
 }
 
-int CChunks::OnChunkData(CBaseMessage *pMsg,const int srcLength)
+int CChunks::ReceMessagePayload(CBaseMessage *pMsg, uint8_t* src, const int srcLen)
 {
 	int dataLen = 0;
 	
 	dataLen = pMsg->GetRemainSize() > m_ChunkSize ? m_ChunkSize : pMsg->GetRemainSize();
-	return (dataLen > srcLength ? 0:dataLen);
+	if (dataLen > srcLen)
+		return 0;
+	pMsg->Append(src,dataLen);
+	return dataLen;
 }
 
+void CChunks::PushChunkHeader(CChunkHeader *pHeader)
+{
+	if (!pHeader)	return;
+	DELETE_PTR(pHeader)
+	m_ChunkHeader = pHeader;
+}
 
+void CChunks::PushMessage(CBaseMessage *pMsg)
+{
+	if (!pMsg)	return;
+	DELETE_PTR(m_Message)
+		m_Message = pMsg;
+}
 
 void CChunks::HandleMessage(CBaseMessage* pMsg)
 {
@@ -232,7 +240,7 @@ void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 	m_ChunkSize = pMsg->GetContent().chunkSize;
 	delete pMsg;
 
-	if (m_pEvent)	m_pEvent->SetChunkSize();
+	if (m_pEvent)	m_pEvent->OnSetChunkSize();
 }
 
 void CChunks::HandleAbortMessage(CAbortMessage* pMsg)

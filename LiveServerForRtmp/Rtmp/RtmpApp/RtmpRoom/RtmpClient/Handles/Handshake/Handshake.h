@@ -51,10 +51,10 @@ public:
 	
 private:
 	DECLARE_HANDSHAKE
-	int ReiceivePacket(uint8_t *buff, const int buffLen,int *outLen);
-	int ReceiveC0(uint8_t *buff, const int buffLen, int *outLen);
-	int ReceiveC1(uint8_t *buff, const int buffLen, int *outLen);
-	int ReceiveC2(uint8_t *buff, const int buffLen, int *outLen);
+	int RecePacket(uint8_t *buff, const int buffLen,int *outLen);
+	int ReceC0(uint8_t *buff, const int buffLen, int *outLen);
+	int ReceC1(uint8_t *buff, const int buffLen, int *outLen);
+	int ReceC2(uint8_t *buff, const int buffLen, int *outLen);
 
 	int SendPacket();
 	int SendS0();

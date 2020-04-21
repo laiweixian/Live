@@ -24,7 +24,7 @@ int CHandshake::OnHandshake(uint8_t* src, const int srcLength, uint32_t *outLen)
 	if (receEnd && sendEnd)
 		goto ReceSendEnd;
 
-	ret = ReiceivePacket(src,srcLength,&length);
+	ret = RecePacket(src,srcLength,&length);
 	ret = SendPacket();
 
 	*outLen = length;
@@ -36,7 +36,7 @@ ReceSendEnd:
 	
 }
 
-int CHandshake::ReiceivePacket(uint8_t* buff, const int buffLen, int *outLen)
+int CHandshake::RecePacket(uint8_t* buff, const int buffLen, int *outLen)
 {
 	int result = HANDSHAKE_FAILURE;
 	int len = 0;
@@ -47,15 +47,15 @@ int CHandshake::ReiceivePacket(uint8_t* buff, const int buffLen, int *outLen)
 	switch (m_ReceType)
 	{
 	case CHandshake::NONE:
-		result = ReceiveC0(buff, buffLen, &len);
+		result = ReceC0(buff, buffLen, &len);
 		rType = ReceType::C0;
 		break;
 	case CHandshake::C0:
-		result = ReceiveC1(buff, buffLen, &len);
+		result = ReceC1(buff, buffLen, &len);
 		rType = ReceType::C1;
 		break;
 	case CHandshake::C1:
-		result = ReceiveC2(buff, buffLen, &len);
+		result = ReceC2(buff, buffLen, &len);
 		rType = ReceType::C2;
 		break;
 	case CHandshake::C2:
@@ -72,7 +72,7 @@ int CHandshake::ReiceivePacket(uint8_t* buff, const int buffLen, int *outLen)
 
 	m_ReceType = rType;
 	*outLen += len;
-	return ReiceivePacket(buff+len,buffLen-len,outLen);
+	return RecePacket(buff+len,buffLen-len,outLen);
 
 receEnd:
 	*outLen += 0;
@@ -85,7 +85,7 @@ noData:
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC0(uint8_t *buff, const int buffLen, int *outLen)
+int CHandshake::ReceC0(uint8_t *buff, const int buffLen, int *outLen)
 {	
 	const int length = sizeof(m_RecePack.data0);
 	if (buffLen < length)
@@ -100,7 +100,7 @@ int CHandshake::ReceiveC0(uint8_t *buff, const int buffLen, int *outLen)
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC1(uint8_t *buff, const int buffLen, int *outLen)
+int CHandshake::ReceC1(uint8_t *buff, const int buffLen, int *outLen)
 {
 	const int length = sizeof(m_RecePack.data1);
 	if (buffLen < length)
@@ -112,7 +112,7 @@ int CHandshake::ReceiveC1(uint8_t *buff, const int buffLen, int *outLen)
 	return HANDSHAKE_OK;
 }
 
-int CHandshake::ReceiveC2(uint8_t *buff, const int buffLen, int *outLen)
+int CHandshake::ReceC2(uint8_t *buff, const int buffLen, int *outLen)
 {
 	const int length = sizeof(m_RecePack.data2);
 	if (buffLen < length)
