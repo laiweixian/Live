@@ -55,61 +55,61 @@ CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t da
 
 	//command name
 	pAmfData = (pamf->m_Amfs.at(0));
-	valid = UTF8IsEqual(commandName, pAmfData->dString);
+	valid = UTF8IsEqual(commandName, *(pAmfData->pString));
 	if (valid == false)				goto failure;				//command name is not match connect
-	UTF8ToString(pContent->name, pAmfData->dString);
+	UTF8ToString(pContent->name, *(pAmfData->pString));
 
 	//transaction id
 	pAmfData = (pamf->m_Amfs.at(1));
-	valid = pAmfData->dNumber == 1;
+	valid = *(pAmfData->pNumber) == 1;
 	if (valid == false)				goto failure;				//command transaction id is not match connect
-	pContent->transactionID = pAmfData->dNumber;
+	pContent->transactionID = *(pAmfData->pNumber);
 
 	//command object
 	pAmfData = (pamf->m_Amfs.at(2));
-	valid = pAmfData->dObject.MemCount == 10;
+	valid = (*(pAmfData->pObject)).MemCount == 10;
 	if (valid == false)				goto failure;				//command object count not match 
-	valid &= UTF8IsEqual(app, pAmfData->dObject.pMems[0].name);			valid &= pAmfData->dObject.pMems[0].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(flashver, pAmfData->dObject.pMems[1].name);		valid &= pAmfData->dObject.pMems[1].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(swfUrl, pAmfData->dObject.pMems[2].name);		valid &= pAmfData->dObject.pMems[2].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(tcUrl, pAmfData->dObject.pMems[3].name);			valid &= pAmfData->dObject.pMems[3].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(fpad, pAmfData->dObject.pMems[4].name);			valid &= pAmfData->dObject.pMems[4].value.dType == AMF0Type::BOOLEAN;
-	valid &= UTF8IsEqual(audioCodecs, pAmfData->dObject.pMems[5].name);	valid &= pAmfData->dObject.pMems[5].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(videoCodecs, pAmfData->dObject.pMems[6].name);	valid &= pAmfData->dObject.pMems[6].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(videoFunction, pAmfData->dObject.pMems[7].name);	valid &= pAmfData->dObject.pMems[7].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(pageUrl, pAmfData->dObject.pMems[8].name);		valid &= pAmfData->dObject.pMems[8].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(objectEncoding, pAmfData->dObject.pMems[9].name);valid &= pAmfData->dObject.pMems[9].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(app, (*(pAmfData->pObject)).pMems[0].name);			valid &= (*(pAmfData->pObject)).pMems[0].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(flashver, (*(pAmfData->pObject)).pMems[1].name);		valid &= (*(pAmfData->pObject)).pMems[1].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(swfUrl, (*(pAmfData->pObject)).pMems[2].name);		valid &= (*(pAmfData->pObject)).pMems[2].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(tcUrl, (*(pAmfData->pObject)).pMems[3].name);			valid &= (*(pAmfData->pObject)).pMems[3].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(fpad, (*(pAmfData->pObject)).pMems[4].name);			valid &= (*(pAmfData->pObject)).pMems[4].value.dType == AMF0Type::BOOLEAN;
+	valid &= UTF8IsEqual(audioCodecs, (*(pAmfData->pObject)).pMems[5].name);	valid &= (*(pAmfData->pObject)).pMems[5].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoCodecs, (*(pAmfData->pObject)).pMems[6].name);	valid &= (*(pAmfData->pObject)).pMems[6].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoFunction, (*(pAmfData->pObject)).pMems[7].name);	valid &= (*(pAmfData->pObject)).pMems[7].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(pageUrl, (*(pAmfData->pObject)).pMems[8].name);		valid &= (*(pAmfData->pObject)).pMems[8].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(objectEncoding, (*(pAmfData->pObject)).pMems[9].name);valid &= (*(pAmfData->pObject)).pMems[9].value.dType == AMF0Type::NUMBER;
 	if (valid == false)				goto failure;				// has one command object member no match
 	
-	UTF8ToString(pContent->obj.app, pAmfData->dObject.pMems[0].value.dString);
-	UTF8ToString(pContent->obj.flashver, pAmfData->dObject.pMems[1].value.dString);
-	UTF8ToString(pContent->obj.swfUrl, pAmfData->dObject.pMems[2].value.dString);
-	UTF8ToString(pContent->obj.tcUrl, pAmfData->dObject.pMems[3].value.dString);
-	pContent->obj.fpad = pAmfData->dObject.pMems[4].value.dBoolean;
-	pContent->obj.audioCodes = static_cast<uint16_t> (pAmfData->dObject.pMems[5].value.dNumber);
-	pContent->obj.videoCodes = static_cast<uint16_t> (pAmfData->dObject.pMems[6].value.dNumber);
-	pContent->obj.videoFunction = static_cast<uint16_t> (pAmfData->dObject.pMems[7].value.dNumber);
-	UTF8ToString(pContent->obj.pageUrl, pAmfData->dObject.pMems[8].value.dString);
-	pContent->obj.objectEncoding = pAmfData->dObject.pMems[8].value.dNumber;
+	UTF8ToString(pContent->obj.app, (*(pAmfData->pObject)).pMems[0].value.pString);
+	UTF8ToString(pContent->obj.flashver, (*(pAmfData->pObject)).pMems[1].value.pString);
+	UTF8ToString(pContent->obj.swfUrl, (*(pAmfData->pObject)).pMems[2].value.pString);
+	UTF8ToString(pContent->obj.tcUrl, (*(pAmfData->pObject)).pMems[3].value.pString);
+	pContent->obj.fpad = (*(pAmfData->pObject)).pMems[4].value.dBoolean;
+	pContent->obj.audioCodes = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[5].value.pNumber);
+	pContent->obj.videoCodes = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[6].value.pNumber);
+	pContent->obj.videoFunction = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[7].value.pNumber);
+	UTF8ToString(pContent->obj.pageUrl, (*(pAmfData->pObject)).pMems[8].value.pString);
+	pContent->obj.objectEncoding = (*(pAmfData->pObject)).pMems[8].value.pNumber;
 
 	//optional user arguments(自定义的内容)
 	pAmfData = (pamf->m_Amfs.at(3));
-	pContent->optional.memCount = pAmfData->dObject.MemCount;
+	pContent->optional.memCount = (*(pAmfData->pObject)).MemCount;
 	pContent->optional.pMembers = new BaseCommand::ObjectMember[pContent->optional.memCount];
 
-	for (i=0;i<pAmfData->dObject.MemCount;i++)
+	for (i=0;i<(*(pAmfData->pObject)).MemCount;i++)
 	{
-		UTF8ToString(pContent->optional.pMembers[i].name, pAmfData->dObject.pMems[i].name);
-		if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::NUMBER)
+		UTF8ToString(pContent->optional.pMembers[i].name, (*(pAmfData->pObject)).pMems[i].name);
+		if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::NUMBER)
 		{
 			pContent->optional.pMembers[i].dType = BaseCommand::DataType::INT;
 
 		}
-		else if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::BOOLEAN)
+		else if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::BOOLEAN)
 		{
 			pContent->optional.pMembers[i].dType = BaseCommand::DataType::BOOLEAN;
 		}
-		else if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::STRING)
+		else if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::STRING)
 		{
 			pContent->optional.pMembers[i].dType = BaseCommand::DataType::STRING;
 		}

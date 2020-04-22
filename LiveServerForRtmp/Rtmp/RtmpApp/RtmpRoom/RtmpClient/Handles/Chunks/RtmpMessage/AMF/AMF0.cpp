@@ -710,5 +710,3 @@ int CAMF0::ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *out
 	utf8.buffLength = utf8BuffLen;
 	return SAR_OK;
 }
-
-
