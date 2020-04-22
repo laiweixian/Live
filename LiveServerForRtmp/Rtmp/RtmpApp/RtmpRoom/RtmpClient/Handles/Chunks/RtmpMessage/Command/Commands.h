@@ -18,28 +18,9 @@
 #include "NetStream/ReceiveVideo.h"
 #include "NetStream/Seek.h"
 
-enum CommandType
-{
-	NONE,
 
-	//NetConnection
-	CONNECT, CALL, CLOSE, CREATE_STREAM,	
 
-	//NetStream
-	PLAY, PLAY2, DELETE_STREAM, CLOSE_STREAM,
-	RECEIVE_AUDIO, RECEIVE_VIDEO, PUBLISH,
-	SEEK, PAUSE
-};
 
-struct Command
-{
-	CommandType cType;
-	union 
-	{
-	
-
-	};
-};
 
 class CCommands
 {

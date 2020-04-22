@@ -61,45 +61,61 @@ void AMF0Data_free(AMF0Data &amfData)
 	switch (amfData.dType)
 	{
 	case AMF0Type::NUMBER:
+		delete amfData.pNumber;
+		amfData.pNumber = NULL; 
 		break;
 	case AMF0Type::BOOLEAN:
+		delete amfData.pBoolean;
+		amfData.pBoolean = NULL;
 		break;
 	case AMF0Type::STRING:
-		UTF8_free(amfData.dString);
+		UTF8_free(*(amfData.pString));
+		amfData.pString = NULL;
 		break;
 	case AMF0Type::OBJECT:
-		AMF0Object_free(amfData.dObject);
+		AMF0Object_free(*(amfData.pObject));
+		amfData.pObject = NULL;
 		break;
 	case AMF0Type::MOVIECLIP:
+		
 		break;
 	case AMF0Type::NULL_MARKER:
+		
 		break;
 	case AMF0Type::UNDEFINED:
+		
 		break;
 	case AMF0Type::REFERENCE:
 		break;
 	case AMF0Type::ECMA_ARRAY:
-		AMF0EcmaArray_free(amfData.dEcmaArray);
+		AMF0EcmaArray_free(*(amfData.pEcmaArray));
+		amfData.pEcmaArray = NULL;
 		break;
 	case AMF0Type::OBJECT_END:
 		break;
 	case AMF0Type::STRICT_ARRAY:
-		AMF0StrictArray_free(amfData.dStrictArray);
+		AMF0StrictArray_free(*(amfData.pStrictArray));
+		amfData.pStrictArray = NULL;
 		break;
 	case AMF0Type::DATE:
+		delete amfData.pDate;
+		amfData.pDate = NULL;
 		break;
 	case AMF0Type::LONG_STRING:
-		UTF8_free(amfData.dStringLong);
+		UTF8_free(*(amfData.pStringLong));
+		amfData.pStringLong = NULL;
 		break;
 	case AMF0Type::UNSUPPORTED:
 		break;
 	case AMF0Type::RECORDSET:
 		break;
 	case AMF0Type::XML_DOCUMENT:
-		UTF8_free(amfData.dXmlDocument);
+		UTF8_free(*(amfData.pXmlDocument));
+		amfData.pXmlDocument = NULL;
 		break;
 	case AMF0Type::TYPE_OBJECT:
-		AMF0TypeObject_free(amfData.dTypeObject);
+		AMF0TypeObject_free(*(amfData.pTypeObject));
+		amfData.pTypeObject = NULL;
 		break;
 
 	default:
@@ -107,13 +123,65 @@ void AMF0Data_free(AMF0Data &amfData)
 	}
 }
 
-AMF0Data* amf0_init()
+AMF0Data* amf0_malloc(AMF0Type aType)
 {
 	AMF0Data *pamf = NULL;
-
 	pamf = new AMF0Data;
 	memset(pamf, 0, sizeof(AMF0Data));
-	pamf->dType = AMF0Type::INVALID;
+	pamf->dType = aType;
+	switch (aType)
+	{
+	case AMF0Type::NUMBER:
+		pamf->pNumber = new DOUBLE;
+		break;
+	case AMF0Type::BOOLEAN:
+		pamf->pBoolean = new U8;
+		break;
+	case AMF0Type::STRING:
+		pamf->pString = new UTF8;
+		break;
+	case AMF0Type::OBJECT:
+		pamf->pObject = new AMF0Object;
+		break;
+	case AMF0Type::MOVIECLIP:
+
+		break;
+	case AMF0Type::NULL_MARKER:
+
+		break;
+	case AMF0Type::UNDEFINED:
+
+		break;
+	case AMF0Type::REFERENCE:
+		break;
+	case AMF0Type::ECMA_ARRAY:
+		pamf->pEcmaArray = new AMF0EcmaArray;
+		break;
+	case AMF0Type::OBJECT_END:
+		break;
+	case AMF0Type::STRICT_ARRAY:
+		pamf->pStrictArray = new AMF0StrictArray;
+		break;
+	case AMF0Type::DATE:
+		pamf->pDate = new DOUBLE;
+		break;
+	case AMF0Type::LONG_STRING:
+		pamf->pStringLong = new UTF8;
+		break;
+	case AMF0Type::UNSUPPORTED:
+		break;
+	case AMF0Type::RECORDSET:
+		break;
+	case AMF0Type::XML_DOCUMENT:
+		pamf->pXmlDocument = new UTF8;
+		break;
+	case AMF0Type::TYPE_OBJECT:
+		pamf->pTypeObject = new AMF0TypeObject;
+		break;
+
+	default:
+		break;
+	}
 	return pamf;
 }
 
@@ -171,7 +239,7 @@ int CAMF0::Init(uint8_t *pData, const int dataLen)
 
 	while (ptr < end)
 	{
-		amf = CAMF0::Splite(ptr,end-ptr,&offset);
+		amf = CAMF0::Parse(ptr,end-ptr,&offset);
 		if (amf == NULL)
 			return SAR_FAILURE;
 		ptr += offset;
@@ -180,7 +248,7 @@ int CAMF0::Init(uint8_t *pData, const int dataLen)
 	return SAR_OK;
 }
 
-AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
+AMF0Data* CAMF0::Parse(uint8_t *pData, const int dataLen, int* outOffset)
 {
 	if (pData == NULL || dataLen == 0 )
 		return NULL;
@@ -190,80 +258,73 @@ AMF0Data* CAMF0::Splite(uint8_t *pData, const int dataLen, int* outOffset)
 	const uint8_t* start = pData, *end = pData + dataLen - 1;
 	int ret = SAR_FAILURE;
 	int offset = 0;
-	AMF0Type amfType = AMF0Type::INVALID;
-	AMF0Data* pamf = amf0_init();
-	
+
+	AMF0Data* pamf = NULL;
 	marker = *ptr;
 	ptr += 1;
 	switch (marker)
 	{
 	case AMF0Type::NUMBER:
-		amfType = AMF0Type::NUMBER;
-		ret = CAMF0::ParseNumber(ptr,end-ptr,pamf->dNumber,&offset);
+		pamf = amf0_malloc(AMF0Type::NUMBER);
+		ret = CAMF0::ParseNumber(ptr,end-ptr,*(pamf->pNumber),&offset);
 		break;
 	case AMF0Type::BOOLEAN:
-		amfType = AMF0Type::BOOLEAN;
-		ret = CAMF0::ParseBoolean(ptr, end - ptr, pamf->dBoolean, &offset);
+		pamf = amf0_malloc(AMF0Type::BOOLEAN);
+		ret = CAMF0::ParseBoolean(ptr, end - ptr, *(pamf->pBoolean), &offset);
 		break;
 	case AMF0Type::STRING:
-		amfType = AMF0Type::STRING;
-		ret = CAMF0::ParseString(ptr,end-ptr,pamf->dString,&offset);
+		pamf = amf0_malloc(AMF0Type::STRING);
+		ret = CAMF0::ParseString(ptr,end-ptr,*(pamf->pString),&offset);
 		break;
 	case AMF0Type::OBJECT:
-		amfType = AMF0Type::OBJECT;
-		ret = CAMF0::ParseObject(ptr,end-ptr,pamf->dObject,&offset);
+		pamf = amf0_malloc(AMF0Type::OBJECT);
+		ret = CAMF0::ParseObject(ptr,end-ptr,*(pamf->pObject),&offset);
 		break;
 	case AMF0Type::MOVIECLIP:
-		amfType = AMF0Type::MOVIECLIP;
 		ret = CAMF0::ParseMovieClip(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::NULL_MARKER:
-		amfType = AMF0Type::NULL_MARKER;
 		ret = CAMF0::ParseNull(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::UNDEFINED:
-		amfType = AMF0Type::UNDEFINED;
 		ret = CAMF0::ParseUndefined(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::REFERENCE:
-		amfType = AMF0Type::REFERENCE;
-		ret = CAMF0::ParseReference(ptr,end-ptr,pamf->dReference,&offset);
+		pamf = amf0_malloc(AMF0Type::REFERENCE);
+		ret = CAMF0::ParseReference(ptr,end-ptr,*(pamf->pReference),&offset);
 		break;
 	case AMF0Type::ECMA_ARRAY:
-		amfType = AMF0Type::ECMA_ARRAY;
-		ret = CAMF0::ParseEcmaArray(ptr,end-ptr,pamf->dEcmaArray,&offset);
+		pamf = amf0_malloc(AMF0Type::ECMA_ARRAY);
+		ret = CAMF0::ParseEcmaArray(ptr,end-ptr,*(pamf->pEcmaArray),&offset);
 		break;
 	case AMF0Type::OBJECT_END:
-		amfType = AMF0Type::OBJECT_END;
 		ret = CAMF0::ParseObjectEnd(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::STRICT_ARRAY:
-		amfType = AMF0Type::STRICT_ARRAY;
-		ret = CAMF0::ParseStrictArray(ptr,end-ptr,pamf->dStrictArray,&offset);
+		pamf = amf0_malloc(AMF0Type::STRICT_ARRAY);
+		ret = CAMF0::ParseStrictArray(ptr,end-ptr,*(pamf->pStrictArray),&offset);
 		break;
 	case AMF0Type::DATE:
-		amfType = AMF0Type::DATE;
-		ret = CAMF0::ParseDate(ptr,end-ptr,pamf->dDate,&offset);
+		pamf = amf0_malloc(AMF0Type::DATE);
+		ret = CAMF0::ParseDate(ptr,end-ptr,*(pamf->pDate),&offset);
 		break;
 	case AMF0Type::LONG_STRING:
-		amfType = AMF0Type::LONG_STRING;
-		ret = CAMF0::ParseLongString(ptr,end-ptr,pamf->dStringLong,&offset);
+		pamf = amf0_malloc(AMF0Type::LONG_STRING);
+		ret = CAMF0::ParseLongString(ptr,end-ptr,*(pamf->pStringLong),&offset);
 		break;
 	case AMF0Type::UNSUPPORTED:
-		amfType = AMF0Type::UNSUPPORTED;
 		ret = CAMF0::ParseUnsupported(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::RECORDSET:
-		amfType = AMF0Type::RECORDSET;
 		ret = CAMF0::ParseRecordSet(ptr,end-ptr,&offset);
 		break;
 	case AMF0Type::XML_DOCUMENT:
-		amfType = AMF0Type::XML_DOCUMENT;
-		ret = CAMF0::ParseXmlDocument(ptr,end-ptr,pamf->dXmlDocument,&offset);
+		pamf = amf0_malloc(AMF0Type::XML_DOCUMENT);
+		ret = CAMF0::ParseXmlDocument(ptr,end-ptr,*(pamf->pXmlDocument),&offset);
 		break;
 	case AMF0Type::TYPE_OBJECT:
-		amfType = AMF0Type::TYPE_OBJECT;
-		ret = CAMF0::ParseTypeObject(ptr,end-ptr,pamf->dTypeObject,&offset);
+		pamf = amf0_malloc(AMF0Type::TYPE_OBJECT);
+		ret = CAMF0::ParseTypeObject(ptr,end-ptr,*(pamf->pTypeObject),&offset);
 		break;
 	default:
 		break;
@@ -349,7 +410,7 @@ int CAMF0::ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, in
 		ptr += offset;
 
 
-		pValue = CAMF0::Splite(ptr,end-ptr,&offset);
+		pValue = CAMF0::Parse(ptr,end-ptr,&offset);
 		if (pValue == NULL)
 			goto PARSE_ERR;
 		ptr += offset;
@@ -482,7 +543,7 @@ int CAMF0::ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& 
 	i = array_count;
 	while (i > 0)
 	{
-		pValue = Splite(ptr,end-ptr,&offset);
+		pValue = Parse(ptr,end-ptr,&offset);
 		if (pValue == NULL)
 			goto PARSE_ERR;
 		ptr += offset;

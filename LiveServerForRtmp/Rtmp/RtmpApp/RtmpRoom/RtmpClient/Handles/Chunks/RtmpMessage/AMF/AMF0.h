@@ -20,7 +20,7 @@ struct AMF0EcmaArray;
 struct AMF0StrictArray;
 struct AMF0TypeObject;
 struct AMF0Data;
-struct AMF0Reserved;
+
 
 void UTF8_free(UTF8 &utf8);
 void AMF0Object_free(AMF0Object &amfObject);
@@ -29,7 +29,7 @@ void AMF0StrictArray_free(AMF0StrictArray &strict);
 void AMF0TypeObject_free(AMF0TypeObject& typeObject);
 void AMF0Data_free(AMF0Data &amfData);
 
-AMF0Data* amf0_init();
+AMF0Data* amf0_malloc(AMF0Type aType);
 void amf0_free(AMF0Data** pamf);
 
 struct UTF8
@@ -69,36 +69,33 @@ struct AMF0TypeObject
 	int			objCount;
 };
 
-struct AMF0Reserved{};
-
-
 enum AMF0Type
 {
+	NONE = 0xFF,
 	NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
 	MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
 	ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
 	LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
-	TYPE_OBJECT,INVALID = 0xFF
+	TYPE_OBJECT
 };
 
 struct AMF0Data
 {
 	AMF0Type dType;
-	union 
-	{
-		DOUBLE dNumber;					//NUMBER
-		U8	   dBoolean;					//BOOLEAN
-		UTF8   dString;					//UTF-8 CHAR
-		AMF0Object dObject;				//OBJECT
-		U16		dReference;				//REFERENCE 
-		AMF0EcmaArray dEcmaArray;		//ECMA ARRAY
-		AMF0StrictArray dStrictArray;	//STRICT ARRAY
-		DOUBLE	dDate;					//DATE
-		UTF8	dStringLong;				//LONG UTF-8 CHAR
-		UTF8	dXmlDocument;			//XML
-		AMF0TypeObject dTypeObject;	//TYPE OBJECT 
-		AMF0Reserved *dReserved;		//reserved
-	};
+	
+	DOUBLE *pNumber;					//NUMBER
+	U8	   *pBoolean;					//BOOLEAN
+	UTF8   *pString;					//UTF-8 CHAR
+	AMF0Object *pObject;				//OBJECT
+	U16		*pReference;				//REFERENCE 
+	AMF0EcmaArray *pEcmaArray;		//ECMA ARRAY
+	AMF0StrictArray *pStrictArray;	//STRICT ARRAY
+	DOUBLE	*pDate;					//DATE
+	UTF8	*pStringLong;				//LONG UTF-8 CHAR
+	UTF8	*pXmlDocument;			//XML
+	AMF0TypeObject *pTypeObject;	//TYPE OBJECT 
+	void* *pReserved;		//reserved
+	
 };
 
 class CAMF0
@@ -114,7 +111,7 @@ public:
 	
 private:
 	int Init(uint8_t *pData, const int dataLen);
-	static AMF0Data* Splite(uint8_t *pData, const int dataLen,int* outOffset);
+	static AMF0Data* Parse(uint8_t *pData, const int dataLen,int* outOffset);
 	static int ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset);
 	static int ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset);
 	static int ParseString(uint8_t *pData, const int dataLen, UTF8& utf8, int* outOffset);

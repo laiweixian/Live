@@ -12,5 +12,4 @@ public:
 
 	//CBaseMessage
 	CBaseMessage::MessageType GetType();
-
 };

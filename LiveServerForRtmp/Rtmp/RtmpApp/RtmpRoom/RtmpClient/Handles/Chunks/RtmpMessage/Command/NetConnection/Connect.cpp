@@ -17,49 +17,27 @@ const char* objectEncoding = "objectEncoding";
 const char* _result = "_result";
 const char* _error	 = "_error";
 
-void ConnCmd_Free(ConnCmd** ppCC)
+
+
+CConnectCommand::Context* CConnectCommand::Create(uint8_t* pData, uint32_t dataLen, AMFType aType)
 {
-	if (*ppCC == NULL)	return;
-
-	delete (*ppCC);
-	*ppCC = NULL;
-}
-
-CConnectCommand::CConnectCommand(AMFType aType) : m_AmfType(aType),m_ConnCmd(NULL)
-{
-
-}
-
-CConnectCommand::~CConnectCommand()
-{
-
-}
-
-CConnectCommand* CConnectCommand::Create(uint8_t* pData, uint32_t dataLen, AMFType aType)
-{
-	ConnCmd *pCC = NULL;
-	CConnectCommand *ptr = NULL;
+	CConnectCommand::Context *pContent = NULL;
 	
 	if (aType == AMF_0)
-		pCC = CConnectCommand::ParseAMF0(pData,dataLen);
+		pContent = CConnectCommand::ParseAMF0(pData,dataLen);
 	else if (aType == AMF_3)
-		pCC = CConnectCommand::ParseAMF3(pData,dataLen);
+		pContent = CConnectCommand::ParseAMF3(pData,dataLen);
 	else
-		pCC = NULL;
+		pContent = NULL;
 
-	if (pCC != NULL)
-	{
-		ptr = new CConnectCommand(aType);
-		ptr->m_ConnCmd = pCC;
-	}
-
-	return ptr;
+	return pContent;
 }
 
-ConnCmd* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t dataLen)
+CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t dataLen)
 {
-	ConnCmd *pCC = NULL;
+	CConnectCommand::Context *pContent = NULL;
 	CAMF0* pamf = NULL;
+	AMF0Data *pAmfData = NULL;
 	bool valid = true;
 	int i;
 
@@ -73,68 +51,84 @@ ConnCmd* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t dataLen)
 	valid &= (pamf->m_Amfs.at(3)->dType == AMF0Type::OBJECT);
 	if (valid == false)				goto failure;				//all amf0 type not match
 
-	pCC = new ConnCmd;
+	pContent = new CConnectCommand::Context;
 
 	//command name
-	valid = UTF8IsEqual(commandName, pamf->m_Amfs.at(0)->dString);
+	pAmfData = (pamf->m_Amfs.at(0));
+	valid = UTF8IsEqual(commandName, pAmfData->dString);
 	if (valid == false)				goto failure;				//command name is not match connect
-	UTF8ToString(pCC->name, pamf->m_Amfs.at(0)->dString);
+	UTF8ToString(pContent->name, pAmfData->dString);
 
 	//transaction id
-	valid = pamf->m_Amfs.at(1)->dNumber == 1;				
+	pAmfData = (pamf->m_Amfs.at(1));
+	valid = pAmfData->dNumber == 1;
 	if (valid == false)				goto failure;				//command transaction id is not match connect
-	pCC->transactionID = pamf->m_Amfs.at(1)->dNumber;
+	pContent->transactionID = pAmfData->dNumber;
 
 	//command object
-	valid = pamf->m_Amfs.at(2)->dObject.MemCount == 10;
+	pAmfData = (pamf->m_Amfs.at(2));
+	valid = pAmfData->dObject.MemCount == 10;
 	if (valid == false)				goto failure;				//command object count not match 
-	valid &= UTF8IsEqual(app, pamf->m_Amfs.at(2)->dObject.pMems[0].name);			valid &= pamf->m_Amfs.at(2)->dObject.pMems[0].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(flashver, pamf->m_Amfs.at(2)->dObject.pMems[1].name);		valid &= pamf->m_Amfs.at(2)->dObject.pMems[1].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(swfUrl, pamf->m_Amfs.at(2)->dObject.pMems[2].name);		valid &= pamf->m_Amfs.at(2)->dObject.pMems[2].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(tcUrl, pamf->m_Amfs.at(2)->dObject.pMems[3].name);			valid &= pamf->m_Amfs.at(2)->dObject.pMems[3].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(fpad, pamf->m_Amfs.at(2)->dObject.pMems[4].name);			valid &= pamf->m_Amfs.at(2)->dObject.pMems[4].value.dType == AMF0Type::BOOLEAN;
-	valid &= UTF8IsEqual(audioCodecs, pamf->m_Amfs.at(2)->dObject.pMems[5].name);	valid &= pamf->m_Amfs.at(2)->dObject.pMems[5].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(videoCodecs, pamf->m_Amfs.at(2)->dObject.pMems[6].name);	valid &= pamf->m_Amfs.at(2)->dObject.pMems[6].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(videoFunction, pamf->m_Amfs.at(2)->dObject.pMems[7].name);	valid &= pamf->m_Amfs.at(2)->dObject.pMems[7].value.dType == AMF0Type::NUMBER;
-	valid &= UTF8IsEqual(pageUrl, pamf->m_Amfs.at(2)->dObject.pMems[8].name);		valid &= pamf->m_Amfs.at(2)->dObject.pMems[8].value.dType == AMF0Type::STRING;
-	valid &= UTF8IsEqual(objectEncoding, pamf->m_Amfs.at(2)->dObject.pMems[9].name);valid &= pamf->m_Amfs.at(2)->dObject.pMems[9].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(app, pAmfData->dObject.pMems[0].name);			valid &= pAmfData->dObject.pMems[0].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(flashver, pAmfData->dObject.pMems[1].name);		valid &= pAmfData->dObject.pMems[1].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(swfUrl, pAmfData->dObject.pMems[2].name);		valid &= pAmfData->dObject.pMems[2].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(tcUrl, pAmfData->dObject.pMems[3].name);			valid &= pAmfData->dObject.pMems[3].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(fpad, pAmfData->dObject.pMems[4].name);			valid &= pAmfData->dObject.pMems[4].value.dType == AMF0Type::BOOLEAN;
+	valid &= UTF8IsEqual(audioCodecs, pAmfData->dObject.pMems[5].name);	valid &= pAmfData->dObject.pMems[5].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoCodecs, pAmfData->dObject.pMems[6].name);	valid &= pAmfData->dObject.pMems[6].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(videoFunction, pAmfData->dObject.pMems[7].name);	valid &= pAmfData->dObject.pMems[7].value.dType == AMF0Type::NUMBER;
+	valid &= UTF8IsEqual(pageUrl, pAmfData->dObject.pMems[8].name);		valid &= pAmfData->dObject.pMems[8].value.dType == AMF0Type::STRING;
+	valid &= UTF8IsEqual(objectEncoding, pAmfData->dObject.pMems[9].name);valid &= pAmfData->dObject.pMems[9].value.dType == AMF0Type::NUMBER;
 	if (valid == false)				goto failure;				// has one command object member no match
 	
-	UTF8ToString(pCC->obj.app, pamf->m_Amfs.at(2)->dObject.pMems[0].value.dString);
-	UTF8ToString(pCC->obj.flashver, pamf->m_Amfs.at(2)->dObject.pMems[1].value.dString);
-	UTF8ToString(pCC->obj.swfUrl, pamf->m_Amfs.at(2)->dObject.pMems[2].value.dString);
-	UTF8ToString(pCC->obj.tcUrl, pamf->m_Amfs.at(2)->dObject.pMems[3].value.dString);
-	pCC->obj.fpad = pamf->m_Amfs.at(2)->dObject.pMems[4].value.dBoolean;
-	pCC->obj.audioCodes = static_cast<uint16_t> (pamf->m_Amfs.at(2)->dObject.pMems[5].value.dNumber);
-	pCC->obj.videoCodes = static_cast<uint16_t> (pamf->m_Amfs.at(2)->dObject.pMems[6].value.dNumber);
-	pCC->obj.videoFunction = static_cast<uint16_t> (pamf->m_Amfs.at(2)->dObject.pMems[7].value.dNumber);
-	UTF8ToString(pCC->obj.pageUrl, pamf->m_Amfs.at(2)->dObject.pMems[8].value.dString);
-	pCC->obj.objectEncoding = pamf->m_Amfs.at(2)->dObject.pMems[8].value.dNumber;
+	UTF8ToString(pContent->obj.app, pAmfData->dObject.pMems[0].value.dString);
+	UTF8ToString(pContent->obj.flashver, pAmfData->dObject.pMems[1].value.dString);
+	UTF8ToString(pContent->obj.swfUrl, pAmfData->dObject.pMems[2].value.dString);
+	UTF8ToString(pContent->obj.tcUrl, pAmfData->dObject.pMems[3].value.dString);
+	pContent->obj.fpad = pAmfData->dObject.pMems[4].value.dBoolean;
+	pContent->obj.audioCodes = static_cast<uint16_t> (pAmfData->dObject.pMems[5].value.dNumber);
+	pContent->obj.videoCodes = static_cast<uint16_t> (pAmfData->dObject.pMems[6].value.dNumber);
+	pContent->obj.videoFunction = static_cast<uint16_t> (pAmfData->dObject.pMems[7].value.dNumber);
+	UTF8ToString(pContent->obj.pageUrl, pAmfData->dObject.pMems[8].value.dString);
+	pContent->obj.objectEncoding = pAmfData->dObject.pMems[8].value.dNumber;
 
 	//optional user arguments(自定义的内容)
-	pamf->m_Amfs.at(3);
+	pAmfData = (pamf->m_Amfs.at(3));
+	pContent->optional.memCount = pAmfData->dObject.MemCount;
+	pContent->optional.pMembers = new BaseCommand::ObjectMember[pContent->optional.memCount];
+
+	for (i=0;i<pAmfData->dObject.MemCount;i++)
+	{
+		UTF8ToString(pContent->optional.pMembers[i].name, pAmfData->dObject.pMems[i].name);
+		if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::NUMBER)
+		{
+			pContent->optional.pMembers[i].dType = BaseCommand::DataType::INT;
+
+		}
+		else if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::BOOLEAN)
+		{
+			pContent->optional.pMembers[i].dType = BaseCommand::DataType::BOOLEAN;
+		}
+		else if (pAmfData->dObject.pMems[i].value.dType == AMF0Type::STRING)
+		{
+			pContent->optional.pMembers[i].dType = BaseCommand::DataType::STRING;
+		}
+		else continue;
+	}
 
 	pamf->Destroy();
-	return pCC;
+	return pContent;
 
 failure:
-	if (pCC)	ConnCmd_Free(&pCC);
+	if (pContent)	delete pContent;
 	if (pamf)	pamf->Destroy();
 	return NULL;
 }
 
-ConnCmd* CConnectCommand::ParseAMF3(uint8_t* pData, uint32_t dataLen)
+CConnectCommand::Context* CConnectCommand::ParseAMF3(uint8_t* pData, uint32_t dataLen)
 {
-	ConnCmd *pCC = NULL;
+	CConnectCommand::Context *pContent = NULL;
 
-	return pCC;
+	return pContent;
 }
 
-void CConnectCommand::GenRespose()
-{
-	if (m_AmfType == AMF_0)
-	{
-
-	}
-
-}

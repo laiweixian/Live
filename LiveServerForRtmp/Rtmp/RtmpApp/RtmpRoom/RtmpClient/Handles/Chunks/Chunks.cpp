@@ -191,41 +191,51 @@ void CChunks::HandleMessage(CBaseMessage* pMsg)
 void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 {
 	if (!pMsg)	return ;
+	const CSetChunkSize::Content content = pMsg->GetContent();
 
-	m_ChunkSize = pMsg->GetContent().chunkSize;
-	delete pMsg;
-
+	m_ChunkSize = content.chunkSize;
 	if (m_pEvent)	m_pEvent->OnSetChunkSize();
 }
 
 void CChunks::HandleAbortMessage(CAbortMessage* pMsg)
 {
 	if (!pMsg)	return;
+
+	const CAbortMessage::Content content = pMsg->GetContent();
+
+
+
+	m_pEvent->OnAbortMessage();
 }
 
 void CChunks::HandleAcknowledgement(CAcknowledgement* pMsg)
 {
 	if (!pMsg)	return;
+	const CAcknowledgement::Content content = pMsg->GetContent();
 }
 
 void CChunks::HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg)
 {
 	if (!pMsg)	return;
+	const CWindowAcknowledgementSize::Content content = pMsg->GetContent();
 }
 
 void CChunks::HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg)
 {
 	if (!pMsg)	return;
+	const CSetPeerBandwidth::Content content = pMsg->GetContent();
 }
 
 void CChunks::HandleUserControlMessages(CUserControlMessages* pMsg)
 {
 	if (!pMsg)	return;
+	const CUserControlMessages::Content content = pMsg->GetContent();
 }
 
 void CChunks::HandleCommandMessage(CCommandMessage* pMsg)
 {
 	if (!pMsg)	return;
+	
 }
 
 void CChunks::HandleDataMessage(CDataMessage* pMsg)
