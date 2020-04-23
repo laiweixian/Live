@@ -8,21 +8,26 @@ namespace BaseCommand
 	struct DataBoolean;
 	struct DataString;
 	struct DataObject; 
+	union DataVariable;
+	
 	
 	enum   DataType { NONE = 0x00, INT, BOOLEAN, STRING, OBJECT };
 	typedef int64_t DataInt;
 	typedef bool DataBoolean;
 	typedef string DataString;
 
+	union DataVariable
+	{
+		DataInt dInt;
+		DataBoolean dBool;
+		DataString dStri;
+		DataObject *ptrObject;
+	};
 	struct ObjectMember
 	{
 		DataString name;
 		DataType dType;
-	
-		DataInt *dInt;
-		DataBoolean *dBool;
-		DataString *dStri;
-		DataObject *dObject;
+		DataVariable dVariable;
 	};
 	
 	struct DataObject
@@ -31,6 +36,4 @@ namespace BaseCommand
 		ObjectMember *pMembers;
 		DataInt memCount;
 	};
-
-	
 }

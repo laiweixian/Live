@@ -2,41 +2,58 @@
 
 #include "stdafx.h"
 
-#define INVALID_INPUT_ARGS	-1
-#define OUT_OF_DATA			-2
-#define NO_THIS_TYPE		-3
-#define INVALID_UTF8_CHAR	-4
-
-typedef uint8_t		U8;
-typedef uint16_t	U16;
-typedef int16_t		S16;
-typedef uint32_t	U32;
-typedef double		DOUBLE;
-
-struct UTF8;
-struct ObjectMember;
-struct AMF0Object;
-struct AMF0EcmaArray;
-struct AMF0StrictArray;
-struct AMF0TypeObject;
-struct AMF0Data;
-
-
-void UTF8_free(UTF8 &utf8);
-void AMF0Object_free(AMF0Object &amfObject);
-void AMF0EcmaArray_free(AMF0EcmaArray &ecma);
-void AMF0StrictArray_free(AMF0StrictArray &strict);
-void AMF0TypeObject_free(AMF0TypeObject& typeObject);
-void AMF0Data_free(AMF0Data &amfData);
-
-AMF0Data* amf0_malloc(AMF0Type aType);
-void amf0_free(AMF0Data** pamf);
-
-struct UTF8
+namespace AMF0
 {
-	uint8_t *buff;
-	uint64_t buffLength;
-};
+	#define AMF0_OK				0
+	#define AMF0_FAILURE		1
+	#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
+	#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
+	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
+	#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
+
+	typedef uint8_t		U8;
+	typedef uint16_t	U16;
+	typedef int16_t		S16;
+	typedef uint32_t	U32;
+	typedef double		DOUBLE;
+
+	
+	struct UTF8;
+	//struct ObjectMember;
+	struct AMF0Object;
+	struct AMF0EcmaArray;
+	struct AMF0StrictArray;
+	struct AMF0TypeObject;
+	union  AMF0Variable;
+	struct AMF0;
+
+	enum AMF0Type
+	{
+		NONE = 0xFF,
+		NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
+		MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
+		ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
+		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
+		TYPE_OBJECT
+	};
+	
+	
+	struct UTF8{uint8_t *ptr;	uint64_t length;};
+
+	void UTF8_free(UTF8 &utf8);
+	void AMF0Object_free(AMF0Object &amfObject);
+	void AMF0EcmaArray_free(AMF0EcmaArray &ecma);
+	void AMF0StrictArray_free(AMF0StrictArray &strict);
+	void AMF0TypeObject_free(AMF0TypeObject& typeObject);
+	void AMF0Data_free(AMF0Data &amfData);
+
+	AMF0Data* amf0_malloc(AMF0Type aType);
+	void amf0_free(AMF0Data** pamf);
+}
+
+
+
+
 
 struct ObjectMember
 {
@@ -69,15 +86,7 @@ struct AMF0TypeObject
 	int			objCount;
 };
 
-enum AMF0Type
-{
-	NONE = 0xFF,
-	NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
-	MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
-	ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
-	LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
-	TYPE_OBJECT
-};
+
 
 struct AMF0Data
 {

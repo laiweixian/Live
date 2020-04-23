@@ -18,7 +18,6 @@ const char* _result = "_result";
 const char* _error	 = "_error";
 
 
-
 CConnectCommand::Context* CConnectCommand::Create(uint8_t* pData, uint32_t dataLen, AMFType aType)
 {
 	CConnectCommand::Context *pContent = NULL;
@@ -81,16 +80,16 @@ CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t da
 	valid &= UTF8IsEqual(objectEncoding, (*(pAmfData->pObject)).pMems[9].name);valid &= (*(pAmfData->pObject)).pMems[9].value.dType == AMF0Type::NUMBER;
 	if (valid == false)				goto failure;				// has one command object member no match
 	
-	UTF8ToString(pContent->obj.app, (*(pAmfData->pObject)).pMems[0].value.pString);
-	UTF8ToString(pContent->obj.flashver, (*(pAmfData->pObject)).pMems[1].value.pString);
-	UTF8ToString(pContent->obj.swfUrl, (*(pAmfData->pObject)).pMems[2].value.pString);
-	UTF8ToString(pContent->obj.tcUrl, (*(pAmfData->pObject)).pMems[3].value.pString);
-	pContent->obj.fpad = (*(pAmfData->pObject)).pMems[4].value.dBoolean;
-	pContent->obj.audioCodes = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[5].value.pNumber);
-	pContent->obj.videoCodes = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[6].value.pNumber);
-	pContent->obj.videoFunction = static_cast<uint16_t> ((*(pAmfData->pObject)).pMems[7].value.pNumber);
-	UTF8ToString(pContent->obj.pageUrl, (*(pAmfData->pObject)).pMems[8].value.pString);
-	pContent->obj.objectEncoding = (*(pAmfData->pObject)).pMems[8].value.pNumber;
+	UTF8ToString(pContent->obj.app, *(pAmfData->pObject->pMems[0].value.pString));
+	UTF8ToString(pContent->obj.flashver, *(pAmfData->pObject->pMems[1].value.pString));
+	UTF8ToString(pContent->obj.swfUrl, *(pAmfData->pObject->pMems[2].value.pString));
+	UTF8ToString(pContent->obj.tcUrl, *(pAmfData->pObject->pMems[3].value.pString));
+	pContent->obj.fpad = *(pAmfData->pObject->pMems[4].value.pBoolean);
+	pContent->obj.audioCodes = static_cast<uint16_t> (*(pAmfData->pObject->pMems[5].value.pNumber));
+	pContent->obj.videoCodes = static_cast<uint16_t> (*(pAmfData->pObject->pMems[6].value.pNumber));
+	pContent->obj.videoFunction = static_cast<uint16_t> (*(pAmfData->pObject->pMems[7].value.pNumber));
+	UTF8ToString(pContent->obj.pageUrl, *(pAmfData->pObject->pMems[8].value.pString));
+	pContent->obj.objectEncoding = *(pAmfData->pObject->pMems[4].value.pNumber);
 
 	//optional user arguments(自定义的内容)
 	pAmfData = (pamf->m_Amfs.at(3));
@@ -100,20 +99,7 @@ CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t da
 	for (i=0;i<(*(pAmfData->pObject)).MemCount;i++)
 	{
 		UTF8ToString(pContent->optional.pMembers[i].name, (*(pAmfData->pObject)).pMems[i].name);
-		if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::NUMBER)
-		{
-			pContent->optional.pMembers[i].dType = BaseCommand::DataType::INT;
-
-		}
-		else if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::BOOLEAN)
-		{
-			pContent->optional.pMembers[i].dType = BaseCommand::DataType::BOOLEAN;
-		}
-		else if ((*(pAmfData->pObject)).pMems[i].value.dType == AMF0Type::STRING)
-		{
-			pContent->optional.pMembers[i].dType = BaseCommand::DataType::STRING;
-		}
-		else continue;
+		
 	}
 
 	pamf->Destroy();
