@@ -11,23 +11,36 @@ namespace AMF0
 	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
 	#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
 
+	struct NullData {};
+	
+
 	typedef uint8_t		U8;
 	typedef uint16_t	U16;
 	typedef int16_t		S16;
 	typedef uint32_t	U32;
 	typedef double		DOUBLE;
-
 	
-	struct UTF8;
-	//struct ObjectMember;
-	struct AMF0Object;
-	struct AMF0EcmaArray;
-	struct AMF0StrictArray;
-	struct AMF0TypeObject;
-	union  AMF0Variable;
-	struct AMF0;
+	struct UTF8 {uint8_t* ptr;int len;};
 
-	enum AMF0Type
+	struct Number;
+	struct Boolean;
+	struct String;
+	struct Object;
+	struct Movieclip;
+	struct Null;
+	struct Undefined;
+	struct Reference;
+	struct ECMA_Array;
+	struct ObjectEnd;
+	struct StrictArray;
+	struct Date;
+	struct LongString;
+	struct Unsupported;
+	struct RecordSet;
+	struct XML_Document;
+	struct TypedObject;
+
+	enum DataType
 	{
 		NONE = 0xFF,
 		NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
@@ -36,9 +49,59 @@ namespace AMF0
 		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
 		TYPE_OBJECT
 	};
+
+	union Variable
+	{
+		Number dNum;
+		Boolean dBoo;
+		String dStr;
+		Object dObj;
+		Movieclip dMov;
+		Null dNul;
+		Undefined dUnd;
+		Reference dRef;
+		ECMA_Array dECMA;
+		ObjectEnd dObjEnd;
+		StrictArray dStrArr;
+		Date dDat;
+		LongString dLonStr;
+		Unsupported dUns;
+		RecordSet dRec;
+		XML_Document dXML;
+		TypedObject dType;
+	};
+	struct Data
+	{
+		DataType dType;
+		Variable dValue;
+	};
 	
+	struct Number{DOUBLE value;};
+	struct Boolean{U8 value;};
+	struct String{UTF8 value;};
+	struct ObjectProperty{UTF8 name; Data value;};
+	struct Object {ObjectProperty* pObjPros; int objProCount;};
+	typedef NullData Movieclip;
+	typedef NullData Null;
+	typedef NullData Undefined;
+	struct Reference{U16 value;};
+	struct ECMA_Array{U32 count;ObjectProperty* pObjPros;};
+	typedef NullData ObjectEnd;
+	struct StrictArray {U32 count;Data* pValues;};
+	struct Date{DOUBLE value;};
+	typedef String LongString;
+	typedef NullData Unsupported;
+	typedef NullData RecordSet;
+	typedef	LongString XML_Document;
+	struct TypedObject {UTF8 className; ObjectProperty* pObjPros; int count;};
+
+	void ObjectProperty_free(ObjectProperty &objPro);
+	void Object_free(Object& obj);
+	void ECMA_Array_free(ECMA_Array& ecma);
+	void StrictArray_free(StrictArray& stri);
+	void TypedObject_free(TypedObject& typeObj);
+
 	
-	struct UTF8{uint8_t *ptr;	uint64_t length;};
 
 	void UTF8_free(UTF8 &utf8);
 	void AMF0Object_free(AMF0Object &amfObject);
@@ -52,60 +115,6 @@ namespace AMF0
 }
 
 
-
-
-
-struct ObjectMember
-{
-	UTF8 name;
-	AMF0Data value;
-};
-
-struct AMF0Object
-{
-	ObjectMember *pMems;
-	uint32_t MemCount;
-};
-
-struct AMF0EcmaArray
-{
-	AMF0Object *pObjects;
-	int			objCount ;
-};
-
-struct AMF0StrictArray
-{
-	AMF0Data *pAMFData;
-	int		  amfDataCount;
-};
-
-struct AMF0TypeObject
-{
-	UTF8 className;
-	AMF0Object *pObjects;
-	int			objCount;
-};
-
-
-
-struct AMF0Data
-{
-	AMF0Type dType;
-	
-	DOUBLE *pNumber;					//NUMBER
-	U8	   *pBoolean;					//BOOLEAN
-	UTF8   *pString;					//UTF-8 CHAR
-	AMF0Object *pObject;				//OBJECT
-	U16		*pReference;				//REFERENCE 
-	AMF0EcmaArray *pEcmaArray;		//ECMA ARRAY
-	AMF0StrictArray *pStrictArray;	//STRICT ARRAY
-	DOUBLE	*pDate;					//DATE
-	UTF8	*pStringLong;				//LONG UTF-8 CHAR
-	UTF8	*pXmlDocument;			//XML
-	AMF0TypeObject *pTypeObject;	//TYPE OBJECT 
-	void* *pReserved;		//reserved
-	
-};
 
 class CAMF0
 {
