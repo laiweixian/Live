@@ -32,25 +32,26 @@ namespace AMF0
 	struct TypedObject;
 	struct Data;
 	
-	struct Utf8 { uint8_t* ptr;int len; };
-	struct Number{DOUBLE value;};
-	struct Boolean{U8 value;};
-	struct String{ Utf8 value;};
-	struct ObjectProperty{ Utf8 name; Data value;};
+	
+	struct Utf8String{ uint8_t* ptr;uint64_t len; };
+	struct Number{DOUBLE num;};
+	struct Boolean{U8 bol;};
+	struct String{ Utf8String utf8;};
+	struct ObjectProperty{ Utf8String name; Data value;};
 	struct Object {ObjectProperty* pObjPros; int objProCount;};
 	typedef NullData Movieclip;
 	typedef NullData AMF0Null;
 	typedef NullData Undefined;
-	struct Reference{U16 value;};
+	struct Reference{U16 ref;};
 	struct ECMA_Array{U32 count;ObjectProperty* pObjPros;};
 	typedef NullData ObjectEnd;
 	struct StrictArray {U32 count;Data* pValues;};
-	struct Date{DOUBLE value;};
-	typedef String LongString;
+	struct Date{DOUBLE date;};
+	struct LongString{ Utf8String utf8Long;};
 	typedef NullData Unsupported;
 	typedef NullData RecordSet;
 	typedef	LongString XML_Document;
-	struct TypedObject { Utf8 className; ObjectProperty* pObjPros; int count;};
+	struct TypedObject { Utf8String className; ObjectProperty* pObjPros; int count;};
 
 	enum DataType
 	{
@@ -92,9 +93,10 @@ namespace AMF0
 
 #define DECLARE_TYPE_FREE(TYPE)		\
 	void TYPE##_init(TYPE &val);	\
-	void TYPE##_free(TYPE &val);	
+	void TYPE##_free(TYPE &val);	\
+	void TYPE##_copy(TYPE &dst,TYPE &src);
 
-	DECLARE_TYPE_FREE(Utf8)
+	DECLARE_TYPE_FREE(Utf8String)
 	DECLARE_TYPE_FREE(NullData)
 	DECLARE_TYPE_FREE(Number)
 	DECLARE_TYPE_FREE(Boolean)
@@ -119,6 +121,7 @@ namespace AMF0
 	
 	void Data_init(Data& data,DataType dtype);
 	void Data_free(Data& data);
+	void Data_Copy(Data& dst,Data& src);
 
 	#define AMF0_OK				0
 	#define AMF0_FAILURE		1
@@ -138,7 +141,7 @@ namespace AMF0
 		static Data* ParseData(uint8_t *src, const int srcLen,int *outOffset);
 		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outOffset);
 		static int ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outOffset);
-		static int ParseString(uint8_t *src, const int srcLen, String& utf8, int* outOffset);
+		static int ParseString(uint8_t *src, const int srcLen, String& str, int* outOffset);
 		static int ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outOffset);
 		static int ParseMovieClip(uint8_t *src, const int srcLen, int* outOffset);
 		static int ParseNull(uint8_t *src, const int srcLen, int* outOffset);
