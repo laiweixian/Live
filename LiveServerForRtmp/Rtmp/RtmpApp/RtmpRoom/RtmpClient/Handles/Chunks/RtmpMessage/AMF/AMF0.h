@@ -2,32 +2,23 @@
 
 #include "stdafx.h"
 
+
 namespace AMF0
 {
-	#define AMF0_OK				0
-	#define AMF0_FAILURE		1
-	#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
-	#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
-	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
-	#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
-
 	struct NullData {};
-	
-
 	typedef uint8_t		U8;
 	typedef uint16_t	U16;
 	typedef int16_t		S16;
 	typedef uint32_t	U32;
 	typedef double		DOUBLE;
 	
-	struct UTF8 {uint8_t* ptr;int len;};
 
 	struct Number;
 	struct Boolean;
 	struct String;
 	struct Object;
 	struct Movieclip;
-	struct Null;
+	struct AMF0Null;
 	struct Undefined;
 	struct Reference;
 	struct ECMA_Array;
@@ -39,50 +30,16 @@ namespace AMF0
 	struct RecordSet;
 	struct XML_Document;
 	struct TypedObject;
-
-	enum DataType
-	{
-		NONE = 0xFF,
-		NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
-		MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
-		ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
-		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
-		TYPE_OBJECT
-	};
-
-	union Variable
-	{
-		Number dNum;
-		Boolean dBoo;
-		String dStr;
-		Object dObj;
-		Movieclip dMov;
-		Null dNul;
-		Undefined dUnd;
-		Reference dRef;
-		ECMA_Array dECMA;
-		ObjectEnd dObjEnd;
-		StrictArray dStrArr;
-		Date dDat;
-		LongString dLonStr;
-		Unsupported dUns;
-		RecordSet dRec;
-		XML_Document dXML;
-		TypedObject dType;
-	};
-	struct Data
-	{
-		DataType dType;
-		Variable dValue;
-	};
+	struct Data;
 	
+	struct Utf8 { uint8_t* ptr;int len; };
 	struct Number{DOUBLE value;};
 	struct Boolean{U8 value;};
-	struct String{UTF8 value;};
-	struct ObjectProperty{UTF8 name; Data value;};
+	struct String{ Utf8 value;};
+	struct ObjectProperty{ Utf8 name; Data value;};
 	struct Object {ObjectProperty* pObjPros; int objProCount;};
 	typedef NullData Movieclip;
-	typedef NullData Null;
+	typedef NullData AMF0Null;
 	typedef NullData Undefined;
 	struct Reference{U16 value;};
 	struct ECMA_Array{U32 count;ObjectProperty* pObjPros;};
@@ -93,29 +50,117 @@ namespace AMF0
 	typedef NullData Unsupported;
 	typedef NullData RecordSet;
 	typedef	LongString XML_Document;
-	struct TypedObject {UTF8 className; ObjectProperty* pObjPros; int count;};
+	struct TypedObject { Utf8 className; ObjectProperty* pObjPros; int count;};
 
-	void ObjectProperty_free(ObjectProperty &objPro);
-	void Object_free(Object& obj);
-	void ECMA_Array_free(ECMA_Array& ecma);
-	void StrictArray_free(StrictArray& stri);
-	void TypedObject_free(TypedObject& typeObj);
+	enum DataType
+	{
+		NONE = 0xFF,
+		NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
+		MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
+		ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
+		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
+		TYPE_OBJECT
+	};
+	union Variable
+	{
+		NullData *pNullData;		// not use/support
+		Number *pNum;
+		Boolean *pBool;
+		String *pStr;
+		Object *pObj;
+		Movieclip *pMov;			//not use/support
+		AMF0Null *pNull;			//not use/support
+		Undefined *pUnd;			//not use/support
+		Reference *pRef;
+		ECMA_Array *pECMA;
+		ObjectEnd *pObjEnd;			//not use/support
+		StrictArray *pStrArr;
+		Date *pDate;
+		LongString *pLonStr;
+		Unsupported *pUns;			//not use/support
+		RecordSet *pRec;			//not use/support
+		XML_Document *pXML;
+		TypedObject *pTypeObj;
+	};
+	struct Data
+	{
+		DataType dType;
+		Variable dValue;
+	};
 
+
+
+#define DECLARE_TYPE_FREE(TYPE)		\
+	void TYPE##_init(TYPE &val);	\
+	void TYPE##_free(TYPE &val);	
+
+	DECLARE_TYPE_FREE(Utf8)
+	DECLARE_TYPE_FREE(NullData)
+	DECLARE_TYPE_FREE(Number)
+	DECLARE_TYPE_FREE(Boolean)
+	DECLARE_TYPE_FREE(String)
+	DECLARE_TYPE_FREE(Object)
+	DECLARE_TYPE_FREE(Movieclip)
+	DECLARE_TYPE_FREE(AMF0Null)
+	DECLARE_TYPE_FREE(Undefined)
+	DECLARE_TYPE_FREE(Reference)
+	DECLARE_TYPE_FREE(ECMA_Array)
+	DECLARE_TYPE_FREE(ObjectEnd)
+	DECLARE_TYPE_FREE(StrictArray)
+	DECLARE_TYPE_FREE(Date)
+	DECLARE_TYPE_FREE(LongString)
+	DECLARE_TYPE_FREE(Unsupported)
+	DECLARE_TYPE_FREE(RecordSet)
+	DECLARE_TYPE_FREE(XML_Document)
+	DECLARE_TYPE_FREE(TypedObject)
+
+	void ObjectProperty_init(ObjectProperty &val, DataType dtype);
+	void ObjectProperty_free(ObjectProperty &val);
 	
+	void Data_init(Data& data,DataType dtype);
+	void Data_free(Data& data);
 
-	void UTF8_free(UTF8 &utf8);
-	void AMF0Object_free(AMF0Object &amfObject);
-	void AMF0EcmaArray_free(AMF0EcmaArray &ecma);
-	void AMF0StrictArray_free(AMF0StrictArray &strict);
-	void AMF0TypeObject_free(AMF0TypeObject& typeObject);
-	void AMF0Data_free(AMF0Data &amfData);
-
-	AMF0Data* amf0_malloc(AMF0Type aType);
-	void amf0_free(AMF0Data** pamf);
+	#define AMF0_OK				0
+	#define AMF0_FAILURE		1
+	#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
+	#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
+	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
+	#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
+	class CParse
+	{
+	private:
+		CParse();
+		~CParse();
+	public:
+		static CParse* Create(uint8_t *src, const int srcLen);
+		void Destroy();
+	private:
+		static Data* ParseData(uint8_t *src, const int srcLen,int *outOffset);
+		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outOffset);
+		static int ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outOffset);
+		static int ParseString(uint8_t *src, const int srcLen, String& utf8, int* outOffset);
+		static int ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outOffset);
+		static int ParseMovieClip(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseNull(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseUndefined(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseReference(uint8_t *src, const int srcLen, Reference &refer, int* outOffset);
+		static int ParseEcmaArray(uint8_t *src, const int srcLen, ECMA_Array &ecma, int* outOffset);
+		static int ParseObjectEnd(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseStrictArray(uint8_t *src, const int srcLen, StrictArray& strictArray, int* outOffset);
+		static int ParseDate(uint8_t *src, const int srcLen, Date& date, int* outOffset);
+		static int ParseLongString(uint8_t *src, const int srcLen, LongString &utf8, int* outOffset);
+		static int ParseUnsupported(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseRecordSet(uint8_t *src, const int srcLen, int* outOffset);
+		static int ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outOffset);
+		static int ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outOffset);
+	public:
+		std::vector<Data*> m_Datas;
+	};
 }
 
 
 
+/*
 class CAMF0
 {
 private:
@@ -180,3 +225,5 @@ static bool UTF8IsEqual(const char* str, UTF8 utf8)
 
 	return (ret == 0);
 }
+
+*/

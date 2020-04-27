@@ -1,8 +1,444 @@
 #include "AMF0.h"
 
-#define CHECK_OFFSET(start,end,ptr,off)	\
-	if (ptr + off > end )	return OUT_OF_DATA;
+namespace AMF0
+{
+	void Utf8_free(Utf8 &val)
+	{
+		if (val.ptr != NULL)	delete[](val.ptr);
+		val.ptr = NULL;
+		val.len = 0;
+	}
+	void Utf8_init(Utf8 &val)
+	{
+		val.ptr = NULL;
+		val.len = 0;
+	}
 
+	void NullData_free(NullData &val){}
+	void NullData_init(NullData &val){}
+
+	void Number_free(Number &val){}
+	void Number_init(Number &val){val.value = 0;}
+
+	void Boolean_free(Boolean &val){}
+	void Boolean_init(Boolean &val){val.value = false;}
+
+	void String_free(String &val){Utf8_free(val.value);}
+	void String_init(String &val){Utf8_init(val.value);}
+
+	void Object_free(Object &val)
+	{
+		int i =0;
+		for (i=0;i<val.objProCount;i++)
+			ObjectProperty_free(val.pObjPros[i]);
+		val.pObjPros = NULL;
+		val.objProCount = 0;
+	}
+	void Object_init(Object &val)
+	{
+		val.pObjPros = NULL;
+		val.objProCount = 0;
+	}
+
+	void Movieclip_free(Movieclip &val){return NullData_free(val);}
+	void Movieclip_init(Movieclip &val){return NullData_init(val);}
+
+	void AMF0Null_free(AMF0Null &val){return NullData_free(val);}
+	void AMF0Null_init(AMF0Null &val){return NullData_init(val);}
+
+	void Undefined_free(Undefined &val){return NullData_free(val);}
+	void Undefined_init(Undefined &val){return NullData_init(val);}
+
+	void Reference_free(Reference &val){}
+	void Reference_init(Reference &val){val.value = 0;}
+
+	void ECMA_Array_free(ECMA_Array &val)
+	{
+		int i = 0;
+		for (i=0;i<val.count;i++)
+			ObjectProperty_free(val.pObjPros[i]);
+		val.pObjPros = NULL;
+		val.count = 0;
+	}
+	void ECMA_Array_init(ECMA_Array &val)
+	{
+		val.count = 0;
+		val.pObjPros = NULL;
+	}
+
+	void ObjectEnd_free(ObjectEnd &val){return NullData_free(val);}
+	void ObjectEnd_init(ObjectEnd &val){return NullData_init(val);}
+
+	void StrictArray_free(StrictArray &val)
+	{
+		int i = 0;
+		for (i=0;i<val.count;i++)
+			Data_free(val.pValues[i]);
+		val.pValues = NULL;
+		val.count = 0;
+	}
+	void StrictArray_init(StrictArray &val)
+	{
+		val.count = 0;
+		val.pValues = NULL;
+	}
+
+	void Date_free(Date &val){}
+	void Date_init(Date &val){val.value = 0;}
+
+	void LongString_free(LongString &val){return String_free(val);}
+	void LongString_init(LongString &val){return String_init(val);}
+
+	void Unsupported_free(Unsupported &val){return NullData_free(val);}
+	void Unsupported_init(Unsupported &val){return NullData_init(val); }
+
+	void RecordSet_free(RecordSet &val){return NullData_free(val);}
+	void RecordSet_init(RecordSet &val){return NullData_init(val); }
+
+	void XML_Document_free(XML_Document &val){return LongString_free(val);}
+	void XML_Document_init(XML_Document &val){return LongString_init(val);}
+	
+	void TypedObject_free(TypedObject &val)
+	{
+		int i = 0;
+		Utf8_free(val.className);
+		for(i=0;i<val.count;i++)
+			ObjectProperty_free(val.pObjPros[i]);
+		val.pObjPros = NULL;
+		val.count = 0;
+	}
+	void TypedObject_init(TypedObject &val)
+	{
+		Utf8_init(val.className);
+		val.count = 0;
+		val.pObjPros = 0;
+	}
+
+	void ObjectProperty_free(ObjectProperty &val)
+	{
+		Utf8_free(val.name);
+		Data_free(val.value);
+	}
+	void ObjectProperty_init(ObjectProperty &val, DataType dtype)
+	{
+		Utf8_init(val.name);
+		Data_init(val.value, dtype);
+	}
+
+	void Data_init(Data& data, DataType dtype)
+	{
+		Variable var;
+		memset(&var,0,sizeof(Variable));
+		switch (dtype)
+		{
+		case AMF0::NONE:
+			break;
+		case AMF0::NUMBER:
+			var.pNum = new Number;
+			Number_init(*(var.pNum));
+			break;
+		case AMF0::BOOLEAN:
+			var.pBool = new Boolean;
+			Boolean_init(*(var.pBool));
+			break;
+		case AMF0::STRING:
+			var.pStr = new String;
+			String_init(*(var.pStr));
+			break;
+		case AMF0::OBJECT:
+			var.pObj = new Object;
+			Object_init(*(var.pObj));
+			break;
+		case AMF0::MOVIECLIP:
+			break;
+		case AMF0::NULL_MARKER:
+			break;
+		case AMF0::UNDEFINED:
+			break;
+		case AMF0::REFERENCE:
+			var.pRef = new Reference;
+			Reference_init(*(var.pRef));
+			break;
+		case AMF0::ECMA_ARRAY:
+			var.pECMA = new ECMA_Array;
+			ECMA_Array_init(*(var.pECMA));
+			break;
+		case AMF0::OBJECT_END:
+			break;
+		case AMF0::STRICT_ARRAY:
+			var.pStrArr = new StrictArray;
+			StrictArray_init(*(var.pStrArr));
+			break;
+		case AMF0::DATE:
+			var.pDate = new Date;
+			Date_init(*(var.pDate));
+			break;
+		case AMF0::LONG_STRING:
+			var.pLonStr = new LongString;
+			LongString_init(*(var.pLonStr));
+			break;
+		case AMF0::UNSUPPORTED:
+			break;
+		case AMF0::RECORDSET:
+			break;
+		case AMF0::XML_DOCUMENT:
+			var.pXML = new XML_Document;
+			XML_Document_init(*(var.pXML));
+			break;
+		case AMF0::TYPE_OBJECT:
+			var.pTypeObj = new TypedObject;
+			TypedObject_init(*(var.pTypeObj));
+			break;
+		default:
+			break;
+		}
+
+		data.dType = dtype;
+		data.dValue = var;
+	}
+
+	void Data_free(Data& data)
+	{
+		// free data value
+		switch (data.dType)
+		{
+		case AMF0::NONE:
+			data.dValue.pNullData = NULL;
+			break;
+		case AMF0::NUMBER:
+			Number_free(*(data.dValue.pNum));
+			break;
+		case AMF0::BOOLEAN:
+			Boolean_free(*(data.dValue.pBool));
+			break;
+		case AMF0::STRING:
+			String_free(*(data.dValue.pStr));
+			break;
+		case AMF0::OBJECT:
+			Object_free(*(data.dValue.pObj));
+			break;
+		case AMF0::MOVIECLIP:
+			break;
+		case AMF0::NULL_MARKER:
+			break;
+		case AMF0::UNDEFINED:
+			break;
+		case AMF0::REFERENCE:
+			Reference_free(*(data.dValue.pRef));
+			break;
+		case AMF0::ECMA_ARRAY:
+			ECMA_Array_free(*(data.dValue.pECMA));
+			break;
+		case AMF0::OBJECT_END:
+			break;
+		case AMF0::STRICT_ARRAY:
+			StrictArray_free(*(data.dValue.pStrArr));
+			break;
+		case AMF0::DATE:
+			Date_free(*(data.dValue.pDate));
+			break;
+		case AMF0::LONG_STRING:
+			LongString_free(*(data.dValue.pLonStr));
+			break;
+		case AMF0::UNSUPPORTED:
+			break;
+		case AMF0::RECORDSET:
+			break;
+		case AMF0::XML_DOCUMENT:
+			XML_Document_free(*(data.dValue.pXML));
+			break;
+		case AMF0::TYPE_OBJECT:
+			TypedObject_free(*(data.dValue.pTypeObj));
+			break;
+		default:
+			break;
+		}
+	}
+
+	//
+#define CHECK_OFFSET(start,end,ptr,off)	\
+	if (ptr + off > end )	return ERROR_LOSS_DATA;
+	CParse::CParse(){
+	
+	}
+	CParse::~CParse()
+	{
+		auto it = m_Datas.begin();
+		for (it=m_Datas.begin();it!= m_Datas.end(); it++)
+			Data_free(**(it));
+		m_Datas.clear();
+	}
+
+	Data* CParse::ParseData(uint8_t *src, const int srcLen, int *outOffset)
+	{
+		if (src == NULL) return NULL;
+
+		Data *p = NULL;;
+		int ret = AMF0_OK;
+		uint8_t *ptr = src;
+		const uint8_t *end = src + srcLen - 1;
+		const DataType dType = (DataType) *ptr;
+		int len = 0;
+
+		p = new Data;
+		Data_init(*p,dType);
+		ptr += 1;
+		switch (dType)
+		{
+		case AMF0::NONE:	ret = AMF0_FAILURE;	break;
+		case AMF0::NUMBER:
+			ret = ParseNumber(ptr,end-ptr, *(p->dValue.pNum),&len);
+			break;
+		case AMF0::BOOLEAN:
+			ret = ParseBoolean(ptr,end-ptr,*(p->dValue.pBool),&len);
+			break;
+		case AMF0::STRING:
+			ret = ParseString(ptr,end-ptr,*(p->dValue.pStr),&len);
+			break;
+		case AMF0::OBJECT:
+			ret = ParseObject(ptr,end-ptr,*(p->dValue.pObj),&len);
+			break;
+		case AMF0::MOVIECLIP:
+			ret = ParseMovieClip(ptr,end-ptr,&len);
+			break;
+		case AMF0::NULL_MARKER:
+			ret = ParseNull(ptr,end-ptr,&len);
+			break;
+		case AMF0::UNDEFINED:
+			ret = ParseUndefined(ptr,end-ptr,&len);
+			break;
+		case AMF0::REFERENCE:
+			ret = ParseReference(ptr,end-ptr,*(p->dValue.pRef),&len);
+			break;
+		case AMF0::ECMA_ARRAY:
+			ret = ParseEcmaArray(ptr,end-ptr,*(p->dValue.pECMA),&len);
+			break;
+		case AMF0::OBJECT_END:
+			ret = ParseObjectEnd(ptr,end-ptr,&len);
+			break;
+		case AMF0::STRICT_ARRAY:
+			ret = ParseStrictArray(ptr,end-ptr,*(p->dValue.pStrArr),&len);
+			break;
+		case AMF0::DATE:
+			ret = ParseDate(ptr,end-ptr,*(p->dValue.pDate),&len);
+			break;
+		case AMF0::LONG_STRING:
+			ret = ParseLongString(ptr,end-ptr,*(p->dValue.pLonStr),&len);
+			break;
+		case AMF0::UNSUPPORTED:
+			ret = ParseUnsupported(ptr,end-ptr,&len);
+			break;
+		case AMF0::RECORDSET:
+			ret = ParseRecordSet(ptr,end-ptr,&len);
+			break;
+		case AMF0::XML_DOCUMENT:
+			
+			break;
+		case AMF0::TYPE_OBJECT:
+	
+			break;
+		default:
+			break;
+
+		}
+		
+		
+parseErr:
+	*outOffset = 0;
+	return NULL;	
+
+
+	}
+
+	int CParse::ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseString(uint8_t *src, const int srcLen, String& utf8, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseMovieClip(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseNull(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseUndefined(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseReference(uint8_t *src, const int srcLen, Reference &refer, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseEcmaArray(uint8_t *src, const int srcLen, ECMA_Array &ecma, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseObjectEnd(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseStrictArray(uint8_t *src, const int srcLen, StrictArray& strictArray, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseDate(uint8_t *src, const int srcLen, Date& date, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseLongString(uint8_t *src, const int srcLen, LongString &utf8, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseUnsupported(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseRecordSet(uint8_t *src, const int srcLen, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outOffset)
+	{
+
+	}
+
+	int CParse::ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outOffset)
+	{
+
+	}
+};
+
+
+
+/*
 void UTF8_free(UTF8 &utf8)
 {
 	if (utf8.buff)	delete[] utf8.buff;
@@ -710,3 +1146,4 @@ int CAMF0::ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *out
 	utf8.buffLength = utf8BuffLen;
 	return SAR_OK;
 }
+*/
