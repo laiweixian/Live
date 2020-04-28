@@ -12,7 +12,6 @@ namespace AMF0
 	typedef uint32_t	U32;
 	typedef double		DOUBLE;
 	
-
 	struct Number;
 	struct Boolean;
 	struct String;
@@ -31,7 +30,6 @@ namespace AMF0
 	struct XML_Document;
 	struct TypedObject;
 	struct Data;
-	
 	
 	struct Utf8String{ uint8_t* ptr;uint64_t len; };
 	struct Number{DOUBLE num;};
@@ -89,39 +87,30 @@ namespace AMF0
 		Variable dValue;
 	};
 
+#define DELCARE_FREE(TYPE)	\
+	void TYPE##_free(TYPE& val);
 
-
-#define DECLARE_TYPE_FREE(TYPE)		\
-	void TYPE##_init(TYPE &val);	\
-	void TYPE##_free(TYPE &val);	\
-	void TYPE##_copy(TYPE &dst,TYPE &src);
-
-	DECLARE_TYPE_FREE(Utf8String)
-	DECLARE_TYPE_FREE(NullData)
-	DECLARE_TYPE_FREE(Number)
-	DECLARE_TYPE_FREE(Boolean)
-	DECLARE_TYPE_FREE(String)
-	DECLARE_TYPE_FREE(Object)
-	DECLARE_TYPE_FREE(Movieclip)
-	DECLARE_TYPE_FREE(AMF0Null)
-	DECLARE_TYPE_FREE(Undefined)
-	DECLARE_TYPE_FREE(Reference)
-	DECLARE_TYPE_FREE(ECMA_Array)
-	DECLARE_TYPE_FREE(ObjectEnd)
-	DECLARE_TYPE_FREE(StrictArray)
-	DECLARE_TYPE_FREE(Date)
-	DECLARE_TYPE_FREE(LongString)
-	DECLARE_TYPE_FREE(Unsupported)
-	DECLARE_TYPE_FREE(RecordSet)
-	DECLARE_TYPE_FREE(XML_Document)
-	DECLARE_TYPE_FREE(TypedObject)
-
-	void ObjectProperty_init(ObjectProperty &val, DataType dtype);
-	void ObjectProperty_free(ObjectProperty &val);
-	
-	void Data_init(Data& data,DataType dtype);
-	void Data_free(Data& data);
-	void Data_Copy(Data& dst,Data& src);
+	DELCARE_FREE(NullData)
+	DELCARE_FREE(Utf8String)
+	DELCARE_FREE(Number)
+	DELCARE_FREE(Boolean)
+	DELCARE_FREE(String)
+	DELCARE_FREE(ObjectProperty)
+	DELCARE_FREE(Object)
+	DELCARE_FREE(Movieclip)
+	DELCARE_FREE(AMF0Null)
+	DELCARE_FREE(Undefined)
+	DELCARE_FREE(Reference)
+	DELCARE_FREE(ECMA_Array)
+	DELCARE_FREE(ObjectEnd)
+	DELCARE_FREE(StrictArray)
+	DELCARE_FREE(Date)
+	DELCARE_FREE(LongString)
+	DELCARE_FREE(Unsupported)
+	DELCARE_FREE(RecordSet)
+	DELCARE_FREE(XML_Document)
+	DELCARE_FREE(TypedObject)
+	DELCARE_FREE(Data)
 
 	#define AMF0_OK				0
 	#define AMF0_FAILURE		1
