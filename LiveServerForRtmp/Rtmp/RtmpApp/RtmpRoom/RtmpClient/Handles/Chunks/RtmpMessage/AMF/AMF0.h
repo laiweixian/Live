@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 
-
 namespace AMF0
 {
 	struct NullData {};
@@ -31,26 +30,6 @@ namespace AMF0
 	struct TypedObject;
 	struct Data;
 	
-	struct Utf8String{ uint8_t* ptr;uint64_t len; };
-	struct Number{DOUBLE num;};
-	struct Boolean{U8 bol;};
-	struct String{ Utf8String utf8;};
-	struct ObjectProperty{ Utf8String name; Data value;};
-	struct Object {ObjectProperty* pObjPros; int objProCount;};
-	typedef NullData Movieclip;
-	typedef NullData AMF0Null;
-	typedef NullData Undefined;
-	struct Reference{U16 ref;};
-	struct ECMA_Array{U32 count;ObjectProperty* pObjPros;};
-	typedef NullData ObjectEnd;
-	struct StrictArray {U32 count;Data* pValues;};
-	struct Date{DOUBLE date;};
-	struct LongString{ Utf8String utf8Long;};
-	typedef NullData Unsupported;
-	typedef NullData RecordSet;
-	typedef	LongString XML_Document;
-	struct TypedObject { Utf8String className; ObjectProperty* pObjPros; int count;};
-
 	enum DataType
 	{
 		NONE = 0xFF,
@@ -87,6 +66,27 @@ namespace AMF0
 		Variable dValue;
 	};
 
+	struct Utf8String { uint8_t* ptr;uint64_t len; };
+	struct Number { DOUBLE num; };
+	struct Boolean { U8 bol; };
+	struct String { Utf8String utf8; };
+	struct ObjectProperty { Utf8String name; Data value; };
+	struct Object { ObjectProperty* pObjPros; int objProCount; };
+	typedef NullData Movieclip;
+	typedef NullData AMF0Null;
+	typedef NullData Undefined;
+	struct Reference { U16 ref; };
+	struct ECMA_Array { U32 count;ObjectProperty* pObjPros; };
+	typedef NullData ObjectEnd;
+	struct StrictArray { U32 count;Data* pValues; };
+	struct Date { DOUBLE date; };
+	struct LongString { Utf8String utf8Long; };
+	typedef NullData Unsupported;
+	typedef NullData RecordSet;
+	typedef	LongString XML_Document;
+	struct TypedObject { Utf8String className; ObjectProperty* pObjPros; int count; };
+
+
 #define DELCARE_FREE(TYPE)	\
 	void TYPE##_free(TYPE& val);
 
@@ -114,6 +114,8 @@ namespace AMF0
 
 	#define AMF0_OK				0
 	#define AMF0_FAILURE		1
+	#define END_OF_OBJECT	    3
+	#define NO_END_OF_OBJECT	4
 	#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
 	#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
 	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
@@ -127,7 +129,7 @@ namespace AMF0
 		static CParse* Create(uint8_t *src, const int srcLen);
 		void Destroy();
 	private:
-		static Data* ParseData(uint8_t *src, const int srcLen,int *outOffset);
+		static int ParseData(uint8_t *src, const int srcLen,Data& data,int *outOffset);
 		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outOffset);
 		static int ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outOffset);
 		static int ParseString(uint8_t *src, const int srcLen, String& str, int* outOffset);
@@ -145,77 +147,14 @@ namespace AMF0
 		static int ParseRecordSet(uint8_t *src, const int srcLen, int* outOffset);
 		static int ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outOffset);
 		static int ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outOffset);
+
+		static int ParseUtf8(uint8_t *src, const int srcLen, Utf8String &utf8, int* outOffset);
+		static int ParseUtf8Long(uint8_t *src, const int srcLen, Utf8String &utf8Long, int* outOffset);
+		static int ParseObjectProperty(uint8_t *src, const int srcLen, ObjectProperty& objPro, int* outOffset);
 	public:
 		std::vector<Data*> m_Datas;
 	};
+
+	static void UTF8ToString(string &str, Utf8String& utf8);
+	static bool UTF8IsEqual(const char* str, Utf8String& utf8);
 }
-
-
-
-/*
-class CAMF0
-{
-private:
-	CAMF0();
-	~CAMF0();
-
-public:
-	static CAMF0* CreateAMF0( uint8_t *pData,const int dataLen);
-	void Destroy();
-private:
-	int Init(uint8_t *pData, const int dataLen);
-	static AMF0Data* Parse(uint8_t *pData, const int dataLen,int* outOffset);
-	static int ParseNumber(uint8_t *pData, const int dataLen, DOUBLE& number, int* outOffset);
-	static int ParseBoolean(uint8_t *pData, const int dataLen, U8& boolData, int* outOffset);
-	static int ParseString(uint8_t *pData, const int dataLen, UTF8& utf8, int* outOffset);
-	static int ParseObject(uint8_t *pData, const int dataLen, AMF0Object& amfObj, int* outOffset);
-	static int ParseMovieClip(uint8_t *pData, const int dataLen, int* outOffset);
-	static int ParseNull(uint8_t *pData, const int dataLen, int* outOffset);
-	static int ParseUndefined(uint8_t *pData, const int dataLen,  int* outOffset);
-	static int ParseReference(uint8_t *pData, const int dataLen, U16 &refer, int* outOffset);
-	static int ParseEcmaArray(uint8_t *pData, const int dataLen, AMF0EcmaArray &ecma, int* outOffset);
-	static int ParseObjectEnd(uint8_t *pData, const int dataLen,  int* outOffset);
-	static int ParseStrictArray(uint8_t *pData, const int dataLen, AMF0StrictArray& strictArray, int* outOffset);
-	static int ParseDate(uint8_t *pData, const int dataLen, DOUBLE& date, int* outOffset);
-	static int ParseLongString(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset);
-	static int ParseUnsupported(uint8_t *pData, const int dataLen,  int* outOffset);
-	static int ParseRecordSet(uint8_t *pData, const int dataLen, int* outOffset);
-	static int ParseXmlDocument(uint8_t *pData, const int dataLen, UTF8 &utf8, int* outOffset);
-	static int ParseTypeObject(uint8_t *pData, const int dataLen, AMF0TypeObject &typeObject, int* outOffset);
-	
-	static int ParseUTF8(uint8_t *pData,const int dataLen,UTF8& utf8,int *outOffset);
-	static int ParseUTF8Long(uint8_t *pData, const int dataLen, UTF8& utf8, int *outOffset);
-public:
-	vector<AMF0Data*> m_Amfs;
-};
-
-
-static void UTF8ToString(string &str, UTF8 utf8)
-{
-	char *c = NULL;
-
-	c = new char[utf8.buffLength+1];
-	memset(c,0, utf8.buffLength + 1);
-	memcpy(c,utf8.buff, utf8.buffLength);
-
-	str = c;
-	
-	delete[] c;
-}
-
-static bool UTF8IsEqual(const char* str, UTF8 utf8)
-{
-	char *c = NULL;
-	int ret = 0;
-
-	c = new char[utf8.buffLength + 1];
-	memset(c, 0, utf8.buffLength + 1);
-	memcpy(c, utf8.buff, utf8.buffLength);
-
-	ret = strcmp(str,c);
-	delete[] c;
-
-	return (ret == 0);
-}
-
-*/
