@@ -795,5 +795,3 @@ parseErr:
 	*outOffset = 0;
 	return ret;
 }
-
-
