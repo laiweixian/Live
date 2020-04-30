@@ -3,52 +3,149 @@
 namespace AMF0
 {
 	void NullData_free(NullData& val){}
+	void NullData_copy(NullData& dst,NullData& src){dst = src;}
+
 	void Utf8String_free(Utf8String& val) 
 	{
 		if (val.ptr) delete[] val.ptr;
 		val.ptr = NULL;
 		val.len = 0;
 	}
-	void Number_free(Number& val){}
-	void Boolean_free(Boolean& val) {}
-	void String_free(String& val) {
-		Utf8String_free(val.utf8);
+	void Utf8String_copy(Utf8String& dst, Utf8String& src)
+	{
+		dst.len = src.len;
+		if (dst.len > 0)
+		{
+			dst.ptr = new uint8_t[dst.len];
+			memcpy(dst.ptr,src.ptr,dst.len);
+		}
+		else 
+			dst.ptr = NULL;
 	}
+
+	void Number_free(Number& val){}
+	void Number_copy(Number& dst,Number& src){dst.num = src.num;}
+
+	void Boolean_free(Boolean& val) {}
+	void Boolean_copy(Boolean& dst,Boolean& src){dst.bol = src.bol;}
+
+	void String_free(String& val) {Utf8String_free(val.utf8);}
+	void String_copy(String& dst,String& src){return Utf8String_copy(dst.utf8,src.utf8);}
+
 	void ObjectProperty_free(ObjectProperty& val) 
 	{
 		Utf8String_free(val.name);
 		Data_free(val.value);
 	}
+	void ObjectProperty_copy(ObjectProperty& dst, ObjectProperty& src)
+	{
+		Utf8String_copy(dst.name,src.name);
+		Data_copy(dst.value,src.value);
+	}
+
 	void Object_free(Object& val) {
-		for (int i=0;i<val.objProCount;i++)
+		for (int i=0;i<val.count;i++)
 			ObjectProperty_free(val.pObjPros[i]);
 	}
+	void Object_copy(Object& dst, Object& src)
+	{
+		dst.count = src.count;
+		if (dst.count > 0)
+		{
+			dst.pObjPros = new ObjectProperty[dst.count];
+			for (int i=0;i<dst.count;i++)
+				ObjectProperty_copy(dst.pObjPros[i],src.pObjPros[i]);
+		}
+		else 
+			dst.pObjPros = NULL;
+	}
+
 	void Movieclip_free(Movieclip& val) {return NullData_free(val);}
+	void Movieclip_copy(Movieclip& dst,Movieclip& src){return NullData_copy(dst,src);}
+
 	void AMF0Null_free(AMF0Null& val) { return NullData_free(val); }
+	void AMF0Null_copy(AMF0Null& dst,AMF0Null& src){return NullData_copy(dst,src);}
+
 	void Undefined_free(Undefined& val) { return NullData_free(val); }
+	void Undefined_copy(Undefined& dst,Undefined& src){return NullData_copy(dst,src); }
+
 	void Reference_free(Reference& val) {}
+	void Reference_copy(Reference& dst,Reference& src){dst.ref = src.ref;}
+
 	void ECMA_Array_free(ECMA_Array& val) 
 	{
 		for (int i= 0;i<val.count;i++)
 			ObjectProperty_free(val.pObjPros[i]);
 	}
+	void ECMA_Array_copy(ECMA_Array& dst, ECMA_Array& src)
+	{
+		dst.count = src.count;
+		if (dst.count > 0)
+		{
+			dst.pObjPros = new ObjectProperty[dst.count];
+			for (int i=0;i<dst.count;i++)
+				ObjectProperty_copy(dst.pObjPros[i],src.pObjPros[i]);
+		}
+		else 
+			dst.pObjPros = NULL;
+	}
+
 	void ObjectEnd_free(ObjectEnd& val) {return  NullData_free(val);}
+	void ObjectEnd_copy(ObjectEnd& dst,ObjectEnd& src){return NullData_copy(dst,src);}
+
 	void StrictArray_free(StrictArray& val) 
 	{
 		for (int i=0;i<val.count;i++)
 			Data_free(val.pValues[i]);
 	}
+	void StrictArray_copy(StrictArray& dst, StrictArray& src)
+	{
+		dst.count = src.count;
+		if (dst.count > 0)
+		{
+			dst.pValues = new Data[dst.count];
+			for (int i=0;i<dst.count;i++)
+				Data_copy(dst.pValues[i],src.pValues[i]);
+		}
+		else 
+			dst.pValues = NULL;
+	}
+
 	void Date_free(Date& val) {}
+	void Date_copy(Date& dst,Date& src){ dst.date = src.date;}
+
 	void LongString_free(LongString& val) {return Utf8String_free(val.utf8Long);}
+	void LongString_copy(LongString& dst,LongString& src){return Utf8String_copy(dst.utf8Long,src.utf8Long);}
+
 	void Unsupported_free(Unsupported& val) { return NullData_free(val); }
+	void Unsupported_copy(Unsupported& dst,Unsupported& src){return NullData_copy(dst,src);}
+
 	void RecordSet_free(RecordSet& val) { return NullData_free(val); }
+	void RecordSet_copy(RecordSet& dst,RecordSet& src){return NullData_copy(dst,src);}
+
 	void XML_Document_free(XML_Document& val) {return LongString_free(val);}
+	void XML_Document_copy(XML_Document& dst,XML_Document& src){return LongString_copy(dst,src);}
+
 	void TypedObject_free(TypedObject& val) 
 	{
 		Utf8String_free(val.className);
 		for (int i=0;i<val.count;i++)
 			ObjectProperty_free(val.pObjPros[i]);
 	}
+	void TypedObject_copy(TypedObject& dst, TypedObject& src)
+	{
+		Utf8String_copy(dst.className,src.className);
+		dst.count = src.count;
+		if (dst.count > 0)
+		{
+			dst.pObjPros = new ObjectProperty[dst.count];
+			for (int i=0;i<dst.count;i++)
+				ObjectProperty_copy(dst.pObjPros[i],src.pObjPros[i]);
+		}
+		else 
+			dst.pObjPros = NULL;
+	}
+
 	void Data_free(Data& val) {
 		switch (val.dType)
 		{
@@ -130,10 +227,90 @@ namespace AMF0
 		return;
 	}
 
+	void Data_copy(Data& dst, Data& src)
+	{
+		dst.dType = src.dType;
+		memset(&(dst.dValue),0,sizeof(Variable));
+		switch (dst.dType)
+		{
+		case AMF0::NONE:
+			break;
+		case AMF0::NUMBER:
+			dst.dValue.pNum = new Number;
+			Number_copy(*(dst.dValue.pNum),*(src.dValue.pNum));
+			break;
+		case AMF0::BOOLEAN:
+			dst.dValue.pBool = new Boolean;
+			Boolean_copy(*(dst.dValue.pBool),*(src.dValue.pBool));
+			break;
+		case AMF0::STRING:
+			dst.dValue.pStr = new String;
+			String_copy(*(dst.dValue.pStr),*(src.dValue.pStr));
+			break;
+		case AMF0::OBJECT:
+			dst.dValue.pObj = new Object;
+			Object_copy(*(dst.dValue.pObj),*(src.dValue.pObj));
+			break;
+		case AMF0::MOVIECLIP:
+			dst.dValue.pMov = new Movieclip;
+			Movieclip_copy(*(dst.dValue.pMov),*(src.dValue.pMov));
+			break;
+		case AMF0::NULL_MARKER:
+			dst.dValue.pNull = new AMF0Null;
+			AMF0Null_copy(*(dst.dValue.pNull),*(src.dValue.pNull));
+			break;
+		case AMF0::UNDEFINED:
+			dst.dValue.pUnd = new Undefined;
+			Undefined_copy(*(dst.dValue.pUnd),*(src.dValue.pUnd));
+			break;
+		case AMF0::REFERENCE:
+			dst.dValue.pRef = new Reference;
+			Reference_copy(*(dst.dValue.pRef),*(src.dValue.pRef));
+			break;
+		case AMF0::ECMA_ARRAY:
+			dst.dValue.pECMA = new ECMA_Array;
+			ECMA_Array_copy(*(dst.dValue.pECMA),*(src.dValue.pECMA));
+			break;
+		case AMF0::OBJECT_END:
+			dst.dValue.pObjEnd = new ObjectEnd;
+			ObjectEnd_copy(*(dst.dValue.pObjEnd),*(src.dValue.pObjEnd));
+			break;
+		case AMF0::STRICT_ARRAY:
+			dst.dValue.pStrArr = new StrictArray;
+			StrictArray_copy(*(dst.dValue.pStrArr),*(src.dValue.pStrArr));
+			break;
+		case AMF0::DATE:
+			dst.dValue.pDate = new Date;
+			Date_copy(*(dst.dValue.pDate),*(src.dValue.pDate));
+			break;
+		case AMF0::LONG_STRING:
+			dst.dValue.pLonStr = new LongString;
+			LongString_copy(*(dst.dValue.pLonStr),*(src.dValue.pLonStr));
+			break;
+		case AMF0::UNSUPPORTED:
+			dst.dValue.pUns = new Unsupported;
+			Unsupported_copy(*(dst.dValue.pUns),*(src.dValue.pUns));
+			break;
+		case AMF0::RECORDSET:
+			dst.dValue.pRec = new RecordSet;
+			RecordSet_copy(*(dst.dValue.pRec),*(src.dValue.pRec));
+			break;
+		case AMF0::XML_DOCUMENT:
+			dst.dValue.pXML = new XML_Document;
+			XML_Document_copy(*(dst.dValue.pXML),*(src.dValue.pXML));
+			break;
+		case AMF0::TYPE_OBJECT:
+			dst.dValue.pTypeObj = new TypedObject;
+			TypedObject_copy(*(dst.dValue.pTypeObj),*(src.dValue.pTypeObj));
+			break;
+		default:
+			break;
+		}
+	}
+
 	//
 #define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off > end ) return ERROR_LOSS_DATA;
 	
-
 	CParse::CParse()
 	{
 	
@@ -317,10 +494,16 @@ parseErr:
 				goto parseErr;	
 		}
 
-		obj.objProCount = pros.size();
-		obj.pObjPros = new ObjectProperty[obj.objProCount];
+		obj.count = pros.size();
+		obj.pObjPros = new ObjectProperty[obj.count];
+		for (int i=0;i<obj.count;i++)
+			ObjectProperty_copy(obj.pObjPros[i],*(pros.at(i)));
 
-		
+		for (it = pros.begin();it != pros.end();it++)
+		{
+			ObjectProperty_free(**it);
+			(*it) = NULL;
+		}
 
 		return AMF0_OK;
 	parseErr:
@@ -588,5 +771,35 @@ parseErr:
 		*outOffset = 0;
 		return ret;
 	}
+
+	
 };
 
+
+void UTF8ToString(string &str, AMF0::Utf8String& utf8)
+{
+	char* buff = new char[utf8.len + 1];
+	memset(buff, 0, utf8.len + 1);
+	memcpy(buff, utf8.ptr, utf8.len);
+
+	str = buff;
+	delete[] buff;
+	buff = NULL;
+	return;
+}
+
+bool UTF8IsEqual(const char* str, AMF0::Utf8String& utf8)
+{
+	char* buff = new char[utf8.len + 1];
+	bool isTrue = false;
+
+	memset(buff, 0, utf8.len + 1);
+	memcpy(buff, utf8.ptr, utf8.len);
+
+	isTrue = strcmp(str, buff) == 0;
+
+
+	delete[] buff;
+	buff = NULL;
+	return isTrue;
+}

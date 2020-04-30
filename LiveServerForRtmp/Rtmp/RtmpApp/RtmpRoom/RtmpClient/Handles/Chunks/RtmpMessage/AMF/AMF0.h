@@ -71,7 +71,7 @@ namespace AMF0
 	struct Boolean { U8 bol; };
 	struct String { Utf8String utf8; };
 	struct ObjectProperty { Utf8String name; Data value; };
-	struct Object { ObjectProperty* pObjPros; int objProCount; };
+	struct Object { U32 count; ObjectProperty* pObjPros;  };
 	typedef NullData Movieclip;
 	typedef NullData AMF0Null;
 	typedef NullData Undefined;
@@ -84,11 +84,12 @@ namespace AMF0
 	typedef NullData Unsupported;
 	typedef NullData RecordSet;
 	typedef	LongString XML_Document;
-	struct TypedObject { Utf8String className; ObjectProperty* pObjPros; int count; };
+	struct TypedObject { Utf8String className; U32 count; ObjectProperty* pObjPros;  };
 
 
 #define DELCARE_FREE(TYPE)	\
-	void TYPE##_free(TYPE& val);
+	void TYPE##_free(TYPE& val);\
+	void TYPE##_copy(TYPE& dst,TYPE& src);
 
 	DELCARE_FREE(NullData)
 	DELCARE_FREE(Utf8String)
@@ -155,6 +156,7 @@ namespace AMF0
 		std::vector<Data*> m_Datas;
 	};
 
-	static void UTF8ToString(string &str, Utf8String& utf8);
-	static bool UTF8IsEqual(const char* str, Utf8String& utf8);
 }
+
+void UTF8ToString(string &str, AMF0::Utf8String& utf8);
+bool UTF8IsEqual(const char* str, AMF0::Utf8String& utf8);
