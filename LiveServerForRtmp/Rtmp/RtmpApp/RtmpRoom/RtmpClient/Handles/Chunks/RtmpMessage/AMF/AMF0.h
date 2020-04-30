@@ -2,15 +2,29 @@
 
 #include "stdafx.h"
 
+#define AMF0_OK				0
+#define AMF0_FAILURE		1
+#define END_OF_OBJECT	    3
+#define NO_END_OF_OBJECT	4
+#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
+#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
+#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
+#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
+
+typedef uint8_t		U8;
+typedef uint16_t	U16;
+typedef int16_t		S16;
+typedef uint32_t	U32;
+typedef double		DOUBLE;
+
+#define DELCARE_FREE(TYPE)	\
+	void TYPE##_free(TYPE& val);	\
+	void TYPE##_copy(TYPE& dst, TYPE& src);
+
 namespace AMF0
 {
-	struct NullData {};
-	typedef uint8_t		U8;
-	typedef uint16_t	U16;
-	typedef int16_t		S16;
-	typedef uint32_t	U32;
-	typedef double		DOUBLE;
-	
+	struct NullData;
+	struct Utf8String;
 	struct Number;
 	struct Boolean;
 	struct String;
@@ -29,7 +43,13 @@ namespace AMF0
 	struct XML_Document;
 	struct TypedObject;
 	struct Data;
-	
+
+	enum DataType;
+	union Variable;
+
+	class CParse;
+
+	//
 	enum DataType
 	{
 		NONE = 0xFF,
@@ -39,6 +59,7 @@ namespace AMF0
 		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
 		TYPE_OBJECT
 	};
+
 	union Variable
 	{
 		NullData *pNullData;		// not use/support
@@ -60,18 +81,14 @@ namespace AMF0
 		XML_Document *pXML;
 		TypedObject *pTypeObj;
 	};
-	struct Data
-	{
-		DataType dType;
-		Variable dValue;
-	};
 
+	struct NullData {};
 	struct Utf8String { uint8_t* ptr;uint64_t len; };
 	struct Number { DOUBLE num; };
 	struct Boolean { U8 bol; };
 	struct String { Utf8String utf8; };
 	struct ObjectProperty { Utf8String name; Data value; };
-	struct Object { U32 count; ObjectProperty* pObjPros;  };
+	struct Object { U32 count; ObjectProperty* pObjPros; };
 	typedef NullData Movieclip;
 	typedef NullData AMF0Null;
 	typedef NullData Undefined;
@@ -84,12 +101,8 @@ namespace AMF0
 	typedef NullData Unsupported;
 	typedef NullData RecordSet;
 	typedef	LongString XML_Document;
-	struct TypedObject { Utf8String className; U32 count; ObjectProperty* pObjPros;  };
-
-
-#define DELCARE_FREE(TYPE)	\
-	void TYPE##_free(TYPE& val);\
-	void TYPE##_copy(TYPE& dst,TYPE& src);
+	struct TypedObject { Utf8String className; U32 count; ObjectProperty* pObjPros; };
+	struct Data{ DataType dType; Variable dValue;};
 
 	DELCARE_FREE(NullData)
 	DELCARE_FREE(Utf8String)
@@ -113,14 +126,9 @@ namespace AMF0
 	DELCARE_FREE(TypedObject)
 	DELCARE_FREE(Data)
 
-	#define AMF0_OK				0
-	#define AMF0_FAILURE		1
-	#define END_OF_OBJECT	    3
-	#define NO_END_OF_OBJECT	4
-	#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
-	#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
-	#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
-	#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
+	void UTF8ToString(string &str, Utf8String& utf8);
+	bool UTF8IsEqual(const char* str, Utf8String& utf8);
+
 	class CParse
 	{
 	private:
@@ -130,7 +138,7 @@ namespace AMF0
 		static CParse* Create(uint8_t *src, const int srcLen);
 		void Destroy();
 	private:
-		static int ParseData(uint8_t *src, const int srcLen,Data& data,int *outOffset);
+		static int ParseData(uint8_t *src, const int srcLen, Data& data, int *outOffset);
 		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outOffset);
 		static int ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outOffset);
 		static int ParseString(uint8_t *src, const int srcLen, String& str, int* outOffset);
@@ -155,8 +163,11 @@ namespace AMF0
 	public:
 		std::vector<Data*> m_Datas;
 	};
+};
 
-}
 
-void UTF8ToString(string &str, AMF0::Utf8String& utf8);
-bool UTF8IsEqual(const char* str, AMF0::Utf8String& utf8);
+
+
+
+
+
