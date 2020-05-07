@@ -2,9 +2,8 @@
 
 #define RTMP_VERSION	0x03
 
-CHandshake::CHandshake(IHandshakeCall *pCall, IHandshakeEvent* pEvent) :m_pCall(pCall),m_pEvent(pEvent),
-												  m_ReceType(ReceType::NONE),m_SendType(SendType::NONE),
-												  m_RecePack({0}),m_SendPack({0})
+CHandshake::CHandshake() : m_ReceType(ReceType::NONE),m_SendType(SendType::NONE),
+						m_RecePack({0}),m_SendPack({0})
 {
 	
 }
@@ -149,7 +148,7 @@ int CHandshake::SendS0()
 		
 	if (isSend)		goto SEND;
 
-	length = m_pCall->SendHandshake(&version,1);
+	length = SendHandshake(&version,1);
 	if (length != 1)
 		return ERROR_SEND_HANDSHAKE;
 
@@ -176,7 +175,7 @@ int CHandshake::SendS1()
 	memset(s1 + 4, 0, 4);					//zero
 	GenRamdomByte((char*)(s1+4+4), 1528);	//random
 
-	length = m_pCall->SendHandshake(s1,1536);
+	length = SendHandshake(s1,1536);
 	if (length != 1536)
 		return ERROR_SEND_HANDSHAKE;
 
@@ -200,7 +199,7 @@ int CHandshake::SendS2()
 	memcpy(s2 + 4, m_SendPack.data1, 4);			// s1 timestamp
 	memcpy(s2 + 4 + 4, m_SendPack.data1 + 8, 1528);	// s1 random 
 
-	length = m_pCall->SendHandshake(s2, 1536);
+	length = SendHandshake(s2, 1536);
 	if (length != 1536)
 		return ERROR_SEND_HANDSHAKE;
 
@@ -210,4 +209,9 @@ int CHandshake::SendS2()
 
 SEND:
 	return HANDSHAKE_OK;
+}
+
+int CHandshake::SendHandshake(const uint8_t *pSrc, const int srcLen)
+{
+
 }

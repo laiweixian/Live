@@ -17,24 +17,41 @@ const char* objectEncoding = "objectEncoding";
 const char* _result = "_result";
 const char* _error	 = "_error";
 
-
-CConnectCommand::Context* CConnectCommand::Create(uint8_t* pData, uint32_t dataLen, AMFType aType)
+CConnectCmd::CConnectCmd() : m_Content(NULL)
 {
-	CConnectCommand::Context *pContent = NULL;
+
+}
+CConnectCmd::~CConnectCmd()
+{
+	if (m_Content)
+		delete m_Content;
+	m_Content = NULL;
+}
+
+CConnectCmd* CConnectCmd::Create(uint8_t* pData, uint32_t dataLen, AMFType aType)
+{
+	CConnectCmd *pCmd = NULL;
+	Content *pContent = NULL;
 	
 	if (aType == AMF_0)
-		pContent = CConnectCommand::ParseAMF0(pData,dataLen);
+		pContent = CConnectCmd::ParseAMF0(pData,dataLen);
 	else if (aType == AMF_3)
-		pContent = CConnectCommand::ParseAMF3(pData,dataLen);
+		pContent = CConnectCmd::ParseAMF3(pData,dataLen);
 	else
 		pContent = NULL;
 
-	return pContent;
+	if (pContent)
+	{
+		pCmd = new CConnectCmd;
+		pCmd->m_Content = pContent;
+	}
+		
+	return pCmd;
 }
 
-CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t dataLen)
+CConnectCmd::Content* CConnectCmd::ParseAMF0(uint8_t* pData, uint32_t dataLen)
 {
-	CConnectCommand::Context *pContent = NULL;
+	CConnectCmd::Content *pContent = NULL;
 	AMF0::CParse *pParse = NULL;
 	AMF0::Data *pAmfData = NULL;
 	bool valid = true;
@@ -50,13 +67,13 @@ CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t da
 	valid &= (pParse->m_Datas.at(3)->dType ==  AMF0::DataType::OBJECT);
 	if (valid == false)				goto failure;				//all amf0 type not match
 
-	pContent = new CConnectCommand::Context;
+	pContent = new Content;
 
 	//command name
 	pAmfData = (pParse->m_Datas.at(0));
 	valid = AMF0::UTF8IsEqual(commandName,pAmfData->dValue.pStr->utf8);
 	if (valid == false)				goto failure;				//command name is not match connect
-	AMF0::UTF8ToString(pContent->name, pAmfData->dValue.pStr->utf8);
+	AMF0::UTF8ToString(pContent->commandName, pAmfData->dValue.pStr->utf8);
 
 	//transaction id
 	pAmfData = (pParse->m_Datas.at(1));
@@ -84,15 +101,16 @@ CConnectCommand::Context* CConnectCommand::ParseAMF0(uint8_t* pData, uint32_t da
 	AMF0::UTF8ToString(pContent->obj.swfUrl, (pAmfData->dValue.pObj->pObjPros[2].value.dValue.pStr->utf8));
 	AMF0::UTF8ToString(pContent->obj.tcUrl, (pAmfData->dValue.pObj->pObjPros[3].value.dValue.pStr->utf8));
 	pContent->obj.fpad = (pAmfData->dValue.pObj->pObjPros[4].value.dValue.pBool->bol);
-	pContent->obj.audioCodes = (pAmfData->dValue.pObj->pObjPros[5].value.dValue.pNum->num);
-	pContent->obj.videoCodes = (pAmfData->dValue.pObj->pObjPros[6].value.dValue.pNum->num);
-	pContent->obj.videoFunction = pAmfData->dValue.pObj->pObjPros[7].value.dValue.pNum->num;
+	pContent->obj.audioCodes =static_cast<uint16_t>(pAmfData->dValue.pObj->pObjPros[5].value.dValue.pNum->num);
+	pContent->obj.videoCodes = static_cast<uint16_t> (pAmfData->dValue.pObj->pObjPros[6].value.dValue.pNum->num);
+	pContent->obj.videoFunction = static_cast<uint16_t>( pAmfData->dValue.pObj->pObjPros[7].value.dValue.pNum->num);
 	AMF0::UTF8ToString(pContent->obj.pageUrl, (pAmfData->dValue.pObj->pObjPros[8].value.dValue.pStr->utf8));
-	pContent->obj.objectEncoding = pAmfData->dValue.pObj->pObjPros[9].value.dValue.pNum->num;
+	pContent->obj.objectEncoding = static_cast<uint16_t>( pAmfData->dValue.pObj->pObjPros[9].value.dValue.pNum->num);
 
 	//optional user arguments(自定义的内容)
 	pAmfData = (pParse->m_Datas.at(3));
 
+	if (pParse)		pParse->Destroy();
 	return pContent;
 
 failure:
@@ -101,10 +119,5 @@ failure:
 	return NULL;
 }
 
-CConnectCommand::Context* CConnectCommand::ParseAMF3(uint8_t* pData, uint32_t dataLen)
-{
-	CConnectCommand::Context *pContent = NULL;
 
-	return pContent;
-}
 

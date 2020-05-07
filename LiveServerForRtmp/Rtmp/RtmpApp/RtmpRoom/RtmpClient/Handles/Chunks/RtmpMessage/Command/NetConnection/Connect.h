@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../../AMF/AMF.h"
-#include "../BaseCommand.h"
+
+
 
 enum AudioCodesType
 {
@@ -23,37 +24,35 @@ enum VideoCodesType
 enum VideoFunctionType{SUPPORT_VID_CLIENT_SEEK	= 1};
 enum ObjectEncodingType{AMF0 = 0 , AMF3 = 3};
 
-class CConnectCommand
+#define DECLARE_CONNECT_COMMAND	\
+	struct CommandObject{\
+		string app;\
+		string flashver;\
+		string swfUrl;\
+		string tcUrl;\
+		bool	fpad;\
+		uint16_t audioCodes;\
+		uint16_t videoCodes;\
+		uint16_t videoFunction;\
+		string pageUrl;\
+		uint16_t objectEncoding;};\
+	struct Content{\
+	string commandName;\
+	int transactionID;\
+	CommandObject obj;};
+
+class CConnectCmd
 {
 private:
-	CConnectCommand() = default;
-	~CConnectCommand() = default;
-
+	CConnectCmd() ;
+	~CConnectCmd();
 public:
-	struct CommandObject
-	{
-		BaseCommand::DataString  app;
-		BaseCommand::DataString  flashver;
-		BaseCommand::DataString  swfUrl;
-		BaseCommand::DataString  tcUrl;
-		BaseCommand::DataBoolean fpad;
-		BaseCommand::DataInt	 audioCodes;
-		BaseCommand::DataInt	 videoCodes;
-		BaseCommand::DataInt	 videoFunction;
-		BaseCommand::DataString  pageUrl;
-		BaseCommand::DataInt	 objectEncoding;
-	};
-	typedef BaseCommand::DataObject OptionalUserArguments;
-	struct Context {
-		string name;
-		uint32_t transactionID;
-		CommandObject obj;
-		OptionalUserArguments optional;
-	};
-
-	static Context* Create(uint8_t* pData, uint32_t dataLen, AMFType aType);
-	static void Content_free(Context** ppContent);
+	DECLARE_CONNECT_COMMAND
+	
+	static CConnectCmd* Create(uint8_t* pData, uint32_t dataLen, AMFType aType);
 private:
-	static Context* ParseAMF0(uint8_t* pData, uint32_t dataLen);
-	static Context* ParseAMF3(uint8_t* pData, uint32_t dataLen);
+	static Content* ParseAMF0(uint8_t* pData, uint32_t dataLen);
+	static Content* ParseAMF3(uint8_t* pData, uint32_t dataLen);
+public:
+	Content *m_Content;
 };

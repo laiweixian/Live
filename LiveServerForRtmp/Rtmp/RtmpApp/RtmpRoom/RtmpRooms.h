@@ -9,7 +9,6 @@ protected:
 	IRtmpRoomsEvent() = default;
 	IRtmpRoomsEvent() = default;
 public:
-	virtual void On
 };
 
 

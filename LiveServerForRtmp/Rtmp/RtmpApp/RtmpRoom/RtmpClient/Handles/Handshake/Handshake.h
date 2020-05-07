@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BaseHandle.h"
+
 
 #define HANDSHAKE_OK			0
 #define HANDSHAKE_FAILURE		1
@@ -17,37 +17,13 @@
 		enum SendType { NONE, S0, S1, S2 };	\
 		struct Packet { uint8_t data0;uint8_t data1[1536];uint8_t data2[1536];};
 
-
-class IHandshakeEvent : public IHandleBaseEvent
-{
-protected:
-	virtual ~IHandshakeEvent() = default;
-	IHandshakeEvent() = default;
-public:
-	virtual void OnC0() = 0;
-	virtual void OnC1() = 0;
-	virtual void OnC2() = 0;
-};
-
-class IHandshakeCall
-{
-protected:
-	IHandshakeCall() = default;
-	~IHandshakeCall() = default;
-public:
-	virtual int SendHandshake(uint8_t *src,const int srcLen) = 0;
-	virtual int CloseHandshake() = 0;
-};
-
-
 class CHandshake 
 {
 public:
-	CHandshake(IHandshakeCall *pCall,IHandshakeEvent* pEvent);
+	CHandshake();
 	~CHandshake();
 
 	int OnHandshake(uint8_t* src, const int srcLength,uint32_t *outLen);
-	
 private:
 	DECLARE_HANDSHAKE
 	int RecePacket(uint8_t *buff, const int buffLen,int *outLen);
@@ -59,10 +35,9 @@ private:
 	int SendS0();
 	int SendS1();
 	int SendS2();
-private:
-	IHandshakeCall  *m_pCall;
-	IHandshakeEvent *m_pEvent;
 
+	int SendHandshake(const uint8_t *pSrc, const int srcLen);
+private:
 	CHandshake::ReceType  m_ReceType;
 	CHandshake::SendType  m_SendType;
 	CHandshake::Packet    m_RecePack;
