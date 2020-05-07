@@ -51,7 +51,7 @@ CConnectCmd* CConnectCmd::Create(uint8_t* pData, uint32_t dataLen, AMFType aType
 
 CConnectCmd::Content* CConnectCmd::ParseAMF0(uint8_t* pData, uint32_t dataLen)
 {
-	CConnectCmd::Content *pContent = NULL;
+	Content *pContent = NULL;
 	AMF0::CParse *pParse = NULL;
 	AMF0::Data *pAmfData = NULL;
 	bool valid = true;
@@ -119,5 +119,7 @@ failure:
 	return NULL;
 }
 
-
-
+CConnectCmd::Content* ParseAMF3(uint8_t* pData, uint32_t dataLen)
+{
+	return NULL;
+}
