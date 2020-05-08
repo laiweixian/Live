@@ -27,8 +27,12 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 		if (chunkLen == 0)
 			break;
 
-		if(m_Message->GetRemainSize() == 0)
+		if (m_Message->GetRemainSize() == 0)
+		{
 			HandleMessage(m_Message);
+			
+		}
+			
 		
 		offset += chunkLen;
 	}

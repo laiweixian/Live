@@ -213,5 +213,5 @@ SEND:
 
 int CHandshake::SendHandshake(const uint8_t *pSrc, const int srcLen)
 {
-
+	return SendPacket(pSrc,srcLen);
 }

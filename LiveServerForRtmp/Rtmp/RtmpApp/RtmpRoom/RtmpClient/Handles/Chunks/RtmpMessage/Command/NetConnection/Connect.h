@@ -35,8 +35,26 @@ namespace Connect
 	static const uint16_t AMF0 = 0;
 	static const uint16_t AMF3 = 3;
 
+	//command name
 	static const char* COMMAND_NAME = "connect";
-	static const uint32_t TRANSACTION_ID = 1;
+
+	//transaction id
+	static const uint16_t TRANSACTION_ID = 1;
+
+	//command object
+	static const char* APP	= "app";
+	static const char* FLASHVER = "flashver";
+	static const char* SWF_URL = "swfUrl";
+	static const char* TC_URL = "tcUrl";
+	static const char* FPAD = "fpad";
+	static const char* AUDIO_CODECS = "audioCodecs";
+	static const char* VIDEO_CODECS = "videoCodecs";
+	static const char* VIDEO_FUNCTION = "videoFunction";
+	static const char* PAGE_URL = "pageUrl";
+	static const char* OBJECT_ENCODING = "objectEncoding";
+
+	//optional user arguments
+
 
 	struct Content;
 	struct CommandObject;
