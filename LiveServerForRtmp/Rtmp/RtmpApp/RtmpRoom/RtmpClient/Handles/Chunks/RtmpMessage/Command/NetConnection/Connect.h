@@ -1,56 +1,78 @@
 #pragma once
 
 #include "../../AMF/AMF.h"
-
-enum AudioCodesType
+namespace Connect
 {
-	SUPPORT_SND_NONE = 0x0001,	SUPPORT_SND_ADPCM = 0x0002,
-	SUPPORT_SND_MP3	= 0x0004,	SUPPORT_SND_INTEL = 0x0008,
-	SUPPORT_SND_UNUSED = 0x0010,SUPPORT_SND_NELLY8 = 0x0020,
-	SUPPORT_SND_NELLY = 0x0040,SUPPORT_SND_G711A = 0x0080,
-	SUPPORT_SND_G711U = 0x0100,SUPPORT_SND_AAC = 0x0400,
-	SUPPORT_SND_SPEEX = 0x0800,SUPPORT_SND_ALL = 0x0fff
-};
-enum VideoCodesType
-{
-	SUPPORT_VID_UNUSED	= 0x0001,SUPPORT_VID_JPEG	= 0x0002,
-	SUPPORT_VID_SORENSON = 0x0004,SUPPORT_VID_HOMEBREW = 0x0008,
-	SUPPORT_VID_VP6		= 0x0010,SUPPORT_VID_VP6ALPHA  = 0x0020,
-	SUPPORT_VID_HOMEBREWV = 0x0040,SUPPORT_VID_H264	= 0x0080,
-	SUPPORT_VID_ALL		= 0x00ff
-};
-enum VideoFunctionType{SUPPORT_VID_CLIENT_SEEK	= 1};
-enum ObjectEncodingType{AMF0 = 0 , AMF3 = 3};
+	//AudioCodes
+	static const uint16_t SUPPORT_SND_NONE = 0x0001;
+	static const uint16_t SUPPORT_SND_ADPCM = 0x0002;
+	static const uint16_t SUPPORT_SND_MP3 = 0x0004;
+	static const uint16_t SUPPORT_SND_INTEL = 0x0008;
+	static const uint16_t SUPPORT_SND_UNUSED = 0x0010;
+	static const uint16_t SUPPORT_SND_NELLY8 = 0x0020;
+	static const uint16_t SUPPORT_SND_NELLY = 0x0040;
+	static const uint16_t SUPPORT_SND_G711A = 0x0080;
+	static const uint16_t SUPPORT_SND_G711U = 0x0100;
+	static const uint16_t SUPPORT_SND_AAC = 0x0400;
+	static const uint16_t SUPPORT_SND_SPEEX = 0x0800;
+	static const uint16_t SUPPORT_SND_ALL = 0x0fff;
 
-#define DECLARE_CONNECT_COMMAND	\
-	struct CommandObject{\
-		string app;\
-		string flashver;\
-		string swfUrl;\
-		string tcUrl;\
-		bool	fpad;\
-		uint16_t audioCodes;\
-		uint16_t videoCodes;\
-		uint16_t videoFunction;\
-		string pageUrl;\
-		uint16_t objectEncoding;};\
-	struct Content{\
-	string commandName;\
-	int transactionID;\
-	CommandObject obj;};
+	//VideoCodes
+	static const uint16_t SUPPORT_VID_UNUSED = 0x0001;
+	static const uint16_t SUPPORT_VID_JPEG = 0x0002;
+	static const uint16_t SUPPORT_VID_SORENSON = 0x0004;
+	static const uint16_t SUPPORT_VID_HOMEBREW = 0x0008;
+	static const uint16_t SUPPORT_VID_VP6 = 0x0010;
+	static const uint16_t SUPPORT_VID_VP6ALPHA = 0x0020;
+	static const uint16_t SUPPORT_VID_HOMEBREWV = 0x0040;
+	static const uint16_t SUPPORT_VID_H264 = 0x0080;
+	static const uint16_t SUPPORT_VID_ALL = 0x00ff;
 
-class CConnectCmd
-{
-private:
-	CConnectCmd() ;
-	~CConnectCmd();
-public:
-	DECLARE_CONNECT_COMMAND
+	//VideoFunction
+	static const uint16_t SUPPORT_VID_CLIENT_SEEK = 1;
+
+	//ObjectEncoding
+	static const uint16_t AMF0 = 0;
+	static const uint16_t AMF3 = 3;
+
+	static const char* COMMAND_NAME = "connect";
+	static const uint32_t TRANSACTION_ID = 1;
+
+	struct Content;
+	struct CommandObject;
+	struct OptionalUserArguments;
+
 	
-	static CConnectCmd* Create(uint8_t* pData, uint32_t dataLen, AMFType aType);
-private:
-	static Content* ParseAMF0(uint8_t* pData, uint32_t dataLen);
-	static Content* ParseAMF3(uint8_t* pData, uint32_t dataLen);
-public:
-	Content *m_Content;
+	Content* ParseConnect(AMF0::CParse *pParse);
+	Content* ParseConnect(AMF3::CParse *pParse);
+
+	struct Content
+	{
+		string commandName;
+		int transactionId;
+		CommandObject cmdObj;
+		OptionalUserArguments optUsrArg;
+	};
+
+	struct CommandObject
+	{
+		string app;
+		string flashver;
+		string swfUrl;
+		string tcUrl;
+		bool fpad;
+		uint16_t audioCodecs;
+		uint16_t videoCodecs;
+		uint16_t videoFunction;
+		string pageUrl;
+		uint16_t objectEncoding;
+	};
+
+	struct OptionalUserArguments
+	{
+
+	};
+
 };
+
+

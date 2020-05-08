@@ -199,13 +199,12 @@
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\Commands.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetConnection\Connect.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpRooms.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetConnection\Connect.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\Chunks.cpp" />

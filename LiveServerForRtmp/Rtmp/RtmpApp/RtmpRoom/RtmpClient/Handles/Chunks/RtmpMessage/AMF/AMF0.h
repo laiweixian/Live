@@ -46,21 +46,27 @@ namespace AMF0
 
 	enum DataType;
 	union Variable;
-
 	class CParse;
 
-	//
-	enum DataType
-	{
-		NONE = 0xFF,
-		NUMBER = 0x00, BOOLEAN, STRING, OBJECT,
-		MOVIECLIP /*reserved , not supported*/, NULL_MARKER, UNDEFINED, REFERENCE,
-		ECMA_ARRAY, OBJECT_END, STRICT_ARRAY, DATE,
-		LONG_STRING, UNSUPPORTED, RECORDSET/*reserved , not support*/, XML_DOCUMENT,
-		TYPE_OBJECT
-	};
+	static const uint8_t  MARKER_NUMBER	= 1;
+	static const uint8_t  MARKER_BOOLEAN = 2;
+	static const uint8_t  MARKER_STRING = 3;
+	static const uint8_t  MARKER_OBJECT = 4;
+	static const uint8_t  MARKER_MOVIECLIP = 5;/*reserved , not supported*/
+	static const uint8_t  MARKER_NULL = 6;
+	static const uint8_t  MARKER_UNDEFINED = 7;
+	static const uint8_t  MARKER_REFERENCE = 8;
+	static const uint8_t  MARKER_ECMA_ARRAY = 9;
+	static const uint8_t  MARKER_OBJECT_END = 10;
+	static const uint8_t  MARKER_STRICT_ARRAY = 11;
+	static const uint8_t  MARKER_DATE = 12;
+	static const uint8_t  MARKER_LONG_STRING = 13;
+	static const uint8_t  MARKER_UNSUPPORTED = 14;
+	static const uint8_t  MARKER_RECORDSET = 15;/*reserved , not support*/
+	static const uint8_t  MARKER_XML_DOCUMENT = 16;
+	static const uint8_t  MARKER_TYPE_OBJECT = 17;
 
-	union Variable
+	union DataUnion
 	{
 		NullData *pNullData;		// not use/support
 		Number *pNum;
@@ -102,7 +108,7 @@ namespace AMF0
 	typedef NullData RecordSet;
 	typedef	LongString XML_Document;
 	struct TypedObject { Utf8String className; U32 count; ObjectProperty* pObjPros; };
-	struct Data{ DataType dType; Variable dValue;};
+	struct Data{ uint8_t dType; DataUnion dValue;};
 
 	DELCARE_FREE(NullData)
 	DELCARE_FREE(Utf8String)
