@@ -2,8 +2,6 @@
 
 #include "../../AMF/AMF.h"
 
-
-
 enum AudioCodesType
 {
 	SUPPORT_SND_NONE = 0x0001,	SUPPORT_SND_ADPCM = 0x0002,
