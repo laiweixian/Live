@@ -87,7 +87,7 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 		input.ShowInput(&url);
 		break;
 	case ID_OPEN_FILE:
-		ShowBitmap(NULL,0);
+		CaptureScreen();
 		break;
 	default:
 		return CDialogEx::OnCommand(wParam,lParam);
@@ -97,7 +97,7 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-int CMainDialog::ShowBitmap(uint8_t* data, const int dataLen)
+int CMainDialog::CaptureScreen()
 {
 	HDC hScreen , hWin,hMemory;
 	HBITMAP hBit,hOldBit ;
@@ -119,11 +119,64 @@ int CMainDialog::ShowBitmap(uint8_t* data, const int dataLen)
 	hOldBit = (HBITMAP)::SelectObject(hMemory,hBit);
 	::BitBlt(hMemory,0,0,screenWidth,screenHeight,hScreen,0,0,SRCCOPY);
 
-	::StretchBlt(hWin,0,0,winWidth,winHeigth,hScreen,0,0,screenWidth,screenHeight,SRCCOPY);
+	//save bitmap
+	SaveBitmap(hMemory,hBit);
 
 	::DeleteObject(hBit);
 	::DeleteDC(hMemory);
 	::ReleaseDC(NULL,hScreen);
 	::ReleaseDC(this->GetSafeHwnd(),hWin);
 	return 0;
+}
+
+int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
+{
+	BITMAP bitmap;
+	BITMAPFILEHEADER fileHeader;
+	BITMAPINFOHEADER infoHeader;
+	DWORD bmpSize,DIBSize , length;
+	char *buff = NULL , *bmpBuff = NULL; 
+
+	::GetObject(hBit,sizeof(BITMAP),&bitmap);
+	
+	infoHeader.biSize = sizeof(BITMAPINFOHEADER);
+	infoHeader.biWidth = bitmap.bmWidth;
+	infoHeader.biHeight = bitmap.bmHeight;
+	infoHeader.biPlanes = bitmap.bmPlanes;
+	infoHeader.biBitCount = bitmap.bmBitsPixel;
+	infoHeader.biCompression = BI_RGB;
+	infoHeader.biSizeImage = 0;
+	infoHeader.biXPelsPerMeter = 0;
+	infoHeader.biYPelsPerMeter = 0;
+	infoHeader.biClrUsed = 0;
+	infoHeader.biClrImportant = 0;
+
+	bmpSize = ((infoHeader.biWidth * infoHeader.biBitCount + 31) / 32) * 4 * infoHeader.biHeight;
+	buff = new char[bmpSize];
+	GetDIBits(hdc,hBit,0,infoHeader.biHeight,buff,(BITMAPINFO*)&infoHeader,DIB_RGB_COLORS);
+	
+	DIBSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + bmpSize;
+	fileHeader.bfType = 0x4d42;	// 'B' 0x4d ,'M' 0x42
+	fileHeader.bfSize = DIBSize;
+	fileHeader.bfReserved1 = 0;
+	fileHeader.bfReserved2 = 0;
+	fileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+	length = sizeof(fileHeader) + sizeof(infoHeader) + bmpSize;
+	bmpBuff = new char[length];
+	memcpy(bmpBuff,&fileHeader,sizeof(fileHeader));
+	memcpy(bmpBuff+ sizeof(fileHeader),&infoHeader,sizeof(infoHeader));
+	memcpy(bmpBuff+ sizeof(fileHeader)+ sizeof(infoHeader),buff,bmpSize);
+
+	EncodeAndSave(bmpBuff,length);
+
+	delete[] buff; buff = NULL;
+	delete[] bmpBuff; bmpBuff = NULL;
+	return 0;
+}
+
+
+int CMainDialog::EncodeAndSave(const char* src, const int srcLen)
+{
+
 }

@@ -17,9 +17,9 @@ public:
 	
 #endif
 
-	int ShowBitmap(uint8_t* data,const int dataLen);
-	int SaveBitmap(HBITMAP hBit);
-
+	int CaptureScreen();
+	int SaveBitmap(HDC hdc,HBITMAP hBit);
+	int EncodeAndSave(const char* src,const int srcLen);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
@@ -35,6 +35,7 @@ public:
 
 private:
 	CMenu m_Menu;
+	
 public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 };

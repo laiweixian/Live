@@ -39,6 +39,9 @@
     <ClInclude Include="Wins\EditDialog\InputDialog.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Coder\H264Encode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LiveClient.cpp">
@@ -51,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Coder\H264Encode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

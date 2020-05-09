@@ -4,8 +4,17 @@
 #include "Handles/Chunks/Chunks.h"
 
 
+
+
+
+
 class CRtmpClient  :public CHandshake , public CChunks
 {
+public:
+	static CRtmpClient* Create(const int id, const uint32_t chunkSize = 128);
+	void Destroy();
+	int Handle(uint8_t *src, const int srcLen);
+
 private:
 	CRtmpClient(int id,uint32_t chunkSize);
 	~CRtmpClient();
@@ -13,7 +22,7 @@ private:
 protected:
 	//CHandshake
 	int SendPacket(const uint8_t* src, const int srcLength);
-	int CHandshake::CloseServer() = 0;
+	int CHandshake::CloseServer() ;
 
 	//
 	void OnC0();
@@ -21,12 +30,24 @@ protected:
 	void OnC2();
 
 	//
+	int SendChunks(uint8_t* src, const int srcLength);
+	int CChunks::CloseServer();
 
+	void OnSetChunkSize() ;
+	void OnAbortMessage() ;
+	void OnAcknowledgement() ;
+	void OnWindowAcknowledgementSize() ;
+	void OnSetPeerBandwidth();
+	void OnUserControlMessages();
+	void OnCommandMessage() ;
+	void OnDataMessage() ;
+	void OnSharedObjectMessage();
+	void OnAudioMessage();
+	void OnVideoMessage() ;
+	void OnAggregateMessage();
 
-public:
-	static CRtmpClient* Create(const int id,const uint32_t chunkSize = 128);
-	void Destroy();
+private:
+	uint64_t m_TotalReceive;
 
-	int Handle(uint8_t *src, const int srcLen) ;
 
 };

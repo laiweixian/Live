@@ -192,6 +192,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Coder\H264Encode.h" />
     <ClInclude Include="LiveClient.h" />
     <ClInclude Include="Wins\EditDialog\InputDialog.h" />
     <ClInclude Include="Wins\MainDialog\MainDialog.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Wins\Wins.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Coder\H264Encode.cpp" />
     <ClCompile Include="LiveClient.cpp" />
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />
     <ClCompile Include="Wins\MainDialog\MainDialog.cpp" />
