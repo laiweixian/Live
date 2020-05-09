@@ -196,7 +196,8 @@ void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 	const CSetChunkSize::Content content = pMsg->GetContent();
 
 	m_ChunkSize = content.chunkSize;
-
+	delete pMsg;
+	OnSetChunkSize();
 }
 
 void CChunks::HandleAbortMessage(CAbortMessage* pMsg)

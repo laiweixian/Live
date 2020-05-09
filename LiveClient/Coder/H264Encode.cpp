@@ -22,7 +22,7 @@ int CH264Encode::Init()
 	pOutFormat = m_FormatContext->oformat;
 	if (pOutFormat->video_codec != AV_CODEC_ID_NONE)
 	{
-		pOutFormat->
+		
 	}
 	if (pOutFormat->audio_codec != AV_CODEC_ID_NONE)
 	{
