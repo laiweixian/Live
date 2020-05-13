@@ -143,6 +143,8 @@ namespace AMF0
 	public:
 		static CParse* Create(uint8_t *src, const int srcLen);
 		void Destroy();
+
+	
 	private:
 		static int ParseData(uint8_t *src, const int srcLen, Data& data, int *outLen);
 		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outLen);

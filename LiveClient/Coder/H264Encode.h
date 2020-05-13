@@ -2,18 +2,17 @@
 
 #include "../stdafx.h"
 
-enum FrameType{NONE,RGB32,YUV420};
-
 class CH264Encode
 {
 public:
 	CH264Encode();
 	~CH264Encode();
 
-	int Init();
-	int Encode(FrameType fType,const char* buff ,const int buffLen);
-	int Stop() ;
+	int Encode(BITMAPFILEHEADER fileHeader,BITMAPINFOHEADER inforHeader,const char* colorBuff,const int buffLen);
+
 private:
 	AVFormatContext *m_FormatContext;
-
+	AVFrame *m_Bitmap;
+	AVFrame *m_YUV420P;
+	SwsContext *m_SwsCtx;
 };

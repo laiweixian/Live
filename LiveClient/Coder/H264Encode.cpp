@@ -1,45 +1,37 @@
 #include "H264Encode.h"
 
-CH264Encode::CH264Encode() : m_FormatContext(NULL)
+
+CH264Encode::CH264Encode() : m_FormatContext(NULL), m_Bitmap(NULL),m_YUV420P(NULL), m_SwsCtx(NULL)
 {
+	int ret ;
+	//
+	const int srcWidth = 1920 , srcHeight = 1080;
+	const AVPixelFormat srcFmt = AVPixelFormat::AV_PIX_FMT_ABGR;
+	//
+	const int dstWidth = 1920 , dstHeigth = 1080;
+	const AVPixelFormat dstFmt = AVPixelFormat::AV_PIX_FMT_YUV420P;
+	 
+	m_SwsCtx = sws_getContext(srcWidth,srcHeight,srcFmt,\
+							  dstWidth,dstHeigth,dstFmt,\
+							  SWS_BILINEAR,NULL,NULL,NULL);
 	
-}
-
-int CH264Encode::Init()
-{
-	const char *video = "my.mp4";
-	int ret = 0;
-	AVOutputFormat *pOutFormat = NULL;
-	AVCodec *pVideo = NULL , *pAudio = NULL;
-
-	ret = avformat_alloc_output_context2(&m_FormatContext, NULL, NULL, video);
-	if (!(ret >= 0))
-		return ret;
-	
-	pVideo = avcodec_find_encoder(AV_CODEC_ID_H264);
-	pAudio = avcodec_find_encoder(AV_CODEC_ID_AAC);
-	
-	pOutFormat = m_FormatContext->oformat;
-	if (pOutFormat->video_codec != AV_CODEC_ID_NONE)
-	{
-		
-	}
-	if (pOutFormat->audio_codec != AV_CODEC_ID_NONE)
-	{
-
-	}
-
-
+	avpicture_alloc()
 }
 
 CH264Encode::~CH264Encode()
 {
-	if (m_FormatContext)
-	avformat_free_context(m_FormatContext);
+	if (m_FormatContext)	avformat_free_context(m_FormatContext);
 	m_FormatContext = NULL;
+	if (m_YUV420P)	av_frame_free(&m_YUV420P);
+	if (m_Bitmap) av_frame_free(&m_Bitmap);
+	if (m_SwsCtx) sws_freeContext(m_SwsCtx);
+	m_SwsCtx = NULL;
 }
 
-int CH264Encode::Encode(FrameType fType, const char* buff, const int buffLen)
+int CH264Encode::Encode(BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* colorBuff, const int buffLen)
 {
+	
 
+	
+	 
 }

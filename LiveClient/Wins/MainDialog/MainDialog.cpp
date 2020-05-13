@@ -142,7 +142,7 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 	infoHeader.biSize = sizeof(BITMAPINFOHEADER);
 	infoHeader.biWidth = bitmap.bmWidth;
 	infoHeader.biHeight = bitmap.bmHeight;
-	infoHeader.biPlanes = bitmap.bmPlanes;
+	infoHeader.biPlanes = 1;
 	infoHeader.biBitCount = bitmap.bmBitsPixel;
 	infoHeader.biCompression = BI_RGB;
 	infoHeader.biSizeImage = 0;
@@ -170,6 +170,9 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 	EncodeAndSave(bmpBuff,length);
 
+	CH264Encode h264;
+	h264.Encode(fileHeader,infoHeader, buff,bmpSize);
+
 	delete[] buff; buff = NULL;
 	delete[] bmpBuff; bmpBuff = NULL;
 	return 0;
@@ -178,5 +181,5 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 int CMainDialog::EncodeAndSave(const char* src, const int srcLen)
 {
-
+	return 0;
 }

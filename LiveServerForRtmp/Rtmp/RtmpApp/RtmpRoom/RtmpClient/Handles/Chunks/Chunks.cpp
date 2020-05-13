@@ -261,4 +261,6 @@ void CChunks::HandleVideoMessage(CVideoMessage* pMsg)
 void CChunks::HandleAggregateMessage(CAggregateMessage* pMsg)
 {
 	if (!pMsg)	return;
+
+	
 }
