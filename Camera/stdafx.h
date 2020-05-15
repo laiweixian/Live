@@ -52,4 +52,20 @@
 #endif
 #endif
 
+//include .h file
+
+#include "resource.h"
+#include <iostream>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <string>
+#include <vector>
+using namespace std;
+
+//DirectShow
+#include <dshow.h>
+
+//ATL
+#include <atlbase.h>
 
