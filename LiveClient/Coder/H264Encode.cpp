@@ -17,10 +17,9 @@ CH264Encode::~CH264Encode()
 
 }
 
-int CH264Encode::Encode(BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* buff, const int buffLen)
+int CH264Encode::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* buff, const int buffLen)
 {
 	int ret ;	
-
 	//
 	AVFrame* rgb = NULL;
 	const int rgbWidth = inforHeader.biWidth , rgbHeight = inforHeader.biHeight;
@@ -30,20 +29,20 @@ int CH264Encode::Encode(BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeade
 	//
 	SwsContext *swsCtx = NULL;
 
-	//check input bitmap width,height,bitCount
-	if (inforHeader.biBitCount != 32)
-		return -1;
+	AVFrame* nextRgb = NULL;
 
+	CDialog *pShow;
+	
 	//setting rgb data struct
 	rgb = av_frame_alloc();
-	rgb->format = AVPixelFormat::AV_PIX_FMT_ABGR;
+	rgb->format = AVPixelFormat::AV_PIX_FMT_BGR24;
 	rgb->width = rgbWidth;
 	rgb->height = rgbHeight;
 	ret = av_frame_get_buffer(rgb,0);
 	if (ret != 0)
 		goto fail;
-	memcpy(rgb->data[0],buff,buffLen);
 
+	ret = av_image_fill_arrays(rgb->data,rgb->linesize,(unsigned char*)buff, (AVPixelFormat)rgb->format, rgb->width, rgb->height,24);
 	//setting yuv data struct
 	yuv = av_frame_alloc();
 	yuv->format = AVPixelFormat::AV_PIX_FMT_YUV420P;
@@ -54,8 +53,8 @@ int CH264Encode::Encode(BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeade
 		goto fail;
 	
 	//setting context
-	swsCtx = sws_getContext(rgb->width,rgb->height, AVPixelFormat::AV_PIX_FMT_ABGR,\
-							yuv->width,yuv->height, AVPixelFormat::AV_PIX_FMT_YUV420P,\
+	swsCtx = sws_getContext(rgb->width,rgb->height, (AVPixelFormat)(rgb->format),\
+							yuv->width,yuv->height, (AVPixelFormat)(yuv->format),\
 							SWS_BILINEAR,NULL,NULL,NULL);
 	if (swsCtx == NULL)
 		goto fail;
@@ -64,20 +63,24 @@ int CH264Encode::Encode(BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeade
 					yuv->data,yuv->linesize);
 	
 
-	YUV2BMP(yuv);
+	nextRgb = YUV2BMP(yuv);
+
+	pShow = new CDialog;
+	pShow->Create(IDD_SHOW_BMP_DLG);
+	pShow->ShowWindow(SW_SHOWNORMAL);
+	Render(pShow->GetDC()->GetSafeHdc(), nextRgb);
 	return 0;
 
 fail:
 	return ret;
 }
 
-int CH264Encode::YUV2BMP(AVFrame *yuv)
+AVFrame* CH264Encode::YUV2BMP(AVFrame *yuv)
 {
 	int ret ;
 	AVFrame *bmp = NULL;
 	SwsContext *swsCtx = NULL;
-	CDialog *pShow;
-
+	
 	bmp = av_frame_alloc();
 	bmp->format = AV_PIX_FMT_BGR24;
 	bmp->width = (yuv->width);
@@ -86,39 +89,57 @@ int CH264Encode::YUV2BMP(AVFrame *yuv)
 	if (ret != 0)
 		goto fail;
 
-	swsCtx = sws_getContext(yuv->width, yuv->height, AVPixelFormat::AV_PIX_FMT_YUV420P, \
-		bmp->width, bmp->height, AV_PIX_FMT_BGR24, \
+	swsCtx = sws_getContext(yuv->width, yuv->height,(AVPixelFormat) yuv->format, \
+		bmp->width, bmp->height, (AVPixelFormat)bmp->format, \
 		SWS_BILINEAR, NULL, NULL, NULL);
 	if (swsCtx == NULL)
 		goto fail;
 
 	ret = sws_scale(swsCtx, yuv->data, yuv->linesize, 0, yuv->height, \
 		bmp->data, bmp->linesize);
-	
-	//
 
-	pShow = new CDialog();
-	pShow->Create(IDD_SHOW_BMP_DLG);
-	pShow->ShowWindow(SW_SHOWNORMAL);
-	
-	Render(pShow->GetDC()->GetSafeHdc(),bmp);
-
-	return 0;
+	return bmp;
 fail:
-	return ret;
+	return NULL;
 }
 
 int CH264Encode::Render(HDC hdc, AVFrame* rgb)
 {
+	int ret ;
+	HDC     hComDC;
+	HBITMAP hBmp;
+	BITMAPINFOHEADER infoHeader;
+	HGDIOBJ hOld;
+	BOOL result = FALSE;
+	const int dcWidth = ::GetDeviceCaps(hdc, HORZRES);
+	const int dcHeight = ::GetDeviceCaps(hdc, VERTRES);
+
+	infoHeader.biSize = sizeof(BITMAPINFOHEADER);
+	infoHeader.biWidth = rgb->width;
+	infoHeader.biHeight = rgb->height;
+	infoHeader.biPlanes = 1;
+	infoHeader.biBitCount = 24;
+	infoHeader.biCompression = BI_RGB;
+	infoHeader.biSizeImage = ((infoHeader.biWidth* infoHeader.biBitCount + 23) / 24) * 3 * infoHeader.biHeight;
+	infoHeader.biClrImportant = 0;
+	infoHeader.biXPelsPerMeter = 0;
+	infoHeader.biYPelsPerMeter = 0;
+
+	char *buff = new char[infoHeader.biSizeImage];
+	memcpy(buff, rgb->data[0], infoHeader.biSizeImage);
+
+	hComDC = GetDC(NULL);
+	hBmp = CreateDIBitmap(hComDC,&infoHeader, CBM_INIT,buff,(BITMAPINFO*)&infoHeader, DIB_RGB_COLORS);
+	SelectObject(hComDC,hBmp);
 	
-	HBITMAP hDDB;
+	result = ::StretchBlt(hdc,0,0,dcWidth,dcHeight, hComDC,0,0,rgb->width,rgb->height,SRCCOPY);
 
-	hDDB = CreateBitmap(rgb->width,rgb->height,1,24,rgb->data[0]);
-	if (hDDB == NULL)
-		goto fail;
-
-	
-
+	DeleteObject(hBmp);
+	ReleaseDC(NULL,hComDC);
+	delete[] buff;
+	return 0;
 fail:
 	return -1;	
 }
+
+

@@ -143,7 +143,7 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 	infoHeader.biWidth = bitmap.bmWidth;
 	infoHeader.biHeight = bitmap.bmHeight;
 	infoHeader.biPlanes = 1;
-	infoHeader.biBitCount = bitmap.bmBitsPixel;
+	infoHeader.biBitCount = 24;
 	infoHeader.biCompression = BI_RGB;
 	infoHeader.biSizeImage = 0;
 	infoHeader.biXPelsPerMeter = 0;
@@ -151,7 +151,7 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 	infoHeader.biClrUsed = 0;
 	infoHeader.biClrImportant = 0;
 
-	bmpSize = ((infoHeader.biWidth * infoHeader.biBitCount + 31) / 32) * 4 * infoHeader.biHeight;
+	bmpSize = ((infoHeader.biWidth * infoHeader.biBitCount + 23) / 24) * 3 * infoHeader.biHeight;
 	buff = new char[bmpSize];
 	GetDIBits(hdc,hBit,0,infoHeader.biHeight,buff,(BITMAPINFO*)&infoHeader,DIB_RGB_COLORS);
 	
@@ -171,7 +171,7 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 	EncodeAndSave(bmpBuff,length);
 
 	CH264Encode h264;
-	h264.Encode(fileHeader,infoHeader, buff,bmpSize);
+	h264.Encode(this->GetDC()->GetSafeHdc(),fileHeader,infoHeader, buff,bmpSize);
 
 	delete[] buff; buff = NULL;
 	delete[] bmpBuff; bmpBuff = NULL;
@@ -181,5 +181,14 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 int CMainDialog::EncodeAndSave(const char* src, const int srcLen)
 {
+	DWORD bytesSize;
+	HANDLE hFile = CreateFile(L"captureqwsx.bmp",
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+	WriteFile(hFile, (LPSTR)src, srcLen, &bytesSize, NULL);
+	CloseHandle(hFile);
 	return 0;
 }
