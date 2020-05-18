@@ -2,22 +2,17 @@
 #include "H264Encode.h"
 
 
-CH264Encode::CH264Encode() : m_FormatContext(NULL)
+CMedia::CMedia(): m_MP4(NULL),m_H264(NULL),m_AAC(NULL)
 {
-	
-	
 	
 }
 
-CH264Encode::~CH264Encode()
+CMedia::~CMedia()
 {
-	if (m_FormatContext)	avformat_free_context(m_FormatContext);
-	m_FormatContext = NULL;
-
 
 }
 
-int CH264Encode::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* buff, const int buffLen)
+int CMedia::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* buff, const int buffLen)
 {
 	int ret ;	
 	//
@@ -28,10 +23,6 @@ int CH264Encode::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER in
 	const int yuvWidth = rgbWidth ,yuvHeigth = rgbHeight;
 	//
 	SwsContext *swsCtx = NULL;
-
-	AVFrame* nextRgb = NULL;
-
-	CDialog *pShow;
 	
 	//setting rgb data struct
 	rgb = av_frame_alloc();
@@ -61,21 +52,22 @@ int CH264Encode::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER in
 
 	ret = sws_scale(swsCtx,rgb->data,rgb->linesize,0,rgb->height,\
 					yuv->data,yuv->linesize);
+
+
+
+	//
+	av_frame_free(&rgb);		
+	av_frame_free(&yuv);		
+	sws_freeContext(swsCtx);
 	
 
-	nextRgb = YUV2BMP(yuv);
-
-	pShow = new CDialog;
-	pShow->Create(IDD_SHOW_BMP_DLG);
-	pShow->ShowWindow(SW_SHOWNORMAL);
-	Render(pShow->GetDC()->GetSafeHdc(), nextRgb);
 	return 0;
 
 fail:
 	return ret;
 }
 
-AVFrame* CH264Encode::YUV2BMP(AVFrame *yuv)
+AVFrame* CMedia::YUV2BMP(AVFrame *yuv)
 {
 	int ret ;
 	AVFrame *bmp = NULL;
@@ -103,7 +95,7 @@ fail:
 	return NULL;
 }
 
-int CH264Encode::Render(HDC hdc, AVFrame* rgb)
+int CMedia::Render(HDC hdc, AVFrame* rgb)
 {
 	int ret ;
 	HDC     hComDC;
@@ -140,6 +132,11 @@ int CH264Encode::Render(HDC hdc, AVFrame* rgb)
 	return 0;
 fail:
 	return -1;	
+}
+
+int CMedia::EncodeFrame(AVFrame* yuv)
+{
+	return 0;
 }
 
 

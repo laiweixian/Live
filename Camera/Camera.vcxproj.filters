@@ -39,6 +39,9 @@
     <ClInclude Include="Device\AudioCapture.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Device\ScreenCapture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -51,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Device\VideoCapture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\ScreenCapture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
