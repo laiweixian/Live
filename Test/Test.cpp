@@ -27,17 +27,15 @@ struct ObjectMember
 
 };
 
+struct t {
+	int a;
+	char b;
+	float* c;
+};
+
+
 int main()
 {
-	ObjectMember *p = new ObjectMember;
-	ObjectMember *p1 = new ObjectMember{100,DataType::NONE,NULL,NULL,NULL};
-	ObjectMember *p2 = new ObjectMember[100]{ {1100,DataType::NONE,NULL,NULL,NULL} };
-
-
-	int i = p2[0].name;
-	delete p;
-	delete p1;
-	delete[] p2;
     return 0;
 }
 

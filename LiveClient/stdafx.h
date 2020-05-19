@@ -56,6 +56,8 @@
 #include <string>
 #include <iostream>
 #include <stdint.h>
+#include <vector>
+#include <list>
 using namespace std;
 
 extern "C"
@@ -69,3 +71,6 @@ extern "C"
 #include "resource.h"
 
 #include "Wins/Wins.h"
+
+extern void PrintError(const char * format, ...);
+extern void PrintLog(const char * format, ...);

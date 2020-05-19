@@ -1,19 +1,45 @@
 #include "../stdafx.h"
 #include "H264Encode.h"
 
+//format , video code , audio code
+const char* FORMAT = ".mp4";
+const AVCodecID VIDEO_CODE = AVCodecID::AV_CODEC_ID_H264;
+const AVCodecID AUDIO_CODE = AVCodecID::AV_CODEC_ID_AAC;
 
-CMedia::CMedia(): m_MP4(NULL),m_H264(NULL),m_AAC(NULL)
+CMedia::CMedia(): m_MP4(NULL), m_AudioCodec(NULL), m_VideoCodec(NULL)
 {
 	
+	
+	InitBegin();
+	InitEnd();
+}
+
+int CMedia::InitBegin()
+{
+	int ret = 1;
+	ret &= avformat_network_init();
+	ret &= InitFormat();
+	ret &= InitAudioCode();
+	ret &= InitVideoCode();
+	return ret;
+}
+
+int CMedia::InitEnd()
+{
+	return 0;
 }
 
 CMedia::~CMedia()
 {
-
+	if (m_MP4) avformat_free_context(m_MP4);
+	m_MP4 = NULL;
+	if (m_AudioCodec) avcodec_free_context(&m_AudioCodec);
+	if (m_VideoCodec) avcodec_free_context(&m_VideoCodec);
 }
 
 int CMedia::Encode(HDC hdc,BITMAPFILEHEADER fileHeader, BITMAPINFOHEADER inforHeader, const char* buff, const int buffLen)
 {
+	return 0;
 	int ret ;	
 	//
 	AVFrame* rgb = NULL;
@@ -69,6 +95,7 @@ fail:
 
 AVFrame* CMedia::YUV2BMP(AVFrame *yuv)
 {
+	return NULL;
 	int ret ;
 	AVFrame *bmp = NULL;
 	SwsContext *swsCtx = NULL;
@@ -97,6 +124,7 @@ fail:
 
 int CMedia::Render(HDC hdc, AVFrame* rgb)
 {
+	return 0;
 	int ret ;
 	HDC     hComDC;
 	HBITMAP hBmp;
@@ -139,4 +167,74 @@ int CMedia::EncodeFrame(AVFrame* yuv)
 	return 0;
 }
 
+int CMedia::InitFormat()
+{
+	return 0;
+}
 
+int CMedia::InitAudioCode()
+{
+	AVCodec *aac = NULL;
+	int i = 0;
+	int ret = 0;
+	
+	aac = avcodec_find_encoder(AUDIO_CODE);
+	if (aac == NULL)
+	{
+		PrintError("avcodec_find_encoder");
+		return -1;
+	}
+
+	m_AudioCodec = avcodec_alloc_context3(aac);
+	if (m_AudioCodec == NULL)
+	{
+		PrintError("avcodec_alloc_context3");
+		return -1;
+	}
+
+	m_AudioCodec->sample_fmt = (aac->sample_fmts)[0];
+	m_AudioCodec->sample_rate = 44100;
+	m_AudioCodec->channels = 1;
+	m_AudioCodec->bit_rate = 64000;
+
+
+	ret = avcodec_open2(m_AudioCodec,aac,NULL);
+	if (ret < 0)
+	{
+		PrintError("avcodec_open2");
+		
+		return -1;
+	}
+	
+
+	/*
+	vector<int> fors;
+	i = 0;
+	const int* ss = aac->supported_samplerates;
+	while ((*(ss+i)))
+	{
+		fors.push_back(ss[i]);
+		i++;
+	}
+
+	vector<AVSampleFormat> sfsv;
+	i = 0;
+	const AVSampleFormat *sfs = aac->sample_fmts;
+	while (*(sfs+i))
+	{
+		sfsv.push_back(sfs[i]);
+		i++;
+	}
+	*/
+
+	
+
+	
+	return 0;
+}
+
+int CMedia::InitVideoCode()
+{
+	AVCodec *h264 = NULL;
+	return 0;
+}

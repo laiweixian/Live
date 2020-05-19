@@ -6,3 +6,12 @@
 #include "stdafx.h"
 
 
+void PrintError(const char * format, ...)
+{
+	return ;
+}
+
+void PrintLog(const char * format, ...)
+{
+	return ;
+}

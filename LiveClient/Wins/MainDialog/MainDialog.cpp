@@ -170,8 +170,8 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 	EncodeAndSave(bmpBuff,length);
 
-	CH264Encode h264;
-	h264.Encode(this->GetDC()->GetSafeHdc(),fileHeader,infoHeader, buff,bmpSize);
+	CMedia media;
+	media.Encode(this->GetDC()->GetSafeHdc(),fileHeader,infoHeader, buff,bmpSize);
 
 	delete[] buff; buff = NULL;
 	delete[] bmpBuff; bmpBuff = NULL;
