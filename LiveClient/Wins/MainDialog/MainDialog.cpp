@@ -170,8 +170,12 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 	EncodeAndSave(bmpBuff,length);
 
-	CMedia media;
-	media.Encode(this->GetDC()->GetSafeHdc(),fileHeader,infoHeader, buff,bmpSize);
+	AudioElememt ae;
+	VideoElement ve;
+	ae.channels = 1 ; ae.sampleRate = 44100;
+	ve.width = 1920; ve.height = 1080;
+	CMedia media(ae,ve);
+
 
 	delete[] buff; buff = NULL;
 	delete[] bmpBuff; bmpBuff = NULL;

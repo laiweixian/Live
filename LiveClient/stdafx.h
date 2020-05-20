@@ -57,6 +57,8 @@
 #include <iostream>
 #include <stdint.h>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
 #include <list>
 using namespace std;
 
@@ -74,3 +76,4 @@ extern "C"
 
 extern void PrintError(const char * format, ...);
 extern void PrintLog(const char * format, ...);
+int InitFFMpeg();

@@ -1,0 +1,8 @@
+using mv_range_thread = 88
+using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+profile High, level 4.0, 4:2:0, 8-bit
+Setting default whitelist 'file,crypto'
+using mv_range_thread = 88
+using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+profile High, level 4.0, 4:2:0, 8-bit
+Setting default whitelist 'file,crypto'
