@@ -39,7 +39,16 @@
     <ClInclude Include="Wins\EditDialog\InputDialog.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Coder\H264Encode.h">
+    <ClInclude Include="Coder\Hardware.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Coder\ImageCapture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Coder\SoundCapture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Coder\Media.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,7 +65,13 @@
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Coder\H264Encode.cpp">
+    <ClCompile Include="Coder\Hardware.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Coder\ImageCapture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Coder\Media.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

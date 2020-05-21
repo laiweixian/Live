@@ -73,6 +73,11 @@ extern "C"
 #include "resource.h"
 
 #include "Wins/Wins.h"
+//DirectShow
+#include <dshow.h>
+
+//ATL
+#include <atlbase.h>
 
 extern void PrintError(const char * format, ...);
 extern void PrintLog(const char * format, ...);

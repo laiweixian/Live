@@ -122,7 +122,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\Users\Administrator\source\repos\laiweixian\Live\ffmpeg\libs\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -192,7 +192,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Coder\H264Encode.h" />
+    <ClInclude Include="Coder\Media.h" />
+    <ClInclude Include="Coder\Hardware.h" />
+    <ClInclude Include="Coder\ImageCapture.h" />
+    <ClInclude Include="Coder\SoundCapture.h" />
     <ClInclude Include="LiveClient.h" />
     <ClInclude Include="Wins\EditDialog\InputDialog.h" />
     <ClInclude Include="Wins\MainDialog\MainDialog.h" />
@@ -202,7 +205,9 @@
     <ClInclude Include="Wins\Wins.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Coder\H264Encode.cpp" />
+    <ClCompile Include="Coder\Media.cpp" />
+    <ClCompile Include="Coder\Hardware.cpp" />
+    <ClCompile Include="Coder\ImageCapture.cpp" />
     <ClCompile Include="LiveClient.cpp" />
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />
     <ClCompile Include="Wins\MainDialog\MainDialog.cpp" />

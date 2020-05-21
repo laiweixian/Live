@@ -1,20 +1,10 @@
 #include "../stdafx.h"
-#include "H264Encode.h"
+#include "Media.h"
 
 //format , video code , audio code
 const char* FORMAT = ".mp4";
 const AVCodecID VIDEO_CODE = AVCodecID::AV_CODEC_ID_H264;
 const AVCodecID AUDIO_CODE = AVCodecID::AV_CODEC_ID_AAC;
-
-int Min(int a,int b)
-{
-	return (a>b?b:a);
-}
-
-int Max(int a, int b)
-{
-	return (a>b?a:b);
-}
 
 CMedia::CMedia(AudioElememt aEle, VideoElement vEle): m_AEle(aEle),m_VEle(vEle),m_MP4(NULL), m_AudioCodec(NULL), m_VideoCodec(NULL)
 {
@@ -29,34 +19,71 @@ CMedia::~CMedia()
 	if (m_VideoCodec) avcodec_free_context(&m_VideoCodec);
 }
 
-
-
 AVFrame* CMedia::YUV2BMP(AVFrame *yuv)
 {
-	return NULL;
 	int ret ;
-	AVFrame *bmp = NULL;
+	AVFrame *bgr = NULL;
 	SwsContext *swsCtx = NULL;
 	
-	bmp = av_frame_alloc();
-	bmp->format = AV_PIX_FMT_BGR24;
-	bmp->width = (yuv->width);
-	bmp->height = (yuv->height);
-	ret = av_frame_get_buffer(bmp,0);
+	bgr = av_frame_alloc();
+	if (bgr == NULL)
+		goto fail;
+
+	bgr->format = AV_PIX_FMT_BGR24;
+	bgr->width = (yuv->width);
+	bgr->height = (yuv->height);
+	ret = av_frame_get_buffer(bgr,0);
 	if (ret != 0)
 		goto fail;
 
 	swsCtx = sws_getContext(yuv->width, yuv->height,(AVPixelFormat) yuv->format, \
-		bmp->width, bmp->height, (AVPixelFormat)bmp->format, \
+		bgr->width, bgr->height, (AVPixelFormat)bgr->format, \
 		SWS_BILINEAR, NULL, NULL, NULL);
 	if (swsCtx == NULL)
 		goto fail;
 
 	ret = sws_scale(swsCtx, yuv->data, yuv->linesize, 0, yuv->height, \
-		bmp->data, bmp->linesize);
+		bgr->data, bgr->linesize);
 
-	return bmp;
+	sws_freeContext(swsCtx);
+	return bgr;
 fail:
+	if (bgr) av_frame_free(&bgr);
+	if (swsCtx) sws_freeContext(swsCtx);
+	return NULL;
+}
+
+AVFrame* CMedia::BMP2YUV(AVFrame *bgr)
+{
+	int ret;
+	AVFrame *yuv = NULL;
+	SwsContext *swsCtx = NULL;
+
+	bgr = av_frame_alloc();
+	if (bgr == NULL)
+		goto fail;
+
+	yuv->format = AV_PIX_FMT_YUV420P;
+	yuv->width = (bgr->width);
+	yuv->height = (bgr->height);
+	ret = av_frame_get_buffer(yuv, 0);
+	if (ret != 0)
+		goto fail;
+
+	swsCtx = sws_getContext(bgr->width, bgr->height, (AVPixelFormat)bgr->format, \
+		yuv->width, yuv->height, (AVPixelFormat)yuv->format, \
+		SWS_BILINEAR, NULL, NULL, NULL);
+	if (swsCtx == NULL)
+		goto fail;
+
+	ret = sws_scale(swsCtx, bgr->data, bgr->linesize, 0, bgr->height, \
+		yuv->data, yuv->linesize);
+
+	sws_freeContext(swsCtx);
+	return yuv;
+fail:
+	if (yuv) av_frame_free(&yuv);
+	if (swsCtx) sws_freeContext(swsCtx);
 	return NULL;
 }
 
@@ -84,6 +111,8 @@ int CMedia::InitFormat()
 	ret = avio_open2(&(fmtCtx->pb), fileUrl, AVIO_FLAG_WRITE,NULL,NULL);
 	if (ret <= 0)
 		goto fail;
+
+	
 	m_MP4 = fmtCtx;
 	return 0;
 fail:
@@ -190,61 +219,6 @@ int CMedia::CloseMedia()
 	return 0;
 }
 
-AVFrame* CMedia::CaptureScreen(HWND hwn, const int x, const int y, const int width, const int height)			//output rgb from screen
-{
-	//
-	AVFrame *bgr24 = NULL;
-	HDC hdc = NULL ,hComDC = NULL;
-	HBITMAP hBmp = NULL;
-	HGDIOBJ hOld;
-	int wndWidth = 0 , wndHeight = 0;
-	int targetWidth = 0 , targetHeight = 0;
-	
-	hdc = GetDC(hwn);
-	wndWidth = GetDeviceCaps(hdc, HORZRES); 
-	wndHeight = ::GetDeviceCaps(hdc, VERTRES);
-
-	targetWidth = width == 0 ? wndWidth:Min(width,wndWidth);
-	targetHeight = height == 0 ? wndHeight:Min(height, wndHeight);
-	hComDC = CreateCompatibleDC(hdc);
-	hBmp = CreateCompatibleBitmap(hComDC, targetWidth, targetHeight);
-	hOld = SelectObject(hComDC,hBmp);
-
-	::StretchBlt(hComDC,0,0,targetWidth,targetHeight,hdc,x,y, targetWidth, targetHeight,SRCCOPY);
-	
-	bgr24 = Translate(hComDC,hBmp);
-
-	ReleaseDC(hwn,hdc);
-	DeleteDC(hComDC);
-	DeleteObject(hBmp);
-
-	return bgr24;
-}
-
-AVFrame* CMedia::CaptureCamera()			//output rgb from camera
-{
-	return NULL;
-}
-
-AVFrame* CMedia::CaptureLoudspeaker()		//output pcm from Loudspeaker
-{
-	return NULL;
-}
-
-AVFrame* CMedia::CaptureMicrophone()		//output pcm from Microphone
-{
-	return NULL;
-}
-
-void CMedia::EnumCamera()
-{
-
-}
-
-void CMedia::EnumMicrophone()
-{
-
-}
 
 AVFrame* CMedia::MixVoice(AVFrame* pcm0, AVFrame* pcm1)
 {
@@ -253,54 +227,5 @@ AVFrame* CMedia::MixVoice(AVFrame* pcm0, AVFrame* pcm1)
 
 AVFrame* CMedia::MixImage(AVFrame* bg, AVFrame* front, int x, int y)
 {
-	return NULL;
-}
-
-AVFrame* CMedia::Translate(HDC hdc, HBITMAP hBmp)
-{
-	AVFrame *bgr24 = NULL;
-	int ret ;
-	BITMAP bitmap;
-	BITMAPINFOHEADER infoHeader;
-	DWORD bmpSize, DIBSize;
-	char *buff = NULL;
-	
-	::GetObject(hBmp, sizeof(BITMAP), &bitmap);
-
-	infoHeader.biSize = sizeof(BITMAPINFOHEADER);
-	infoHeader.biWidth = bitmap.bmWidth;
-	infoHeader.biHeight = bitmap.bmHeight;
-	infoHeader.biPlanes = 1;
-	infoHeader.biBitCount = 24;
-	infoHeader.biCompression = BI_RGB;
-	infoHeader.biSizeImage = 0;
-	infoHeader.biXPelsPerMeter = 0;
-	infoHeader.biYPelsPerMeter = 0;
-	infoHeader.biClrUsed = 0;
-	infoHeader.biClrImportant = 0;
-
-	bmpSize = ((infoHeader.biWidth * infoHeader.biBitCount + 23) / 24) * 3 * infoHeader.biHeight;
-	buff = new char[bmpSize];
-	GetDIBits(hdc, hBmp, 0, infoHeader.biHeight, buff, (BITMAPINFO*)&infoHeader, DIB_RGB_COLORS);
-
-	bgr24 = av_frame_alloc();
-	bgr24->format = AVPixelFormat::AV_PIX_FMT_BGR24;
-	bgr24->width = infoHeader.biWidth;
-	bgr24->height = infoHeader.biHeight;
-	ret = av_frame_get_buffer(bgr24, 0);
-	if (ret != 0)
-		goto fail;
-
-	ret = av_image_fill_arrays(bgr24->data, bgr24->linesize, (unsigned char*)buff, (AVPixelFormat)bgr24->format, bgr24->width, bgr24->height, 24);
-
-
-
-
-	delete[] buff; buff = NULL;
-	return bgr24;
-
-fail:
-	if (bgr24) av_frame_free(&bgr24);
-	if (buff) delete[] buff; buff = NULL;
 	return NULL;
 }

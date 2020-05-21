@@ -7,6 +7,11 @@
 #include "afxdialogex.h"
 #include "../EditDialog/InputDialog.h"
 
+#include "Coder/SoundCapture.h"
+#include "Coder/Hardware.h"
+#include "Coder/Media.h"
+#include "Coder/ImageCapture.h"
+
 
 // CMainDialog ¶Ô»°¿ò
 
@@ -99,6 +104,11 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 
 int CMainDialog::CaptureScreen()
 {
+	int devCount = 0;
+	CImageCapture::EnumCapture(NULL,&devCount);
+
+	return 0;
+
 	HDC hScreen , hWin,hMemory;
 	HBITMAP hBit,hOldBit ;
 	int screenWidth = 0 , screenHeight = 0;
@@ -170,11 +180,7 @@ int CMainDialog::SaveBitmap(HDC hdc, HBITMAP hBit)
 
 	EncodeAndSave(bmpBuff,length);
 
-	AudioElememt ae;
-	VideoElement ve;
-	ae.channels = 1 ; ae.sampleRate = 44100;
-	ve.width = 1920; ve.height = 1080;
-	CMedia media(ae,ve);
+	
 
 
 	delete[] buff; buff = NULL;

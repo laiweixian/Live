@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Coder/H264Encode.h"
+
 
 
 // CMainDialog ¶Ô»°¿ò
