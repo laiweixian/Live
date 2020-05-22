@@ -69,6 +69,7 @@ int CScreen::GetBitmapFormat(HDC hdc,HBITMAP hBit)
 	buff = new uint8_t[buffLen];
 	GetDIBits(hdc, hBit, 0, iHeader.biHeight, buff, (BITMAPINFO*)&iHeader, DIB_RGB_COLORS);
 
+	return 0;
 }
 
 int CScreen::Render(BitmapFormat* pBit, HDC hDst)

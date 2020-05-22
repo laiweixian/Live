@@ -105,8 +105,28 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 int CMainDialog::CaptureScreen()
 {
 	int devCount = 0;
-	CImageCapture::EnumCapture(NULL,&devCount);
+	int i = 0;
+	BSTR *devNames = NULL;
+	CImageCapture *pCap = NULL;
 
+	CImageCapture::EnumCapture(NULL,&devCount);
+	if (devCount > 0)
+		devNames = new BSTR[devCount];
+	if (devNames)
+		CImageCapture::EnumCapture(devNames,&devCount);
+
+	if (devCount > 0)
+		pCap = CImageCapture::Create(devNames[0]);
+		
+	for (i = 0;i < devCount;i++)
+	{
+		SysFreeString(devNames[i]);
+		devNames[i] = NULL;
+	}
+	devNames = NULL;
+
+	if (pCap)	pCap->Destroy();
+	pCap = NULL;
 	return 0;
 
 	HDC hScreen , hWin,hMemory;

@@ -1,13 +1,24 @@
 #include "ImageCapture.h"
 
-CImageCapture::CImageCapture(IBaseFilter* filter): m_Filter(filter)
+CImageCapture::CImageCapture(IBaseFilter* filter): m_Filter(filter),m_Wnd(NULL)
 {
+	InitCapture();
+}
 
+CImageCapture::CImageCapture(HWND hwn) : m_Filter(NULL),m_Wnd(hwn)
+{
+	InitWnd();
 }
 
 CImageCapture::~CImageCapture()
 {
+	if (m_Filter) m_Filter->Release();
+	m_Filter = NULL;
+}
 
+void CImageCapture::Destroy()
+{
+	delete this;
 }
 
 CImageCapture* CImageCapture::Create(const BSTR devName)
@@ -60,7 +71,11 @@ CImageCapture* CImageCapture::Create(const BSTR devName)
 			{
 				hr = pMoniker->BindToObject(NULL,NULL,IID_IBaseFilter,(void**)&pFilter);
 				if (hr == S_OK && pFilter != NULL)
+				{
+					pFilter->AddRef();
 					pCap = new CImageCapture(pFilter);
+				}
+					
 			}	
 		}
 
@@ -77,6 +92,11 @@ CImageCapture* CImageCapture::Create(const BSTR devName)
 	return pCap;
 fail:
 	return NULL;
+}
+
+CImageCapture* CImageCapture::Create(HWND hwn)
+{
+	return new CImageCapture(hwn);
 }
 
 HRESULT CImageCapture::EnumCapture(BSTR *pDevName, int *outDevCount)
@@ -140,4 +160,106 @@ HRESULT CImageCapture::EnumCapture(BSTR *pDevName, int *outDevCount)
 fail:
 	*outDevCount = 0;
 	return S_FALSE;
+}
+
+HRESULT CImageCapture::InitCaptureGraphBuilder(
+	IGraphBuilder **ppGraph,  // Receives the pointer.
+	ICaptureGraphBuilder2 **ppBuild  // Receives the pointer.
+)
+{
+	if (!ppGraph || !ppBuild)
+	{
+		return E_POINTER;
+	}
+	IGraphBuilder *pGraph = NULL;
+	ICaptureGraphBuilder2 *pBuild = NULL;
+
+	// Create the Capture Graph Builder.
+	HRESULT hr = CoCreateInstance(CLSID_CaptureGraphBuilder2, NULL,
+		CLSCTX_INPROC_SERVER, IID_ICaptureGraphBuilder2, (void**)&pBuild);
+	if (SUCCEEDED(hr))
+	{
+		// Create the Filter Graph Manager.
+		hr = CoCreateInstance(CLSID_FilterGraph, 0, CLSCTX_INPROC_SERVER,
+			IID_IGraphBuilder, (void**)&pGraph);
+		if (SUCCEEDED(hr))
+		{
+			// Initialize the Capture Graph Builder.
+			pBuild->SetFiltergraph(pGraph);
+
+			// Return both interface pointers to the caller.
+			*ppBuild = pBuild;
+			*ppGraph = pGraph; // The caller must release both interfaces.
+			return S_OK;
+		}
+		else
+		{
+			pBuild->Release();
+		}
+	}
+	return hr; // Failed
+
+}
+
+int CImageCapture::InitWnd()
+{
+	
+	return 0;
+}
+
+int CImageCapture::InitCapture()
+{
+	HRESULT hr = S_FALSE;
+	CComPtr<IEnumPins> enumPins;
+	
+	CComBSTR vCap = L"Video Capture";
+	
+
+	if (m_Filter == NULL)
+		goto fail;
+
+	hr = InitCaptureGraphBuilder(&m_Graph,&m_Builder);
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	hr = m_Graph->AddFilter(m_Filter, vCap);
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	
+fail:
+	return hr;
+}
+
+HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
+{
+	HRESULT hr = S_FALSE;
+	CComPtr<IEnumPins> enumPins;
+	IPin* pPin = NULL;
+
+	PIN_DIRECTION dir;
+	vector<PIN_DIRECTION> dirs;
+
+	hr = pFilter->EnumPins(&enumPins);
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	while (enumPins->Next(1,&pPin,NULL) == S_OK)
+	{
+		hr = pPin->QueryDirection(&dir);
+		if (!SUCCEEDED(hr))
+		{
+			pPin->Release();
+			pPin = NULL;
+			continue;
+		}
+
+		dirs.push_back(dir);
+
+		pPin->Release();
+		pPin = NULL;
+	}
+	return hr;
+fail:
+	return hr;
 }
