@@ -2,7 +2,7 @@
 
 #define RTMP_VERSION	0x03
 
-CHandshake::CHandshake() : m_ReceType(ReceType::NONE),m_SendType(SendType::NONE),
+CHandshake::CHandshake() : m_ReceType(ReceType::RECE_NONE),m_SendType(SendType::SEND_NONE),
 						m_RecePack({0}),m_SendPack({0})
 {
 	
@@ -39,13 +39,13 @@ int CHandshake::RecePacket(uint8_t* buff, const int buffLen, int *outLen)
 {
 	int result = HANDSHAKE_FAILURE;
 	int len = 0;
-	ReceType rType = ReceType::NONE;
+	ReceType rType = ReceType::RECE_NONE;
 
 	if (buff == NULL || buffLen <= 0)	goto noData;
 	
 	switch (m_ReceType)
 	{
-	case CHandshake::NONE:
+	case CHandshake::RECE_NONE:
 		result = ReceC0(buff, buffLen, &len);
 		rType = ReceType::C0;
 		break;
@@ -124,7 +124,7 @@ int CHandshake::ReceC2(uint8_t *buff, const int buffLen, int *outLen)
 int CHandshake::SendPacket()
 {
 	int result = HANDSHAKE_FAILURE;
-	const bool s0 = m_SendType == SendType::NONE && m_ReceType >= C0;
+	const bool s0 = m_SendType == SendType::SEND_NONE && m_ReceType >= C0;
 	const bool s1 = m_SendType == SendType::S1 && m_ReceType >= C1;
 	const bool s2 = m_SendType == SendType::S2 && m_ReceType == C2;
 

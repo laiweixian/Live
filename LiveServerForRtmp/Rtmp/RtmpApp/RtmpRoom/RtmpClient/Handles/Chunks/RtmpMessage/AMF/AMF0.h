@@ -17,23 +17,13 @@ typedef int16_t		S16;
 typedef uint32_t	U32;
 typedef double		DOUBLE;
 
-static const uint8_t  MARKER_NUMBER = 1;
-static const uint8_t  MARKER_BOOLEAN = 2;
-static const uint8_t  MARKER_STRING = 3;
-static const uint8_t  MARKER_OBJECT = 4;
-static const uint8_t  MARKER_MOVIECLIP = 5;/*reserved , not supported*/
-static const uint8_t  MARKER_NULL = 6;
-static const uint8_t  MARKER_UNDEFINED = 7;
-static const uint8_t  MARKER_REFERENCE = 8;
-static const uint8_t  MARKER_ECMA_ARRAY = 9;
-static const uint8_t  MARKER_OBJECT_END = 10;
-static const uint8_t  MARKER_STRICT_ARRAY = 11;
-static const uint8_t  MARKER_DATE = 12;
-static const uint8_t  MARKER_LONG_STRING = 13;
-static const uint8_t  MARKER_UNSUPPORTED = 14;
-static const uint8_t  MARKER_RECORDSET = 15;/*reserved , not support*/
-static const uint8_t  MARKER_XML_DOCUMENT = 16;
-static const uint8_t  MARKER_TYPE_OBJECT = 17;
+
+
+struct Utf8 { uint8_t* ptr;uint64_t len; };
+struct NullData { void *p; };
+
+void UTF8ToString(string &str, Utf8& utf8);
+bool UTF8IsEqual(const char* str, Utf8& utf8);
 
 #define DELCARE_FUNC(TYPE)	\
 	void TYPE##_free(TYPE& val);	\
@@ -41,28 +31,42 @@ static const uint8_t  MARKER_TYPE_OBJECT = 17;
 
 namespace AMF0
 {
-	struct Number { DOUBLE num; };
-	struct Boolean { U8 bol; };
-	typedef struct Utf8 { uint8_t* ptr;uint64_t len; } \
-		String, \
-		LongString, \
-		XML_Document;
-	typedef struct NullData { void* A; }\
-		Movieclip, \
-		AMF0Null, \
-		Undefined, \
-		ObjectEnd, \
-		Unsupported, \
-		RecordSet;
+	static const uint8_t  MARKER_NUMBER = 1;
+	static const uint8_t  MARKER_BOOLEAN = 2;
+	static const uint8_t  MARKER_STRING = 3;
+	static const uint8_t  MARKER_OBJECT = 4;
+	static const uint8_t  MARKER_MOVIECLIP = 5;/*reserved , not supported*/
+	static const uint8_t  MARKER_NULL = 6;
+	static const uint8_t  MARKER_UNDEFINED = 7;
+	static const uint8_t  MARKER_REFERENCE = 8;
+	static const uint8_t  MARKER_ECMA_ARRAY = 9;
+	static const uint8_t  MARKER_OBJECT_END = 10;
+	static const uint8_t  MARKER_STRICT_ARRAY = 11;
+	static const uint8_t  MARKER_DATE = 12;
+	static const uint8_t  MARKER_LONG_STRING = 13;
+	static const uint8_t  MARKER_UNSUPPORTED = 14;
+	static const uint8_t  MARKER_RECORDSET = 15;/*reserved , not support*/
+	static const uint8_t  MARKER_XML_DOCUMENT = 16;
+	static const uint8_t  MARKER_TYPE_OBJECT = 17;
 
-	struct ObjectProperty { Utf8 name; Data value; };
-	struct Object { U32 count; ObjectProperty* pObjPros; };
-	struct Reference { U16 ref; };
-	struct ECMA_Array { U32 count;ObjectProperty* pObjPros; };
-	struct StrictArray { U32 count;Data* pValues; };
-	struct Date { DOUBLE date; };
-	struct TypedObject { Utf8 className; U32 count; ObjectProperty* pObjPros; };
-
+	struct Number;
+	struct Boolean;
+	struct String;
+	struct Object;
+	struct Movieclip;
+	struct Null;
+	struct Undefined;
+	struct Reference;
+	struct ECMA_Array;
+	struct ObjectEnd;
+	struct StrictArray;
+	struct Date;
+	struct LongString;
+	struct Unsupported;
+	struct RecordSet;
+	struct XML_Document;
+	struct TypedObject;
+	
 	union Variable
 	{
 		Number *pNum;
@@ -70,7 +74,7 @@ namespace AMF0
 		String *pStr;
 		Object *pObj;
 		Movieclip *pMov;			//not use/support
-		AMF0Null *pNull;			//not use/support
+		Null *pNull;			//not use/support
 		Undefined *pUnd;			//not use/support
 		Reference *pRef;
 		ECMA_Array *pECMA;
@@ -83,25 +87,29 @@ namespace AMF0
 		XML_Document *pXML;
 		TypedObject *pTypeObj;
 	};
-	struct Data { uint8_t dType; Variable dValue; };
 
-	
+	struct Member;
+	struct Data;
 
 	DELCARE_FUNC(Number)
 	DELCARE_FUNC(Boolean)
-	DELCARE_FUNC(Utf8)
-	DELCARE_FUNC(NullData)
-	DELCARE_FUNC(ObjectProperty)
+	DELCARE_FUNC(String)
 	DELCARE_FUNC(Object)
+	DELCARE_FUNC(Movieclip)
+	DELCARE_FUNC(Null)
+	DELCARE_FUNC(Undefined)
 	DELCARE_FUNC(Reference)
 	DELCARE_FUNC(ECMA_Array)
+	DELCARE_FUNC(ObjectEnd)
 	DELCARE_FUNC(StrictArray)
 	DELCARE_FUNC(Date)
+	DELCARE_FUNC(LongString)
+	DELCARE_FUNC(Unsupported)
+	DELCARE_FUNC(RecordSet)
+	DELCARE_FUNC(XML_Document)
 	DELCARE_FUNC(TypedObject)
+	DELCARE_FUNC(Member)
 	DELCARE_FUNC(Data)
-
-	void UTF8ToString(string &str, Utf8& utf8);
-	bool UTF8IsEqual(const char* str, Utf8& utf8);
 
 	class CParse
 	{
@@ -134,13 +142,25 @@ namespace AMF0
 	public:
 		std::vector<Data*> m_Datas;
 	};
-
-
 };
 
-
-
-
-
-
+struct AMF0::Number{DOUBLE num;};
+struct AMF0::Boolean{U8 bol;};
+struct AMF0::String{Utf8 utf8;};
+struct AMF0::LongString{Utf8 utf8;};
+struct AMF0::XML_Document{Utf8 utf8;};
+struct AMF0::Movieclip{ NullData  nData;};
+struct AMF0::Null { NullData  nData; };
+struct AMF0::Undefined { NullData  nData; };
+struct AMF0::ObjectEnd { NullData  nData; };
+struct AMF0::Unsupported { NullData  nData; };
+struct AMF0::RecordSet { NullData  nData; };
+struct AMF0::Object{ U32 count; AMF0::Member* pMems; };
+struct AMF0::Reference{ U16 ref;};
+struct AMF0::ECMA_Array{U32 count;AMF0::Member *pMems;};
+struct AMF0::StrictArray{U32 count; AMF0::Data *pDatas;};
+struct AMF0::Date{ DOUBLE date; };
+struct AMF0::TypedObject { Utf8 className; U32 count; AMF0::Member* pMems; };
+struct AMF0::Data { uint8_t dType; Variable dValue; };
+struct AMF0::Member{Utf8 name;AMF0::Data value;};
 

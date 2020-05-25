@@ -3,13 +3,6 @@
 #include "stdafx.h"
 #include "RtmpRoom.h"
 
-class IRtmpRoomsEvent
-{
-protected:
-	IRtmpRoomsEvent() = default;
-	IRtmpRoomsEvent() = default;
-public:
-};
 
 
 class CRtmpRooms

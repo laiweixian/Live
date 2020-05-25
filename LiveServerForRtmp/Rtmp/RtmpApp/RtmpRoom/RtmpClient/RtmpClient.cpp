@@ -11,7 +11,7 @@ CRtmpClient::~CRtmpClient()
 
 }
 
-CRtmpClient* CRtmpClient::Create(const int id, const uint32_t chunkSize = 128)
+CRtmpClient* CRtmpClient::Create(const int id, const uint32_t chunkSize)
 {
 	CRtmpClient* pClient = NULL;
 	pClient = new CRtmpClient(id,chunkSize);
@@ -34,7 +34,7 @@ int CRtmpClient::SendPacket(const uint8_t* src, const int srcLength)
 
 }
 
-int CRtmpClient::CHandshake::CloseServer()
+int CHandshake::CloseServer()
 {
 	
 }
@@ -58,7 +58,7 @@ int CRtmpClient::SendChunks(uint8_t* src, const int srcLength)
 {
 
 }
-int CRtmpClient::CChunks::CloseServer()
+int CChunks::CloseServer()
 {
 
 }

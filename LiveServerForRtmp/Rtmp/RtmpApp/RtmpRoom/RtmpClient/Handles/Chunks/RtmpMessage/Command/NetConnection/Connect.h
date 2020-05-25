@@ -54,24 +54,6 @@ namespace Connect
 	static const char* OBJECT_ENCODING = "objectEncoding";
 
 	//optional user arguments
-
-
-	struct Content;
-	struct CommandObject;
-	struct OptionalUserArguments;
-
-	
-	Content* ParseConnect(AMF0::CParse *pParse);
-	Content* ParseConnect(AMF3::CParse *pParse);
-
-	struct Content
-	{
-		string commandName;
-		int transactionId;
-		CommandObject cmdObj;
-		OptionalUserArguments optUsrArg;
-	};
-
 	struct CommandObject
 	{
 		string app;
@@ -90,6 +72,24 @@ namespace Connect
 	{
 
 	};
+
+	struct Content
+	{
+		string commandName;
+		int transactionId;
+		CommandObject cmdObj;
+		OptionalUserArguments optUsrArg;
+	};
+
+
+	
+	Content* ParseConnect(CParse *pParse);
+
+
+	
+	
+
+	
 
 };
 

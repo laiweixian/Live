@@ -22,7 +22,7 @@ private:
 protected:
 	//CHandshake
 	int SendPacket(const uint8_t* src, const int srcLength);
-	int CHandshake::CloseServer() ;
+	int CloseServer() ;
 
 	//
 	void OnC0();
@@ -31,7 +31,7 @@ protected:
 
 	//
 	int SendChunks(uint8_t* src, const int srcLength);
-	int CChunks::CloseServer();
+
 
 	void OnSetChunkSize() ;
 	void OnAbortMessage() ;

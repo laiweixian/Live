@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\AMF\temp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetConnection\Connect.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.cpp" />

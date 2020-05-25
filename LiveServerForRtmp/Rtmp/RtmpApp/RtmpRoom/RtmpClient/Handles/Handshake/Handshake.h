@@ -12,8 +12,8 @@
 #define	ERROR_SEND_HANDSHAKE	-7
 
 #define DECLARE_HANDSHAKE					\
-		enum ReceType { NONE, C0, C1, C2 };	\
-		enum SendType { NONE, S0, S1, S2 };	\
+		enum ReceType { RECE_NONE, C0, C1, C2 };	\
+		enum SendType { SEND_NONE, S0, S1, S2 };	\
 		struct Packet { uint8_t data0;uint8_t data1[1536];uint8_t data2[1536];};
 
 class CHandshake 
