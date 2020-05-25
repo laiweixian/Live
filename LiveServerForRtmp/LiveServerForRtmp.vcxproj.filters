@@ -36,9 +36,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Config\Config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -171,9 +168,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Config\Config.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.cpp">

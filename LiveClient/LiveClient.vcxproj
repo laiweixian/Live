@@ -117,11 +117,11 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Administrator\source\repos\laiweixian\Live\ffmpeg\headers\ffmpeg;C:\Users\Administrator\source\repos\laiweixian\Live\LiveClient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ffmpeg\headers\ffmpeg;$(SolutionDir)LiveClient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\Users\Administrator\source\repos\laiweixian\Live\ffmpeg\libs\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ffmpeg\libs\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>

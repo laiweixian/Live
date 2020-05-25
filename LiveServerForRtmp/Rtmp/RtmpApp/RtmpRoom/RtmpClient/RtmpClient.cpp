@@ -1,7 +1,7 @@
 #include "RtmpClient.h"
 
 CRtmpClient::CRtmpClient(int id,  uint32_t chunkSize):CChunks(chunkSize),\
-														m_TotalReceive(0),
+														m_TotalReceive(0)
 {
 
 }

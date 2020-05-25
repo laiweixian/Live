@@ -34,7 +34,6 @@ int CSocketIO::Open(ISocket::Optional opti)
 {
 	WSADATA wsa;
 	int ret ;
-	ULONG ret;
 	SOCKET listenSocket = INVALID_SOCKET;
 	sockaddr_in service;
 
@@ -168,7 +167,6 @@ int CSocketIO::CheckConnect()
 		conn->ioid = GenIOID();
 		conn->sock = connSock;
 		conn->addr = addr;
-		conn->cType = ConnType::ONLINE;
 		conn->buff = new uint8_t[DEFAULT_BUFF_LENGTH];
 		conn->buffLen = DEFAULT_BUFF_LENGTH;
 		conn->length = 0;
@@ -184,34 +182,32 @@ int CSocketIO::CheckConnect()
 
 int CSocketIO::CheckReceive()
 {
-	auto it = m_Connecters.begin();
+	vector<Connecter*>::iterator it = m_Connecters.begin();
+	Connecter* pCon = NULL;
 	int errorCode;
-	Connecter *pConn = NULL;
 	int remainSize = 0;
 	uint8_t *ptr = NULL;
 	int length = 0;
 
-	vector<int> closeInfos;
-	vector<int> recvInfos;
-	vector<int>::iterator it;
-
 	for (it=m_Connecters.begin();it!= m_Connecters.end();it++)
 	{
-		pConn = *it;
-		remainSize = pConn->buffLen - pConn->length;
+		pCon = (*it);
+		
+		
+		remainSize = (*it)->buffLen - (*it)->length;
 		if (remainSize <= 0)
 			continue;
-		ptr = pConn->buff + pConn->length;
-		length = ::recv(pConn->sock, (char*)ptr,remainSize,0);
+		ptr = (*it)->buff + (*it)->length;
+		length = ::recv((*it)->sock, (char*)ptr,remainSize,0);
 		if (length == 0)
 		{
-			pConn->cType = OUTLINE;
-			m_Event->OnClose(pConn->ioid);
+			
+			m_Event->OnClose((*it)->ioid);
 		}
 		else if (length > 0)
 		{
-			pConn->length += length;
-			m_Event->OnReceive(pConn->ioid);
+			(*it)->length += length;
+			m_Event->OnReceive((*it)->ioid);
 		}
 		else
 		{
@@ -219,9 +215,10 @@ int CSocketIO::CheckReceive()
 			if (errorCode == WSAEWOULDBLOCK)
 				continue;
 			else{
-				pConn->cType = CSocketIO::ConnType::ERR;
-				m_Event->OnError(pConn->ioid, errorCode);
+				
+				m_Event->OnError((*it)->ioid, errorCode);
 			}
 		}
+		
 	}
 }

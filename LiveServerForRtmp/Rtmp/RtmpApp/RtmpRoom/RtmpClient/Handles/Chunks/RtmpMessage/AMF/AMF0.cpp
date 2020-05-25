@@ -1,28 +1,9 @@
 #include "AMF0.h"
 using namespace AMF0;
+
+
 #define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off  >= end ) return ERROR_LOSS_DATA;
 
-
-void AMF0::NullData_free(NullData& val) {}
-void AMF0::NullData_copy(NullData& dst, NullData& src) { dst = src; }
-
-void AMF0::Utf8String_free(Utf8String& val)
-{
-	if (val.ptr) delete[] val.ptr;
-	val.ptr = NULL;
-	val.len = 0;
-}
-void AMF0::Utf8String_copy(Utf8String& dst, Utf8String& src)
-{
-	dst.len = src.len;
-	if (dst.len > 0)
-	{
-		dst.ptr = new uint8_t[dst.len];
-		memcpy(dst.ptr, src.ptr, dst.len);
-	}
-	else
-		dst.ptr = NULL;
-}
 
 void AMF0::Number_free(Number& val){}
 void AMF0::Number_copy(Number& dst,Number& src){dst.num = src.num;}
@@ -30,17 +11,32 @@ void AMF0::Number_copy(Number& dst,Number& src){dst.num = src.num;}
 void AMF0::Boolean_free(Boolean& val) {}
 void AMF0::Boolean_copy(Boolean& dst,Boolean& src){dst.bol = src.bol;}
 
-void AMF0::String_free(String& val) {Utf8String_free(val.utf8);}
-void AMF0::String_copy(String& dst,String& src){return Utf8String_copy(dst.utf8,src.utf8);}
+void AMF0::Utf8_free(Utf8& val) 
+{
+	if (val.ptr) delete[] val.ptr;
+	val.ptr = NULL;
+	val.len = 0;
+}
+
+void AMF0::Utf8_copy(Utf8& dst, Utf8& src)
+{
+	if (src.ptr)
+	{
+		dst.len = src.len;
+		dst.ptr = new uint8_t[dst.len];
+		memcpy(dst.ptr,src.ptr,dst.len);
+	}else 
+		return;
+}
 
 void AMF0::ObjectProperty_free(ObjectProperty& val)
 {
-	Utf8String_free(val.name);
+	Utf8_free(val.name);
 	Data_free(val.value);
 }
 void AMF0::ObjectProperty_copy(ObjectProperty& dst, ObjectProperty& src)
 {
-	Utf8String_copy(dst.name,src.name);
+	Utf8_copy(dst.name,src.name);
 	Data_copy(dst.value,src.value);
 }
 
@@ -61,14 +57,9 @@ void AMF0::Object_copy(Object& dst, Object& src)
 		dst.pObjPros = NULL;
 }
 
-void AMF0::Movieclip_free(Movieclip& val) {return NullData_free(val);}
-void AMF0::Movieclip_copy(Movieclip& dst,Movieclip& src){return NullData_copy(dst,src);}
+void AMF0::NullData_free(Movieclip& val) {}
+void AMF0::NullData_copy(Movieclip& dst,Movieclip& src){}
 
-void AMF0::AMF0Null_free(AMF0Null& val) { return NullData_free(val); }
-void AMF0::AMF0Null_copy(AMF0Null& dst,AMF0Null& src){return NullData_copy(dst,src);}
-
-void AMF0::Undefined_free(Undefined& val) { return NullData_free(val); }
-void AMF0::Undefined_copy(Undefined& dst,Undefined& src){return NullData_copy(dst,src); }
 
 void AMF0::Reference_free(Reference& val) {}
 void AMF0::Reference_copy(Reference& dst,Reference& src){dst.ref = src.ref;}
@@ -91,8 +82,7 @@ void AMF0::ECMA_Array_copy(ECMA_Array& dst, ECMA_Array& src)
 		dst.pObjPros = NULL;
 }
 
-void AMF0::ObjectEnd_free(ObjectEnd& val) {return  NullData_free(val);}
-void AMF0::ObjectEnd_copy(ObjectEnd& dst,ObjectEnd& src){return NullData_copy(dst,src);}
+
 
 void AMF0::StrictArray_free(StrictArray& val)
 {
@@ -115,27 +105,16 @@ void AMF0::StrictArray_copy(StrictArray& dst, StrictArray& src)
 void AMF0::Date_free(Date& val) {}
 void AMF0::Date_copy(Date& dst, Date& src) { dst.date = src.date; }
 
-void AMF0::LongString_free(LongString& val) { return Utf8String_free(val.utf8Long); }
-void AMF0::LongString_copy(LongString& dst, LongString& src) { return Utf8String_copy(dst.utf8Long, src.utf8Long); }
-
-void AMF0::Unsupported_free(Unsupported& val) { return NullData_free(val); }
-void AMF0::Unsupported_copy(Unsupported& dst, Unsupported& src) { return NullData_copy(dst, src); }
-
-void AMF0::RecordSet_free(RecordSet& val) { return NullData_free(val); }
-void AMF0::RecordSet_copy(RecordSet& dst, RecordSet& src) { return NullData_copy(dst, src); }
-
-void AMF0::XML_Document_free(XML_Document& val) { return LongString_free(val); }
-void AMF0::XML_Document_copy(XML_Document& dst, XML_Document& src) { return LongString_copy(dst, src); }
 
 void AMF0::TypedObject_free(TypedObject& val)
 {
-	AMF0::Utf8String_free(val.className);
+	Utf8_free(val.className);
 	for (int i = 0;i < val.count;i++)
 		ObjectProperty_free(val.pObjPros[i]);
 }
 void AMF0::TypedObject_copy(TypedObject& dst, TypedObject& src)
 {
-	Utf8String_copy(dst.className, src.className);
+	Utf8_copy(dst.className, src.className);
 	dst.count = src.count;
 	if (dst.count > 0)
 	{
@@ -159,7 +138,7 @@ void AMF0::Data_free(Data& val) {
 		delete val.dValue.pBool;
 		break;
 	case MARKER_STRING:
-		String_free(*val.dValue.pStr);
+		Utf8_free(*val.dValue.pStr);
 		delete val.dValue.pStr;
 		break;
 	case MARKER_OBJECT:
@@ -167,15 +146,15 @@ void AMF0::Data_free(Data& val) {
 		delete val.dValue.pObj;
 		break;
 	case MARKER_MOVIECLIP:
-		Movieclip_free(*val.dValue.pMov);
+		NullData_free(*val.dValue.pMov);
 		delete val.dValue.pMov;
 		break;
 	case MARKER_NULL:
-		AMF0Null_free(*val.dValue.pNull);
+		NullData_free(*val.dValue.pNull);
 		delete val.dValue.pNull;
 		break;
 	case MARKER_UNDEFINED:
-		Undefined_free(*val.dValue.pUnd);
+		NullData_free(*val.dValue.pUnd);
 		delete val.dValue.pUnd;
 		break;
 	case MARKER_REFERENCE:
@@ -187,7 +166,7 @@ void AMF0::Data_free(Data& val) {
 		delete val.dValue.pECMA;
 		break;
 	case MARKER_OBJECT_END:
-		ObjectEnd_free(*val.dValue.pObjEnd);
+		NullData_free(*val.dValue.pObjEnd);
 		delete val.dValue.pObjEnd;
 		break;
 	case MARKER_STRICT_ARRAY:
@@ -199,19 +178,19 @@ void AMF0::Data_free(Data& val) {
 		delete val.dValue.pDate;
 		break;
 	case MARKER_LONG_STRING:
-		LongString_free(*val.dValue.pLonStr);
+		Utf8_free(*val.dValue.pLonStr);
 		delete val.dValue.pLonStr;
 		break;
 	case MARKER_UNSUPPORTED:
-		Unsupported_free(*val.dValue.pUns);
+		NullData_free(*val.dValue.pUns);
 		delete val.dValue.pUns;
 		break;
 	case MARKER_RECORDSET:
-		RecordSet_free(*val.dValue.pRec);
+		NullData_free(*val.dValue.pRec);
 		delete val.dValue.pRec;
 		break;
 	case MARKER_XML_DOCUMENT:
-		XML_Document_free(*val.dValue.pXML);
+		Utf8_free(*val.dValue.pXML);
 		delete val.dValue.pXML;
 		break;
 	case MARKER_TYPE_OBJECT:
@@ -222,14 +201,14 @@ void AMF0::Data_free(Data& val) {
 		break;
 	}
 
-	memset(&(val.dValue), 0, sizeof(DataUnion));
+	memset(&(val.dValue), 0, sizeof(Variable));
 	return;
 }
 
 void AMF0::Data_copy(Data& dst, Data& src)
 {
 	dst.dType = src.dType;
-	memset(&(dst.dValue), 0, sizeof(DataUnion));
+	memset(&(dst.dValue), 0, sizeof(Variable));
 	switch (dst.dType)
 	{
 	case MARKER_NUMBER:
@@ -242,7 +221,7 @@ void AMF0::Data_copy(Data& dst, Data& src)
 		break;
 	case MARKER_STRING:
 		dst.dValue.pStr = new String;
-		String_copy(*(dst.dValue.pStr), *(src.dValue.pStr));
+		Utf8_copy(*(dst.dValue.pStr), *(src.dValue.pStr));
 		break;
 	case MARKER_OBJECT:
 		dst.dValue.pObj = new Object;
@@ -250,15 +229,15 @@ void AMF0::Data_copy(Data& dst, Data& src)
 		break;
 	case MARKER_MOVIECLIP:
 		dst.dValue.pMov = new Movieclip;
-		Movieclip_copy(*(dst.dValue.pMov), *(src.dValue.pMov));
+		NullData_copy(*(dst.dValue.pMov), *(src.dValue.pMov));
 		break;
 	case MARKER_NULL:
 		dst.dValue.pNull = new AMF0Null;
-		AMF0Null_copy(*(dst.dValue.pNull), *(src.dValue.pNull));
+		NullData_copy(*(dst.dValue.pNull), *(src.dValue.pNull));
 		break;
 	case MARKER_UNDEFINED:
 		dst.dValue.pUnd = new Undefined;
-		Undefined_copy(*(dst.dValue.pUnd), *(src.dValue.pUnd));
+		NullData_copy(*(dst.dValue.pUnd), *(src.dValue.pUnd));
 		break;
 	case MARKER_REFERENCE:
 		dst.dValue.pRef = new Reference;
@@ -270,7 +249,7 @@ void AMF0::Data_copy(Data& dst, Data& src)
 		break;
 	case MARKER_OBJECT_END:
 		dst.dValue.pObjEnd = new ObjectEnd;
-		ObjectEnd_copy(*(dst.dValue.pObjEnd), *(src.dValue.pObjEnd));
+		NullData_copy(*(dst.dValue.pObjEnd), *(src.dValue.pObjEnd));
 		break;
 	case MARKER_STRICT_ARRAY:
 		dst.dValue.pStrArr = new StrictArray;
@@ -282,19 +261,19 @@ void AMF0::Data_copy(Data& dst, Data& src)
 		break;
 	case MARKER_LONG_STRING:
 		dst.dValue.pLonStr = new LongString;
-		LongString_copy(*(dst.dValue.pLonStr), *(src.dValue.pLonStr));
+		Utf8_copy(*(dst.dValue.pLonStr), *(src.dValue.pLonStr));
 		break;
 	case MARKER_UNSUPPORTED:
 		dst.dValue.pUns = new Unsupported;
-		Unsupported_copy(*(dst.dValue.pUns), *(src.dValue.pUns));
+		NullData_copy(*(dst.dValue.pUns), *(src.dValue.pUns));
 		break;
 	case MARKER_RECORDSET:
 		dst.dValue.pRec = new RecordSet;
-		RecordSet_copy(*(dst.dValue.pRec), *(src.dValue.pRec));
+		NullData_copy(*(dst.dValue.pRec), *(src.dValue.pRec));
 		break;
 	case MARKER_XML_DOCUMENT:
 		dst.dValue.pXML = new XML_Document;
-		XML_Document_copy(*(dst.dValue.pXML), *(src.dValue.pXML));
+		Utf8_copy(*(dst.dValue.pXML), *(src.dValue.pXML));
 		break;
 	case MARKER_TYPE_OBJECT:
 		dst.dValue.pTypeObj = new TypedObject;
@@ -306,7 +285,7 @@ void AMF0::Data_copy(Data& dst, Data& src)
 }
 
 
-void AMF0::UTF8ToString(string &str, Utf8String& utf8)
+void AMF0::UTF8ToString(string &str, Utf8& utf8)
 {
 	char* buff = new char[utf8.len + 1];
 
@@ -319,7 +298,7 @@ void AMF0::UTF8ToString(string &str, Utf8String& utf8)
 	return;
 }
 
-bool AMF0::UTF8IsEqual(const char* str, Utf8String& utf8)
+bool AMF0::UTF8IsEqual(const char* str, Utf8& utf8)
 {
 	char* buff = new char[utf8.len + 1];
 	bool isTrue = false;
@@ -380,7 +359,7 @@ int CParse::ParseData(uint8_t *src, const int srcLen, Data& data, int *outLen)
 	int len = 0;
 
 	CHECK_OFFSET(start,end,ptr,1)
-	data.dType = (DataType)*ptr;
+	data.dType = *ptr;
 	memset(&(data.dValue),0,sizeof(Variable));
 
 	ptr += 1;
@@ -493,7 +472,44 @@ int CParse::ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int*
 
 int CParse::ParseString(uint8_t *src, const int srcLen, String& str, int* outLen)
 {
-	return ParseUtf8(src,srcLen,str.utf8,outLen);
+	const uint8_t* start = src, *end = src + srcLen;
+	uint8_t *ptr = src;
+	uint16_t utf8CharCount = 0;
+	int i = 0;
+	bool c1, c2, c3, c4;
+	int singleUtf8CharLen = 0;
+
+	CHECK_OFFSET(start, end, ptr, 2)
+		utf8CharCount = ::BigToHost16(ptr);
+	ptr += 2;
+	for (i = 0;i < utf8CharCount;i++)
+	{
+		c1 = (*ptr) >= 0x00 && (*ptr) <= 0x7f;
+		c2 = (*ptr) >= 0xc2 && (*ptr) <= 0xdf;
+		c3 = (*ptr) == 0xe0 || ((*ptr) >= 0xe1 && (*ptr) <= 0xec) || (*ptr) == 0xed || ((*ptr) >= 0xee && (*ptr) <= 0xef);
+		c4 = (*ptr) == 0xf0 || ((*ptr) >= 0xf1 && (*ptr) <= 0xf3) || (*ptr) == 0xf4;
+
+		if (c1)
+			singleUtf8CharLen = 1;
+		else if (c2)
+			singleUtf8CharLen = 2;
+		else if (c3)
+			singleUtf8CharLen = 3;
+		else if (c4)
+			singleUtf8CharLen = 4;
+		else
+			return ERROR_INVALID_UTF8;
+
+		CHECK_OFFSET(start, end, ptr, singleUtf8CharLen)
+			ptr += singleUtf8CharLen;
+	}
+
+	str.len = ptr - 2 - start;
+	str.ptr = new uint8_t[str.len];
+	memcpy(str.ptr, src + 2, str.len);
+
+	*outLen = ptr - start;
+	return AMF0_OK;
 }
 
 int CParse::ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outLen)
@@ -661,74 +677,7 @@ int CParse::ParseDate(uint8_t *src, const int srcLen, Date& date, int* outLen)
 
 int CParse::ParseLongString(uint8_t *src, const int srcLen, LongString &utf8, int* outLen)
 {
-	return ParseUtf8Long(src,srcLen,utf8.utf8Long,outLen);
-}
-
-int CParse::ParseUnsupported(uint8_t *src, const int srcLen, int* outLen)
-{
-	return AMF0_FAILURE;
-}
-
-int CParse::ParseRecordSet(uint8_t *src, const int srcLen, int* outLen)
-{
-	return AMF0_FAILURE;
-}
-
-int CParse::ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outLen)
-{
-	return ParseLongString(src,srcLen, utf8,outLen);
-}
-
-int CParse::ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outLen)
-{
-
-}
-
-int CParse::ParseUtf8(uint8_t *src, const int srcLen, Utf8String &utf8, int* outLen)
-{
-	const uint8_t* start = src, *end = src + srcLen ;
-	uint8_t *ptr = src;
-	uint16_t utf8CharCount = 0;
-	int i = 0;
-	bool c1, c2, c3, c4;
-	int singleUtf8CharLen = 0;
-
-	CHECK_OFFSET(start, end, ptr, 2)
-		utf8CharCount = ::BigToHost16(ptr);
-	ptr += 2;
-	for (i = 0;i < utf8CharCount;i++)
-	{
-		c1 = (*ptr) >= 0x00 && (*ptr) <= 0x7f;
-		c2 = (*ptr) >= 0xc2 && (*ptr) <= 0xdf;
-		c3 = (*ptr) == 0xe0 || ((*ptr) >= 0xe1 && (*ptr) <= 0xec) || (*ptr) == 0xed || ((*ptr) >= 0xee && (*ptr) <= 0xef);
-		c4 = (*ptr) == 0xf0 || ((*ptr) >= 0xf1 && (*ptr) <= 0xf3) || (*ptr) == 0xf4;
-
-		if (c1)
-			singleUtf8CharLen = 1;
-		else if (c2)
-			singleUtf8CharLen = 2;
-		else if (c3)
-			singleUtf8CharLen = 3;
-		else if (c4)
-			singleUtf8CharLen = 4;
-		else
-			return ERROR_INVALID_UTF8;
-
-		CHECK_OFFSET(start, end, ptr, singleUtf8CharLen)
-			ptr += singleUtf8CharLen;
-	}
-
-	utf8.len = ptr - 2 - start;
-	utf8.ptr = new uint8_t[utf8.len];
-	memcpy(utf8.ptr, src + 2, utf8.len);
-
-	*outLen = ptr - start;
-	return AMF0_OK;
-}
-
-int CParse::ParseUtf8Long(uint8_t *src, const int srcLen, Utf8String &utf8Long, int* outLen)
-{
-	const uint8_t* start = src, *end = src + srcLen ;
+	const uint8_t* start = src, *end = src + srcLen;
 	uint8_t *ptr = src;
 	uint32_t utf8CharCount = 0;
 	int i = 0;
@@ -760,12 +709,32 @@ int CParse::ParseUtf8Long(uint8_t *src, const int srcLen, Utf8String &utf8Long, 
 			ptr += singleUtf8CharLen;
 	}
 
-	utf8Long.len = ptr - 4 - start;
-	utf8Long.ptr = new uint8_t[utf8Long.len];
-	memcpy(utf8Long.ptr, src + 4, utf8Long.len);
+	utf8.len = ptr - 4 - start;
+	utf8.ptr = new uint8_t[utf8.len];
+	memcpy(utf8.ptr, src + 4, utf8.len);
 
 	*outLen = ptr - start;
 	return AMF0_OK;
+}
+
+int CParse::ParseUnsupported(uint8_t *src, const int srcLen, int* outLen)
+{
+	return AMF0_FAILURE;
+}
+
+int CParse::ParseRecordSet(uint8_t *src, const int srcLen, int* outLen)
+{
+	return AMF0_FAILURE;
+}
+
+int CParse::ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outLen)
+{
+	return ParseLongString(src, srcLen, utf8, outLen);
+}
+
+int CParse::ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outLen)
+{
+
 }
 
 int CParse::ParseObjectProperty(uint8_t *src, const int srcLen, ObjectProperty& objPro, int* outLen)
@@ -784,7 +753,7 @@ int CParse::ParseObjectProperty(uint8_t *src, const int srcLen, ObjectProperty& 
 	}
 	else
 	{
-		ret = ParseUtf8(ptr, end - ptr, objPro.name, &len);
+		ret = ParseString(ptr, end - ptr, objPro.name, &len);
 		if (ret != AMF0_OK)
 			goto parseErr;
 		ptr += len;
@@ -800,7 +769,7 @@ int CParse::ParseObjectProperty(uint8_t *src, const int srcLen, ObjectProperty& 
 
 	return AMF0_OK;
 parseErr:
-	Utf8String_free(objPro.name);
+	Utf8_free(objPro.name);
 	Data_free(objPro.value);
 	*outLen = 0;
 	return ret;

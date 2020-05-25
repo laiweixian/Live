@@ -19,14 +19,15 @@
 			int timeout;		\
 			int maxConnect;};
 
-#define DECLARE_CONNECTER enum ConnType{NONE,ONLINE,OUTLINE,ERR};\
-	struct Connecter{int ioid;			\
-					 SOCKET sock;		\
-					 sockaddr_in addr;	\
-					 ConnType cType;	\
-					 uint8_t *buff;		\
-					 uint32_t buffLen;	\
-					 uint32_t length;};
+#define DECLARE_SOCKET_STRUCT \
+		struct Connecter {			\
+			int ioid;\
+			SOCKET sock;\
+			sockaddr_in addr;\
+			uint8_t *buff;\
+			uint32_t buffLen;\
+			uint32_t length;\
+		};
 
 class ISocketEvent
 {
@@ -80,7 +81,7 @@ private:
 	void CloseServer();
 	int GenIOID();
 private:
-	DECLARE_CONNECTER
+	DECLARE_SOCKET_STRUCT
 	
 	SOCKET m_ListSock;
 	ISocket::Optional m_Optional;
