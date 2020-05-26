@@ -1,8 +1,11 @@
 #include "Connect.h"
 using namespace Connect;
 
-Content* Connect::ParseConnect( CParse *pParse)
+Content* ParseConnect(AMF0::CParse *pParse)
 {
+	return NULL;
+}
+
 	/*
 	Content* pContent = NULL;
 	 Data *pTempData = NULL;
@@ -71,9 +74,7 @@ Content* Connect::ParseConnect( CParse *pParse)
 	pTempData = pParse->m_Datas.at(3);
 	
 	*/
-	return NULL;
-			
-fail:
 
-	return NULL;
-}
+			
+
+

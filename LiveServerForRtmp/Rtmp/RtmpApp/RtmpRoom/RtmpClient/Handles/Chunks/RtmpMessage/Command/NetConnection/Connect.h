@@ -83,14 +83,7 @@ namespace Connect
 
 
 	
-	Content* ParseConnect(CParse *pParse);
-
-
-	
-	
-
-	
-
+	Content* ParseConnect(AMF0::CParse *pParse);
 };
 
 

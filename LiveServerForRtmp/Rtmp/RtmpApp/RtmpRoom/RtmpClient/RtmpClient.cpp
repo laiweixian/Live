@@ -25,19 +25,16 @@ void CRtmpClient::Destroy()
 
 int CRtmpClient::Handle(uint8_t *src, const int srcLen)
 {
-	
+	return 0;
 }
 
 //CHandshake
 int CRtmpClient::SendPacket(const uint8_t* src, const int srcLength)
 {
-
+	return 0;
 }
 
-int CHandshake::CloseServer()
-{
-	
-}
+
 
 void CRtmpClient::OnC0()
 {
@@ -56,12 +53,9 @@ void CRtmpClient::OnC2()
 //
 int CRtmpClient::SendChunks(uint8_t* src, const int srcLength)
 {
-
+	return 0;
 }
-int CChunks::CloseServer()
-{
 
-}
 
 void CRtmpClient::OnSetChunkSize()
 {

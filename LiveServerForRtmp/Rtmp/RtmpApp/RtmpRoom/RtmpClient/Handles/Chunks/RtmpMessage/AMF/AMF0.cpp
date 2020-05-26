@@ -25,6 +25,33 @@ void Utf8_free(Utf8& utf8)
 	utf8.len = 0;
 }
 
+void  UTF8ToString(string &str, Utf8& utf8)
+{
+	char* buff = new char[utf8.len + 1];
+
+	memset(buff, 0, utf8.len + 1);
+	memcpy(buff, utf8.ptr, utf8.len);
+
+	str = buff;
+	delete[] buff;
+	buff = NULL;
+	return;
+}
+
+bool  UTF8IsEqual(const char* str, Utf8& utf8)
+{
+	char* buff = new char[utf8.len + 1];
+	bool isTrue = false;
+
+	memset(buff, 0, utf8.len + 1);
+	memcpy(buff, utf8.ptr, utf8.len);
+	isTrue = strcmp(str, buff) == 0;
+
+	delete[] buff;
+	buff = NULL;
+	return isTrue;
+}
+
 void NullData_copy(NullData &dst,NullData &src){}
 void NullData_free(NullData& val){}
 
@@ -149,7 +176,7 @@ void AMF0::LongString_copy(LongString& dst, LongString& src){return Utf8_copy(ds
 void AMF0::LongString_free(LongString& val){return Utf8_free(val.utf8);}
 
 void AMF0::Unsupported_copy(Unsupported& dst, Unsupported& src){ return NullData_copy(dst.nData, src.nData); }
-void AMF0::Undefined_free(Undefined& val){ return NullData_free(val.nData); }
+void AMF0::Unsupported_free(Unsupported& val){ return NullData_free(val.nData); }
 
 void AMF0::RecordSet_copy(RecordSet& dst, RecordSet& src){ return NullData_copy(dst.nData, src.nData); }
 void AMF0::RecordSet_free(RecordSet& val){ return NullData_free(val.nData); }
@@ -204,6 +231,7 @@ void AMF0::Member_free(Member& val)
 
 void AMF0::Data_copy(Data& dst, Data& src)
 {
+	Data_free(dst);
 	dst.dType = src.dType;
 	switch (dst.dType)
 	{
@@ -224,20 +252,57 @@ void AMF0::Data_copy(Data& dst, Data& src)
 		Object_copy(*(dst.dValue.pObj),*(src.dValue.pObj));
 		break;
 	case MARKER_MOVIECLIP: 
-		
+		dst.dValue.pMov = new Movieclip;
+		Movieclip_copy(*(dst.dValue.pMov),*(src.dValue.pMov));
 		break;
-	case MARKER_NULL: break;
-	case MARKER_UNDEFINED: break;
-	case MARKER_REFERENCE: break;
-	case MARKER_ECMA_ARRAY: break;
-	case MARKER_OBJECT_END: break;
-	case MARKER_STRICT_ARRAY: break;
-	case MARKER_DATE: break;
-	case MARKER_LONG_STRING: break;
-	case MARKER_UNSUPPORTED: break;
-	case MARKER_RECORDSET: break;
-	case MARKER_XML_DOCUMENT: break;
-	case MARKER_TYPE_OBJECT: break;
+	case MARKER_NULL: 
+		dst.dValue.pNull = new Null;
+		Null_copy(*(dst.dValue.pNull),*(src.dValue.pNull));
+		break;
+	case MARKER_UNDEFINED: 
+		dst.dValue.pUnd = new Undefined;
+		Undefined_copy(*(dst.dValue.pUnd),*(src.dValue.pUnd));
+		break;
+	case MARKER_REFERENCE: 
+		dst.dValue.pRef = new Reference;
+		Reference_copy(*(dst.dValue.pRef),*(src.dValue.pRef));
+		break;
+	case MARKER_ECMA_ARRAY:
+		dst.dValue.pECMA = new ECMA_Array;
+		ECMA_Array_copy(*(dst.dValue.pECMA),*(src.dValue.pECMA));
+		break;
+	case MARKER_OBJECT_END: 
+		dst.dValue.pObjEnd = new ObjectEnd;
+		ObjectEnd_copy(*(dst.dValue.pObjEnd),*(src.dValue.pObjEnd));
+		break;
+	case MARKER_STRICT_ARRAY: 
+		dst.dValue.pStrArr = new StrictArray;
+		StrictArray_copy(*(dst.dValue.pStrArr),*(src.dValue.pStrArr));
+		break;
+	case MARKER_DATE: 
+		dst.dValue.pDate = new Date;
+		Date_copy(*(dst.dValue.pDate),*(src.dValue.pDate));
+		break;
+	case MARKER_LONG_STRING: 
+		dst.dValue.pLonStr = new LongString;
+		LongString_copy(*(dst.dValue.pLonStr),*(src.dValue.pLonStr));
+		break;
+	case MARKER_UNSUPPORTED: 
+		dst.dValue.pUns = new Unsupported;
+		Unsupported_copy(*(dst.dValue.pUns),*(src.dValue.pUns));
+		break;
+	case MARKER_RECORDSET: 
+		dst.dValue.pRec = new RecordSet;
+		RecordSet_copy(*(dst.dValue.pRec),*(src.dValue.pRec));
+		break;
+	case MARKER_XML_DOCUMENT: 
+		dst.dValue.pXML = new XML_Document;
+		XML_Document_copy(*(dst.dValue.pXML),*(src.dValue.pXML));
+		break;
+	case MARKER_TYPE_OBJECT: 
+		dst.dValue.pTypeObj = new TypedObject;
+		TypedObject_copy(*(dst.dValue.pTypeObj),*(src.dValue.pTypeObj));
+		break;
 	default:
 		break;
 	}
@@ -246,7 +311,78 @@ void AMF0::Data_free(Data& val)
 {
 	switch (val.dType)
 	{
+	case MARKER_NUMBER:
+		Number_free(*val.dValue.pNum);
+		delete val.dValue.pNum;
+		break;
+	case MARKER_BOOLEAN:
+		Boolean_free(*val.dValue.pBool);
+		delete val.dValue.pBool;
+		break;
+	case MARKER_STRING:
+		String_free(*(val.dValue.pStr));
+		delete val.dValue.pStr;
+		break;
+	case MARKER_OBJECT:
+		Object_free(*val.dValue.pObj);
+		delete val.dValue.pObj;
+		break;
+	case MARKER_MOVIECLIP:
+		Movieclip_free(*val.dValue.pMov);
+		delete val.dValue.pMov;
+		break;
+	case MARKER_NULL:
+		Null_free(*val.dValue.pNull);
+		delete val.dValue.pNull;
+		break;
+	case MARKER_UNDEFINED:
+		Undefined_free(*val.dValue.pUnd);
+		delete val.dValue.pUnd;
+		break;
+	case MARKER_REFERENCE:
+		Reference_free(*val.dValue.pRef);
+		delete val.dValue.pRef;
+		break;
+	case MARKER_ECMA_ARRAY:
+		ECMA_Array_free(*val.dValue.pECMA);
+		delete val.dValue.pECMA;
+		break;
+	case MARKER_OBJECT_END:
+		ObjectEnd_free(*val.dValue.pObjEnd);
+		delete val.dValue.pObjEnd;
+		break;
+	case MARKER_STRICT_ARRAY:
+		StrictArray_free(*val.dValue.pStrArr);
+		delete val.dValue.pStrArr;
+		break;
+	case MARKER_DATE:
+		Date_free(*val.dValue.pDate);
+		delete val.dValue.pDate;
+		break;
+	case MARKER_LONG_STRING:
+		LongString_free(*val.dValue.pLonStr);
+		delete val.dValue.pLonStr;
+		break;
+	case MARKER_UNSUPPORTED:
+		Unsupported_free(*val.dValue.pUns);
+		delete val.dValue.pUns;
+		break;
+	case MARKER_RECORDSET:
+		RecordSet_free(*val.dValue.pRec);
+		delete val.dValue.pRec;
+		break;
+	case MARKER_XML_DOCUMENT:
+		XML_Document_free(*val.dValue.pXML);
+		delete val.dValue.pXML;
+		break;
+	case MARKER_TYPE_OBJECT:
+		TypedObject_free(*val.dValue.pTypeObj);
+		delete val.dValue.pTypeObj;
+		break;
 	default:
 		break;
 	}
+
+	memset(&(val.dValue), 0, sizeof(Variable));
+	return;
 }

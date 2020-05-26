@@ -22,6 +22,9 @@ typedef double		DOUBLE;
 struct Utf8 { uint8_t* ptr;uint64_t len; };
 struct NullData { void *p; };
 
+void Utf8_copy(Utf8& dst, Utf8& src);
+void Utf8_free(Utf8& utf8);
+
 void UTF8ToString(string &str, Utf8& utf8);
 bool UTF8IsEqual(const char* str, Utf8& utf8);
 
@@ -111,37 +114,8 @@ namespace AMF0
 	DELCARE_FUNC(Member)
 	DELCARE_FUNC(Data)
 
-	class CParse
-	{
-	private:
-		CParse();
-		~CParse();
-	public:
-		static CParse* Create(uint8_t *src, const int srcLen);
-		void Destroy();
-	private:
-		static int ParseData(uint8_t *src, const int srcLen, Data& data, int *outLen);
-		static int ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outLen);
-		static int ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int* outLen);
-		static int ParseString(uint8_t *src, const int srcLen, String& str, int* outLen);
-		static int ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outLen);
-		static int ParseMovieClip(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseNull(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseUndefined(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseReference(uint8_t *src, const int srcLen, Reference &refer, int* outLen);
-		static int ParseEcmaArray(uint8_t *src, const int srcLen, ECMA_Array &ecma, int* outLen);
-		static int ParseObjectEnd(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseStrictArray(uint8_t *src, const int srcLen, StrictArray& strictArray, int* outLen);
-		static int ParseDate(uint8_t *src, const int srcLen, Date& date, int* outLen);
-		static int ParseLongString(uint8_t *src, const int srcLen, LongString &utf8, int* outLen);
-		static int ParseUnsupported(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseRecordSet(uint8_t *src, const int srcLen, int* outLen);
-		static int ParseXmlDocument(uint8_t *src, const int srcLen, XML_Document &utf8, int* outLen);
-		static int ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObject, int* outLen);
-		static int ParseObjectProperty(uint8_t *src, const int srcLen, ObjectProperty& objPro, int* outLen);
-	public:
-		std::vector<Data*> m_Datas;
-	};
+
+	class CParse;
 };
 
 struct AMF0::Number{DOUBLE num;};
@@ -164,3 +138,34 @@ struct AMF0::TypedObject { Utf8 className; U32 count; AMF0::Member* pMems; };
 struct AMF0::Data { uint8_t dType; Variable dValue; };
 struct AMF0::Member{Utf8 name;AMF0::Data value;};
 
+class AMF0::CParse
+{
+private:
+	CParse();
+	~CParse();
+public:
+	static CParse* Create(uint8_t *src, const int srcLen);
+	void Destroy();
+private:
+	static int ParseData(uint8_t *src, const int srcLen, AMF0::Data& data, int *outLen);
+	static int ParseNumber(uint8_t *src, const int srcLen, AMF0::Number& number, int* outLen);
+	static int ParseBoolean(uint8_t *src, const int srcLen, AMF0::Boolean& boolData, int* outLen);
+	static int ParseString(uint8_t *src, const int srcLen, AMF0::String& str, int* outLen);
+	static int ParseObject(uint8_t *src, const int srcLen, AMF0::Object& obj, int* outLen);
+	static int ParseMovieClip(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseNull(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseUndefined(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseReference(uint8_t *src, const int srcLen, AMF0::Reference &refer, int* outLen);
+	static int ParseEcmaArray(uint8_t *src, const int srcLen, AMF0::ECMA_Array &ecma, int* outLen);
+	static int ParseObjectEnd(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseStrictArray(uint8_t *src, const int srcLen, AMF0::StrictArray& strictArray, int* outLen);
+	static int ParseDate(uint8_t *src, const int srcLen, AMF0::Date& date, int* outLen);
+	static int ParseLongString(uint8_t *src, const int srcLen, AMF0::LongString &utf8, int* outLen);
+	static int ParseUnsupported(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseRecordSet(uint8_t *src, const int srcLen, int* outLen);
+	static int ParseXmlDocument(uint8_t *src, const int srcLen, AMF0::XML_Document &utf8, int* outLen);
+	static int ParseTypeObject(uint8_t *src, const int srcLen, AMF0::TypedObject &typeObject, int* outLen);
+	static int ParseObjectProperty(uint8_t *src, const int srcLen, AMF0::Member& mem, int* outLen);
+public:
+	std::vector<AMF0::Data*> m_Datas;
+};
