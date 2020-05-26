@@ -19,13 +19,13 @@ private:
 	int InitWnd();
 
 	static HRESULT InitCaptureGraphBuilder(IGraphBuilder **ppGraph, ICaptureGraphBuilder2 **ppBuild);
-
+	static HRESULT InitCompressor(IBaseFilter** ppCompre);
 protected:
 	static HRESULT QueryPins(IBaseFilter *pFilter);
 private:
 	IBaseFilter *m_Filter;
 	CComPtr<ICaptureGraphBuilder2> m_Builder;
 	CComPtr<IGraphBuilder> m_Graph;
-
+	CComPtr<IBaseFilter> m_Compressor;
 	HWND m_Wnd;
 };

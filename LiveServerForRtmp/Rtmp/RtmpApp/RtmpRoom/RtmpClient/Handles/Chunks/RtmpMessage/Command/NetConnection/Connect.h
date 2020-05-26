@@ -50,10 +50,24 @@ namespace Connect
 	 "pageUrl" , "objectEncoding" 
 	 };
 	 
-
+	struct CommandObject;
 	class CContent;
+	
 };
 
+struct Connect::CommandObject
+{
+	string App;
+	string Flashver;
+	string SwfUrl;
+	string TcUrl;
+	bool   Fpad;
+	int    AudioCodecs;
+	int    VideoCodecs;
+	int    VideoFunction;
+	string PageUrl;
+	int    ObjectEncoding;
+};
 
 class Connect::CContent
 {
@@ -64,6 +78,10 @@ private:
 public:
 	static CContent* Create(AMF0::CParse* parse);
 	static CContent* Create(AMF3::CParse* parse);
+
+	string GetCommandName();
+	int GetTransactionID();
+	CommandObject GetObject();
 
 private:
 	bool CheckOut(AMF0::CParse* parse);
@@ -77,5 +95,8 @@ private:
 	bool CheckTransactionID(AMF3::CParse* parse);
 	bool CheckCommandObject(AMF3::CParse* parse);
 	bool CheckOptionalUserArgumemts(AMF3::CParse* parse);
+
+private:
+	CommandObject m_Obj;
 };
 

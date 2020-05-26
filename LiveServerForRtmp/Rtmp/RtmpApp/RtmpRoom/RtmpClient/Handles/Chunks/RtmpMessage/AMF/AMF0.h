@@ -114,7 +114,7 @@ namespace AMF0
 	bool IsString(Data& val);
 	bool IsNumber(Data& val);
 	void CopyString(char* dst, Data& src, int* outLen);
-	
+	int Utf8Cmp(const char* dst,Utf8& src);
 };
 
 struct AMF0::Number{DOUBLE num;};

@@ -421,14 +421,33 @@ void AMF0::CopyString(char* dst, Data& src, int* outLen)
 		ptr = src.dValue.pXML->utf8.ptr;
 		break;
 	default:
-		len = 0;
+		*outLen = 0;
+		return;
 		break;
 	}
 
-	if (len > 0 )
-		len += 1;
-	if (dst)
-		memcpy(dst,ptr,len);
-	*outLen = len;
+	if (dst) memcpy(dst, ptr, len);
+	*outLen = len+1;
 	return ;
+}
+
+int AMF0::Utf8Cmp(const char* dst, Utf8& src)
+{
+	char* srcStr = NULL;
+	int len = 0;
+	int ret = 0;
+
+	if (src.len <= 0 || src.ptr == NULL)
+		return -1;
+
+	len = src.len + 1;
+	srcStr = new char[len];
+	memset(srcStr,0,len);
+
+	memcpy(srcStr,src.ptr,src.len);
+
+	ret = strcmp(dst,srcStr);
+	delete[] srcStr;
+	srcStr = NULL;
+	return ret;
 }

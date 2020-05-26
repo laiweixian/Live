@@ -25,6 +25,22 @@ CContent* CContent::Create(AMF3::CParse* parse)
 	return NULL;
 }
 
+string CContent::GetCommandName()
+{
+	string name = COMMAND_NAME;
+	return name;
+}
+
+int CContent::GetTransactionID()
+{
+	return TRANSACTION_ID;
+}
+
+CommandObject CContent::GetObject()
+{
+	return m_Obj;
+}
+
 bool CContent::CheckOut(AMF0::CParse* parse)
 {
 	bool valid = false;
@@ -70,7 +86,7 @@ bool CContent::CheckCommandName(AMF0::CParse* parse)
 	
 	if (strcmp(str,COMMAND_NAME) != 0)
 		goto fail;
-
+	if (str) delete[] str;
 	return true;
 fail:
 	if (str) delete[] str;
@@ -102,16 +118,26 @@ bool CContent::CheckCommandObject(AMF0::CParse* parse)
 {
 	bool valid = false;
 	AMF0::Data *pTempData = NULL;
+	AMF0::Object *pObj = NULL;
 	AMF0::Member *pMem = NULL;
 	int i = 0;
+	int ret = 0;
 
 	pTempData = parse->m_Datas.at(2);
 	if (pTempData->dType != AMF0::MARKER_OBJECT)
 		goto fail;
-	if (pTempData->dValue.pObj->count != 10)
+	
+	pObj = pTempData->dValue.pObj;
+	if (pObj->count != 10)
 		goto fail;
 
-	
+	for (i=0;i<pObj->count;i++)
+	{
+		ret = AMF0::Utf8Cmp(COMMAND_OBJECT_MEMBER_NAME[i],pObj->pMems[i].name);
+		if (ret != 0)
+			goto fail;
+	}
+
 
 	
 	
@@ -126,6 +152,10 @@ bool CContent::CheckOptionalUserArgumemts(AMF0::CParse* parse)
 
 	pTempData = parse->m_Datas.at(3);
 	
+
+	return true;
+fail:
+	return false;
 }
 
 bool CContent::CheckOut(AMF3::CParse* parse)
