@@ -1,24 +1,167 @@
 #include "Connect.h"
 using namespace Connect;
 
-Content* ParseConnect(AMF0::CParse *pParse)
+CContent::CContent()
+{
+
+}
+
+CContent::~CContent()
+{
+
+}
+
+CContent* CContent::Create(AMF0::CParse* parse)
+{
+	CContent* pContent = NULL;
+	bool valid = false;
+
+
+	return NULL;
+}
+
+CContent* CContent::Create(AMF3::CParse* parse)
 {
 	return NULL;
 }
 
+bool CContent::CheckOut(AMF0::CParse* parse)
+{
+	bool valid = false;
+
+	valid = parse->m_Datas.size() == 4;
+	if (!valid) goto fail;
+
+	valid = CheckCommandName(parse);
+	if (!valid) goto fail;
+
+	valid = CheckTransactionID(parse);
+	if (!valid) goto fail;
+
+	valid = CheckCommandObject(parse);
+	if (!valid) goto fail;
+
+	valid = CheckOptionalUserArgumemts(parse);
+	if (!valid) goto fail;
+
+	return valid;
+fail:
+	return false;
+}
+
+bool CContent::CheckCommandName(AMF0::CParse* parse)
+{
+	bool valid = false;
+	AMF0::Data *pTempData = NULL;
+	char* str = NULL;
+	int len = 0;
+
+	pTempData = parse->m_Datas.at(0);
+	valid = AMF0::IsString(*pTempData);
+	if (!valid)
+		goto fail;
+	
+	AMF0::CopyString(NULL,*pTempData,&len);
+	if (len <= 0)
+		goto fail;
+
+	str = new char[len];
+	AMF0::CopyString(str,*pTempData,&len);
+	
+	if (strcmp(str,COMMAND_NAME) != 0)
+		goto fail;
+
+	return true;
+fail:
+	if (str) delete[] str;
+	str = NULL;
+	return false;
+}
+
+bool CContent::CheckTransactionID(AMF0::CParse* parse)
+{
+	bool valid = false;
+	AMF0::Data *pTempData = NULL;
+	int tranId = 0;
+
+	pTempData = parse->m_Datas.at(1);
+	valid = IsNumber(*pTempData);
+	if (!valid)
+		goto fail;
+
+	tranId = pTempData->dValue.pNum->num;
+	if (tranId != TRANSACTION_ID)	
+		goto fail;
+
+	return true;
+fail:
+	return false;
+}
+
+bool CContent::CheckCommandObject(AMF0::CParse* parse)
+{
+	bool valid = false;
+	AMF0::Data *pTempData = NULL;
+	AMF0::Member *pMem = NULL;
+	int i = 0;
+
+	pTempData = parse->m_Datas.at(2);
+	if (pTempData->dType != AMF0::MARKER_OBJECT)
+		goto fail;
+	if (pTempData->dValue.pObj->count != 10)
+		goto fail;
+
+	
+
+	
+	
+fail:
+	return false;
+}
+
+bool CContent::CheckOptionalUserArgumemts(AMF0::CParse* parse)
+{
+	bool valid = false;
+	AMF0::Data *pTempData = NULL;
+
+	pTempData = parse->m_Datas.at(3);
+	
+}
+
+bool CContent::CheckOut(AMF3::CParse* parse)
+{
+
+}
+
+bool CContent::CheckCommandName(AMF3::CParse* parse)
+{
+
+}
+bool CContent::CheckTransactionID(AMF3::CParse* parse)
+{
+
+}
+bool CContent::CheckCommandObject(AMF3::CParse* parse)
+{
+
+}
+bool CContent::CheckOptionalUserArgumemts(AMF3::CParse* parse)
+{
+
+}
+
 	/*
-	Content* pContent = NULL;
-	 Data *pTempData = NULL;
+	
+	 
 	 Object *pTempObj = NULL;
 	bool valid = false;
 	
 	//check count
-	valid = pParse->m_Datas.size() == 4;
-	if (!valid) goto fail;
+	
 	
 	//check number 1
 	pTempData = pParse->m_Datas.at(0);
-	valid = pTempData->dType == MARKER_STRING || pTempData->dType == MARKER_LONG_STRING;
+	
 	if (!valid) goto fail;
 	valid =  UTF8IsEqual(COMMAND_NAME,*(pTempData->dValue.pStr));
 	if (!valid) goto fail;

@@ -21,6 +21,6 @@
 #include "Global/Funcs.h"
 #include "Global/Stru.h"
 using namespace std;
-
+#pragma comment(lib, "wininet.lib")
 
 // TODO:  在此处引用程序需要的其他头文件

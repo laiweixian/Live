@@ -17,16 +17,11 @@ typedef int16_t		S16;
 typedef uint32_t	U32;
 typedef double		DOUBLE;
 
-
-
 struct Utf8 { uint8_t* ptr;uint64_t len; };
 struct NullData { void *p; };
 
 void Utf8_copy(Utf8& dst, Utf8& src);
 void Utf8_free(Utf8& utf8);
-
-void UTF8ToString(string &str, Utf8& utf8);
-bool UTF8IsEqual(const char* str, Utf8& utf8);
 
 #define DELCARE_FUNC(TYPE)	\
 	void TYPE##_free(TYPE& val);	\
@@ -94,6 +89,8 @@ namespace AMF0
 	struct Member;
 	struct Data;
 
+	class CParse;
+
 	DELCARE_FUNC(Number)
 	DELCARE_FUNC(Boolean)
 	DELCARE_FUNC(String)
@@ -114,8 +111,10 @@ namespace AMF0
 	DELCARE_FUNC(Member)
 	DELCARE_FUNC(Data)
 
-
-	class CParse;
+	bool IsString(Data& val);
+	bool IsNumber(Data& val);
+	void CopyString(char* dst, Data& src, int* outLen);
+	
 };
 
 struct AMF0::Number{DOUBLE num;};

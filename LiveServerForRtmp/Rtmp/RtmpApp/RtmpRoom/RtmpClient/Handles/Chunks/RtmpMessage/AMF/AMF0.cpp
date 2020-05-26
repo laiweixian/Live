@@ -386,3 +386,49 @@ void AMF0::Data_free(Data& val)
 	memset(&(val.dValue), 0, sizeof(Variable));
 	return;
 }
+
+bool AMF0::IsString(Data& val)
+{
+	bool isTrue = false;
+
+	isTrue = val.dType == MARKER_STRING || val.dType == MARKER_LONG_STRING || val.dType == MARKER_XML_DOCUMENT;
+	return isTrue;
+}
+
+bool AMF0::IsNumber(Data& val)
+{
+	bool isTrue =false;
+	isTrue = val.dType == MARKER_NUMBER;
+	return isTrue;
+}
+
+void AMF0::CopyString(char* dst, Data& src, int* outLen)
+{
+	int len = 0;
+	uint8_t *ptr = NULL;
+	switch (src.dType)
+	{
+	case MARKER_STRING:
+		len = src.dValue.pStr->utf8.len;
+		ptr = src.dValue.pStr->utf8.ptr;
+		break;
+	case MARKER_LONG_STRING:
+		len = src.dValue.pLonStr->utf8.len;
+		ptr = src.dValue.pLonStr->utf8.ptr;
+		break;
+	case MARKER_XML_DOCUMENT:
+		len = src.dValue.pXML->utf8.len;
+		ptr = src.dValue.pXML->utf8.ptr;
+		break;
+	default:
+		len = 0;
+		break;
+	}
+
+	if (len > 0 )
+		len += 1;
+	if (dst)
+		memcpy(dst,ptr,len);
+	*outLen = len;
+	return ;
+}

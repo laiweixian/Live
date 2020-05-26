@@ -23,21 +23,3 @@ enum ContentType
 	CONNECT, CALL, CLOSE, CREATE_STREAM,
 	PLAY, PLAY2, DELETE_STREAM, CLOSE_STREAM, RECEIVE_AUDIO, RECEIVE_VIDEO, PUBLISH, SEEK, PAUSE
 };
-
-union ContentUnion
-{
-	Connect::Content *pConnect;
-	CallContent *pCall;
-	CloseContent *pClose;
-	CreateStreamContent *pCreateStream;
-
-	PlayContent *pPlay;
-	Play2Content *pPlay2;
-	DeleteStreamContent *pDeleteStream;
-	CloseStreamContent *pCloseStream;
-	ReceiveAudioContent *pReceiveAudio;
-	ReceiveVideoContent *pReceiveVideo;
-	PublishContent *pPublish;
-	SeekContent *pSeek;
-	PauseContent *pPause;
-};

@@ -10,7 +10,7 @@ public:
 	CCommandMessage(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
 	~CCommandMessage();
 
-	struct Content {ContentType cType; ContentUnion content;};
+	
 
 	//CBaseMessage
 	CBaseMessage::MessageType GetType();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../AMF/AMF.h"
+
 namespace Connect
 {
 	//AudioCodes
@@ -42,48 +43,39 @@ namespace Connect
 	static const uint16_t TRANSACTION_ID = 1;
 
 	//command object
-	static const char* APP	= "app";
-	static const char* FLASHVER = "flashver";
-	static const char* SWF_URL = "swfUrl";
-	static const char* TC_URL = "tcUrl";
-	static const char* FPAD = "fpad";
-	static const char* AUDIO_CODECS = "audioCodecs";
-	static const char* VIDEO_CODECS = "videoCodecs";
-	static const char* VIDEO_FUNCTION = "videoFunction";
-	static const char* PAGE_URL = "pageUrl";
-	static const char* OBJECT_ENCODING = "objectEncoding";
+	static const char* COMMAND_OBJECT_MEMBER_NAME[10] = { 
+	"app" ,"flashver" ,"swfUrl" , 
+	"tcUrl","fpad","audioCodecs",
+	"videoCodecs","videoFunction",
+	 "pageUrl" , "objectEncoding" 
+	 };
+	 
 
-	//optional user arguments
-	struct CommandObject
-	{
-		string app;
-		string flashver;
-		string swfUrl;
-		string tcUrl;
-		bool fpad;
-		uint16_t audioCodecs;
-		uint16_t videoCodecs;
-		uint16_t videoFunction;
-		string pageUrl;
-		uint16_t objectEncoding;
-	};
-
-	struct OptionalUserArguments
-	{
-
-	};
-
-	struct Content
-	{
-		string commandName;
-		int transactionId;
-		CommandObject cmdObj;
-		OptionalUserArguments optUsrArg;
-	};
-
-
-	
-	Content* ParseConnect(AMF0::CParse *pParse);
+	class CContent;
 };
 
+
+class Connect::CContent
+{
+private:
+	CContent();
+	~CContent();
+
+public:
+	static CContent* Create(AMF0::CParse* parse);
+	static CContent* Create(AMF3::CParse* parse);
+
+private:
+	bool CheckOut(AMF0::CParse* parse);
+	bool CheckCommandName(AMF0::CParse* parse);
+	bool CheckTransactionID(AMF0::CParse* parse);
+	bool CheckCommandObject(AMF0::CParse* parse);
+	bool CheckOptionalUserArgumemts(AMF0::CParse* parse);
+	
+	bool CheckOut(AMF3::CParse* parse);
+	bool CheckCommandName(AMF3::CParse* parse);
+	bool CheckTransactionID(AMF3::CParse* parse);
+	bool CheckCommandObject(AMF3::CParse* parse);
+	bool CheckOptionalUserArgumemts(AMF3::CParse* parse);
+};
 

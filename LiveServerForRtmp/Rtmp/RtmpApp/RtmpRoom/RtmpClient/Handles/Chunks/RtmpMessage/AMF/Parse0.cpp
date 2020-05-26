@@ -1,7 +1,7 @@
 #include "AMF0.h"
 using namespace AMF0;
 
-#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off  >= end ) return ERROR_LOSS_DATA;
+#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off >= end - 1 ) return ERROR_LOSS_DATA;
 
 CParse::CParse()
 {
@@ -20,7 +20,7 @@ CParse* CParse::Create(uint8_t *src, const int srcLen)
 	CParse* parse = new CParse;
 	Data *pData = NULL;
 	uint8_t *ptr = src;
-	const uint8_t *start = src, *end = src + srcLen - 1;
+	const uint8_t *start = src, *end = src + srcLen ;
 	int len = 0;
 	int ret = AMF0_OK;
 
@@ -45,11 +45,11 @@ int CParse::ParseData(uint8_t *src, const int srcLen, Data& data, int *outLen)
 	if (src == NULL) return NULL;
 	int ret = AMF0_OK;
 	uint8_t *ptr = src;
-	const uint8_t *start = src, *end = src + srcLen - 1;
+	const uint8_t *start = src, *end = src + srcLen;
 	int len = 0;
 
 	CHECK_OFFSET(start, end, ptr, 1)
-		data.dType = *ptr;
+	data.dType = *ptr;
 	memset(&(data.dValue), 0, sizeof(Variable));
 
 	ptr += 1;
@@ -137,7 +137,7 @@ parseErr:
 int CParse::ParseNumber(uint8_t *src, const int srcLen, Number& number, int* outLen)
 {
 	uint8_t *ptr = src;
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 
 	CHECK_OFFSET(start, end, ptr, 8);
 	number.num = BigToHostDouble(ptr, 8);
@@ -162,7 +162,7 @@ int CParse::ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int*
 
 int CParse::ParseString(uint8_t *src, const int srcLen, String& str, int* outLen)
 {
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen ;
 	uint8_t *ptr = src;
 	uint16_t utf8CharCount = 0;
 	int i = 0;
@@ -204,7 +204,7 @@ int CParse::ParseString(uint8_t *src, const int srcLen, String& str, int* outLen
 
 int CParse::ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outLen)
 {
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 	uint8_t *ptr = src;
 	int ret = AMF0_OK;
 	int len = 0;
@@ -277,7 +277,7 @@ int CParse::ParseUndefined(uint8_t *src, const int srcLen, int* outLen)
 int CParse::ParseReference(uint8_t *src, const int srcLen, Reference &refer, int* outLen)
 {
 	uint8_t *ptr = src;
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 
 	CHECK_OFFSET(start, end, ptr, 2)
 		refer.ref = ::BigToHost16(ptr);
@@ -290,7 +290,7 @@ int CParse::ParseReference(uint8_t *src, const int srcLen, Reference &refer, int
 int CParse::ParseEcmaArray(uint8_t *src, const int srcLen, ECMA_Array &ecma, int* outLen)
 {
 	uint8_t *ptr = src;
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen ;
 	int i = 0;
 	int ret = AMF0_FAILURE;
 	int len = 0;
@@ -325,7 +325,7 @@ int CParse::ParseObjectEnd(uint8_t *src, const int srcLen, int* outLen)
 int CParse::ParseStrictArray(uint8_t *src, const int srcLen, StrictArray& strictArray, int* outLen)
 {
 	uint8_t *ptr = src;
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 	int i;
 	int ret;
 	int len;
@@ -355,7 +355,7 @@ parseErr:
 int CParse::ParseDate(uint8_t *src, const int srcLen, Date& date, int* outLen)
 {
 	uint8_t *ptr = src;
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 	int ret = AMF0_FAILURE;
 
 	CHECK_OFFSET(start, end, ptr, 10)	// 8bytes + 2 bytes
@@ -367,7 +367,7 @@ int CParse::ParseDate(uint8_t *src, const int srcLen, Date& date, int* outLen)
 
 int CParse::ParseLongString(uint8_t *src, const int srcLen, LongString &utf8, int* outLen)
 {
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen;
 	uint8_t *ptr = src;
 	uint32_t utf8CharCount = 0;
 	int i = 0;
@@ -434,7 +434,7 @@ int CParse::ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObj
 
 int CParse::ParseObjectProperty(uint8_t *src, const int srcLen, Member& mem, int* outLen)
 {
-	const uint8_t* start = src, *end = src + srcLen - 1;
+	const uint8_t* start = src, *end = src + srcLen ;
 	uint8_t *ptr = src;
 	int ret;
 	int len = 0;
