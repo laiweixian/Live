@@ -15,4 +15,7 @@ private:
 public:
 	static CParse* Create(uint8_t *src, const int srcLen);
 	void Destroy();
+
+private:
+	
 };

@@ -17,9 +17,11 @@ public:
 private:
 	int InitCapture();
 	int InitWnd();
+	int InitInfo();
 
 	static HRESULT InitCaptureGraphBuilder(IGraphBuilder **ppGraph, ICaptureGraphBuilder2 **ppBuild);
 	static HRESULT InitCompressor(IBaseFilter** ppCompre);
+	static HRESULT InitVideoRenderer(IBaseFilter** pRenderer);
 protected:
 	static HRESULT QueryPins(IBaseFilter *pFilter);
 private:

@@ -7,6 +7,7 @@ CParse::CParse()
 {
 
 }
+
 CParse::~CParse()
 {
 	auto it = m_Datas.begin();

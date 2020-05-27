@@ -113,7 +113,10 @@ namespace AMF0
 
 	bool IsString(Data& val);
 	bool IsNumber(Data& val);
-	void CopyString(char* dst, Data& src, int* outLen);
+	bool IsBoolean(Data& val);
+	void CopyString(string& dst, Data& src);
+	void CopyNumber(int &dst,Data& src);
+	void CopyBoolean(bool &dst,Data& src);
 	int Utf8Cmp(const char* dst,Utf8& src);
 };
 

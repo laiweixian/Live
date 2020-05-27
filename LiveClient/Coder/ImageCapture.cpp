@@ -210,7 +210,6 @@ int CImageCapture::InitWnd()
 int CImageCapture::InitCapture()
 {
 	HRESULT hr = S_FALSE;
-	CComPtr<IEnumPins> enumPins;
 	CComBSTR vCap = L"Video Capture";
 	
 	if (m_Filter == NULL)
@@ -220,7 +219,14 @@ int CImageCapture::InitCapture()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
+	hr = InitVideoRenderer(NULL);
+
 	hr = m_Graph->AddFilter(m_Filter, vCap);
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	hr = m_Builder->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video,
+		m_Filter, NULL, NULL);
 	if (!SUCCEEDED(hr))
 		goto fail;
 
@@ -228,15 +234,111 @@ int CImageCapture::InitCapture()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
-	hr = m_Builder->RenderStream(&PIN_CATEGORY_PREVIEW, &MEDIATYPE_Video,m_Filter, NULL, NULL);
-	if (!SUCCEEDED(hr))
-		goto fail;
-	
-
+	hr = InitInfo();
 
 	return S_OK;
 fail:
 	return hr;
+}
+
+HRESULT CImageCapture::InitVideoRenderer(IBaseFilter** pRenderer)
+{
+	HRESULT hr;
+	CComPtr<ICreateDevEnum> devEnum;
+	CComPtr<IEnumMoniker> enumMoniker;
+	IMoniker *pMoniker = NULL;
+	IPropertyBag *pProperty = NULL;
+	ULONG fetched;
+	VARIANT var;
+	int devCount = 0;
+	const CComBSTR mux = L"AVI Mux";
+	IBaseFilter *pAviMux = NULL;
+	vector<CComVariant> vecVar;
+
+
+	hr = devEnum.CoCreateInstance(CLSID_SystemDeviceEnum);
+	if (FAILED(hr) || devEnum == NULL)
+		goto fail;
+
+	hr = devEnum->CreateClassEnumerator(CLSID_LegacyAmFilterCategory, &enumMoniker, 0);
+	if (FAILED(hr) || enumMoniker == NULL)
+		goto fail;
+
+	while (S_OK == enumMoniker->Next(1, &pMoniker, &fetched))
+	{
+		if (pMoniker == NULL)
+			break;
+		hr = pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&pProperty);
+		if (FAILED(hr) || pProperty == NULL)
+		{
+			pMoniker->Release();
+			pMoniker = NULL;
+			continue;
+		}
+
+		VariantInit(&var);
+		hr = pProperty->Read(L"FriendlyName", &var, 0);
+		if (FAILED(hr))
+		{
+			pMoniker->Release();
+			pMoniker = NULL;
+			pProperty->Release();
+			pProperty = NULL;
+			continue;
+		}
+
+		if (StrCmpW(var.bstrVal, mux) == 0)
+		{
+			hr = pMoniker->BindToObject(NULL, NULL, IID_IBaseFilter, (void**)&pAviMux);
+			if (hr == S_OK && pAviMux != NULL)
+			{
+				
+			}
+		}
+
+		vecVar.push_back(var);
+
+		VariantClear(&var);
+		pMoniker->Release();
+		pMoniker = NULL;
+		pProperty->Release();
+		pProperty = NULL;
+	}
+
+
+	return S_OK;
+
+fail:
+
+	return S_FALSE;
+}
+
+int CImageCapture::InitInfo()
+{
+	HRESULT hr;
+	CComPtr<IBasicVideo2> pVideo;
+	CComPtr<IMediaEvent>  pEvent;
+	CComPtr<IMediaControl> pControl;
+	OAFilterState fs;
+
+	if (!m_Graph || !m_Builder)
+		return -1;
+
+	hr = m_Graph->QueryInterface(&pVideo);
+	if (!SUCCEEDED(hr))
+		goto fail;
+	hr = m_Graph->QueryInterface(&pEvent);
+	if (!SUCCEEDED(hr))
+		goto fail;
+	hr = m_Graph->QueryInterface(&pControl);
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	
+	
+	return 0;
+fail:
+	return -1;
 }
 
 HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
@@ -247,6 +349,7 @@ HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
 
 	PIN_DIRECTION dir;
 	vector<PIN_DIRECTION> dirs;
+
 
 	hr = pFilter->EnumPins(&enumPins);
 	if (!SUCCEEDED(hr))
@@ -261,12 +364,14 @@ HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
 			pPin = NULL;
 			continue;
 		}
-
 		dirs.push_back(dir);
+
 
 		pPin->Release();
 		pPin = NULL;
 	}
+
+	
 	return hr;
 fail:
 	return hr;

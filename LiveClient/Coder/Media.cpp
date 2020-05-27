@@ -206,6 +206,10 @@ fail:
 
 int CMedia::EncodeBMP(const AVFrame* rgb)
 {
+	//
+	static AVFrame* yuv = av_frame_alloc();
+
+
 	return 0;
 }
 

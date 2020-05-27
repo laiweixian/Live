@@ -402,10 +402,16 @@ bool AMF0::IsNumber(Data& val)
 	return isTrue;
 }
 
-void AMF0::CopyString(char* dst, Data& src, int* outLen)
+bool AMF0::IsBoolean(Data& val)
+{
+	return val.dType == MARKER_BOOLEAN;
+}
+
+void AMF0::CopyString(string& dst, Data& src)
 {
 	int len = 0;
 	uint8_t *ptr = NULL;
+	char *buff = NULL;
 	switch (src.dType)
 	{
 	case MARKER_STRING:
@@ -421,14 +427,37 @@ void AMF0::CopyString(char* dst, Data& src, int* outLen)
 		ptr = src.dValue.pXML->utf8.ptr;
 		break;
 	default:
-		*outLen = 0;
 		return;
 		break;
 	}
 
-	if (dst) memcpy(dst, ptr, len);
-	*outLen = len+1;
+	buff = new char[len+1];
+	memset(buff,0,len+1);
+	memcpy(buff,ptr,len);
+
+	dst = buff;
+	delete[] buff;
+	buff = NULL;
 	return ;
+}
+
+void AMF0::CopyNumber(int &dst, Data& src)
+{
+	if(IsNumber(src) == false)
+		return;
+
+	int num = (int)src.dValue.pNum->num;
+	dst = num;
+	return;
+}
+
+void AMF0::CopyBoolean(bool &dst, Data& src)
+{
+	if (IsBoolean(src) == false)
+		return;
+
+	dst = src.dValue.pBool->bol;
+	return;
 }
 
 int AMF0::Utf8Cmp(const char* dst, Utf8& src)
