@@ -2,6 +2,7 @@
 
 #include "../stdafx.h"
 
+
 class CImageCapture
 {
 private:
@@ -20,14 +21,16 @@ private:
 	int InitInfo();
 
 	static HRESULT InitCaptureGraphBuilder(IGraphBuilder **ppGraph, ICaptureGraphBuilder2 **ppBuild);
-	static HRESULT InitCompressor(IBaseFilter** ppCompre);
-	static HRESULT InitVideoRenderer(IBaseFilter** pRenderer);
+
+	
 protected:
 	static HRESULT QueryPins(IBaseFilter *pFilter);
+
+	int InitRenderer();
 private:
 	IBaseFilter *m_Filter;
 	CComPtr<ICaptureGraphBuilder2> m_Builder;
 	CComPtr<IGraphBuilder> m_Graph;
-	CComPtr<IBaseFilter> m_Compressor;
+
 	HWND m_Wnd;
 };

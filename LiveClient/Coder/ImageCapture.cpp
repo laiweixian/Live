@@ -219,7 +219,7 @@ int CImageCapture::InitCapture()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
-	hr = InitVideoRenderer(NULL);
+
 
 	hr = m_Graph->AddFilter(m_Filter, vCap);
 	if (!SUCCEEDED(hr))
@@ -230,88 +230,17 @@ int CImageCapture::InitCapture()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
-	hr = InitCompressor(&m_Compressor);
-	if (!SUCCEEDED(hr))
-		goto fail;
 
-	hr = InitInfo();
+
+
+
 
 	return S_OK;
 fail:
 	return hr;
 }
 
-HRESULT CImageCapture::InitVideoRenderer(IBaseFilter** pRenderer)
-{
-	HRESULT hr;
-	CComPtr<ICreateDevEnum> devEnum;
-	CComPtr<IEnumMoniker> enumMoniker;
-	IMoniker *pMoniker = NULL;
-	IPropertyBag *pProperty = NULL;
-	ULONG fetched;
-	VARIANT var;
-	int devCount = 0;
-	const CComBSTR mux = L"AVI Mux";
-	IBaseFilter *pAviMux = NULL;
-	vector<CComVariant> vecVar;
 
-
-	hr = devEnum.CoCreateInstance(CLSID_SystemDeviceEnum);
-	if (FAILED(hr) || devEnum == NULL)
-		goto fail;
-
-	hr = devEnum->CreateClassEnumerator(CLSID_LegacyAmFilterCategory, &enumMoniker, 0);
-	if (FAILED(hr) || enumMoniker == NULL)
-		goto fail;
-
-	while (S_OK == enumMoniker->Next(1, &pMoniker, &fetched))
-	{
-		if (pMoniker == NULL)
-			break;
-		hr = pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&pProperty);
-		if (FAILED(hr) || pProperty == NULL)
-		{
-			pMoniker->Release();
-			pMoniker = NULL;
-			continue;
-		}
-
-		VariantInit(&var);
-		hr = pProperty->Read(L"FriendlyName", &var, 0);
-		if (FAILED(hr))
-		{
-			pMoniker->Release();
-			pMoniker = NULL;
-			pProperty->Release();
-			pProperty = NULL;
-			continue;
-		}
-
-		if (StrCmpW(var.bstrVal, mux) == 0)
-		{
-			hr = pMoniker->BindToObject(NULL, NULL, IID_IBaseFilter, (void**)&pAviMux);
-			if (hr == S_OK && pAviMux != NULL)
-			{
-				
-			}
-		}
-
-		vecVar.push_back(var);
-
-		VariantClear(&var);
-		pMoniker->Release();
-		pMoniker = NULL;
-		pProperty->Release();
-		pProperty = NULL;
-	}
-
-
-	return S_OK;
-
-fail:
-
-	return S_FALSE;
-}
 
 int CImageCapture::InitInfo()
 {
@@ -377,61 +306,7 @@ fail:
 	return hr;
 }
 
-HRESULT CImageCapture::InitCompressor(IBaseFilter** ppCompre)
+int CImageCapture::InitRenderer()
 {
-	HRESULT hr;
-	IBaseFilter* pCompre = NULL;
-	CComPtr<ICreateDevEnum> devEnum;
-	CComPtr<IEnumMoniker> enumMoniker;
-	IMoniker *pMoniker = NULL;
-	IPropertyBag *pProperty = NULL;
-	ULONG fetched;
-	VARIANT var;
-	int devCount = 0;
-
-	hr = devEnum.CoCreateInstance(CLSID_SystemDeviceEnum);
-	if (FAILED(hr) || devEnum == NULL)
-		goto fail;
-
-	hr = devEnum->CreateClassEnumerator(CLSID_VideoCompressorCategory, &enumMoniker, 0);
-	if (FAILED(hr) || enumMoniker == NULL)
-		goto fail;
-
-	while (S_OK == enumMoniker->Next(1, &pMoniker, &fetched))
-	{
-		if (pMoniker == NULL)
-			break;
-		hr = pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&pProperty);
-		if (FAILED(hr) || pProperty == NULL)
-		{
-			pMoniker->Release();
-			pMoniker = NULL;
-			continue;
-		}
-
-		VariantInit(&var);
-		hr = pProperty->Read(L"FriendlyName", &var, 0);
-		if (FAILED(hr))
-		{
-			pMoniker->Release();
-			pMoniker = NULL;
-			pProperty->Release();
-			pProperty = NULL;
-			continue;
-		}
-
-		VariantClear(&var);
-		pMoniker->Release();
-		pMoniker = NULL;
-		pProperty->Release();
-		pProperty = NULL;
-
-		
-		
-	}
-
-	return S_OK;
-
-fail:
-	return S_FALSE;
+	CBaseRenderer* pRender = NULL;
 }
