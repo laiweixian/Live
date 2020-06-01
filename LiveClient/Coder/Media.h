@@ -32,6 +32,8 @@ public:
 	static AVFrame* YUV2BMP(AVFrame *yuv);
 	static AVFrame* BMP2YUV(AVFrame *bgr);
 
+	 
+
 private:
 
 	int InitFormat();

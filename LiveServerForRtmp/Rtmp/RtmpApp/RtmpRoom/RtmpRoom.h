@@ -2,17 +2,22 @@
 
 #include "stdafx.h"
 
-#include "RtmpClient/RtmpClient.h"
+#include "Player.h"
+#include "Publisher.h"
+
+
 
 class CRtmpRoom 
 {
-public:
+private:
 	CRtmpRoom();
 	~CRtmpRoom();
 
+public:
+	static CRtmpRoom* Create(string roomName);
 
+	
+	
 private:
-	CRtmpClient *m_Owner;
-	vector<CRtmpClient*> m_Players;
-
+	
 };

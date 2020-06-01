@@ -308,5 +308,5 @@ fail:
 
 int CImageCapture::InitRenderer()
 {
-	CBaseRenderer* pRender = NULL;
+	return -1;
 }

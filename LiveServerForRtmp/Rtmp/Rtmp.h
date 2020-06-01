@@ -9,11 +9,11 @@ public:
 	CRtmp();
 	~CRtmp();
 private:
+
+	void PreInit();
 	void Init() ;
-	void Run() ;
+	void Run();
 	 
 private:
 	CRtmpApp *m_App;
-
-
 };
