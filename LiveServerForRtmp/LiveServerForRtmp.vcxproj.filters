@@ -156,10 +156,10 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetStream\CloseStream.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\Player.h">
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Player.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\Publisher.h">
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Publisher.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

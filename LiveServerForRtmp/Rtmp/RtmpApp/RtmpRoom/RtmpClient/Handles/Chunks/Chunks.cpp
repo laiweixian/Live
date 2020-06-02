@@ -29,11 +29,8 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 
 		if (m_Message->GetRemainSize() == 0)
 		{
-			HandleMessage(m_Message);
-			
+			HandleMessage(m_Message);	
 		}
-			
-		
 		offset += chunkLen;
 	}
 	return offset;
@@ -128,7 +125,6 @@ failure:
 	return false;
 }
 
-
 void CChunks::PushChunkHeader(CChunkHeader *pHeader)
 {
 	if (!pHeader)	return;
@@ -140,7 +136,7 @@ void CChunks::PushMessage(CBaseMessage *pMsg)
 {
 	if (!pMsg)	return;
 	DELETE_PTR(m_Message)
-		m_Message = pMsg;
+	m_Message = pMsg;
 }
 
 void CChunks::HandleMessage(CBaseMessage* pMsg)
@@ -197,7 +193,7 @@ void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
 
 	m_ChunkSize = content.chunkSize;
 	delete pMsg;
-	OnSetChunkSize();
+
 }
 
 void CChunks::HandleAbortMessage(CAbortMessage* pMsg)

@@ -6,7 +6,6 @@
 #include "Publisher.h"
 
 
-
 class CRtmpRoom 
 {
 private:
@@ -14,10 +13,11 @@ private:
 	~CRtmpRoom();
 
 public:
-	static CRtmpRoom* Create(string roomName);
+	static CRtmpRoom* Create(string name);
 
-	
+//property
+	string GetName(); 
 	
 private:
-	
+	string m_Name;
 };

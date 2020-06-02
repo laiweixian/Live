@@ -36,72 +36,9 @@ int CRtmpClient::SendPacket(const uint8_t* src, const int srcLength)
 
 
 
-void CRtmpClient::OnC0()
-{
-
-}
-
-void CRtmpClient::OnC1()
-{
-
-}
-void CRtmpClient::OnC2()
-{
-
-}
-
 //
 int CRtmpClient::SendChunks(uint8_t* src, const int srcLength)
 {
 	return 0;
 }
 
-
-void CRtmpClient::OnSetChunkSize()
-{
-
-}
-void CRtmpClient::OnAbortMessage()
-{
-
-}
-void CRtmpClient::OnAcknowledgement()
-{
-
-}
-void CRtmpClient::OnWindowAcknowledgementSize()
-{
-
-}
-void CRtmpClient::OnSetPeerBandwidth()
-{
-
-}
-void CRtmpClient::OnUserControlMessages()
-{
-
-}
-void CRtmpClient::OnCommandMessage()
-{
-	
-}
-void CRtmpClient::OnDataMessage()
-{
-
-}
-void CRtmpClient::OnSharedObjectMessage()
-{
-
-}
-void CRtmpClient::OnAudioMessage()
-{
-
-}
-void CRtmpClient::OnVideoMessage()
-{
-
-}
-void CRtmpClient::OnAggregateMessage()
-{
-
-}

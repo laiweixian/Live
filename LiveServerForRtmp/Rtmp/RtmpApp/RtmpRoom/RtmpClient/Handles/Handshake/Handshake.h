@@ -27,11 +27,6 @@ public:
 	//call
 	virtual int SendPacket(const uint8_t* src, const int srcLength) = 0;
 	virtual int CloseServer() = 0;
-	
-	//notification
-	virtual void OnC0() = 0;
-	virtual void OnC1() = 0;
-	virtual void OnC2() = 0;
 
 private:
 	DECLARE_HANDSHAKE
