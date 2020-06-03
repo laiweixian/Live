@@ -6,6 +6,7 @@ protected:
 	IPlayerNotification() = default;
 	virtual ~IPlayerNotification() = default;
 
+public:
 	//interface for other class
 	virtual int OnVideo(const char* buf, const int bufLen) = 0;
 	virtual int OnAudio(const char* buf, const int bufLen) = 0;
@@ -18,7 +19,4 @@ class CPlayer : public IPlayerNotification
 protected:
 	CPlayer() = default;
 	~CPlayer() = default;
-
-	
-
 };
