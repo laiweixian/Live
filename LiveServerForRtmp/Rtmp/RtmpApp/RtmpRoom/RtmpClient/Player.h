@@ -1,10 +1,10 @@
 #pragma once
 
-class IPlayerNotification
+class IPlayerEvent
 {
 protected:
-	IPlayerNotification() = default;
-	virtual ~IPlayerNotification() = default;
+	IPlayerEvent() = default;
+	virtual ~IPlayerEvent() = default;
 
 public:
 	//interface for other class
@@ -14,9 +14,13 @@ public:
 	virtual int OnDisband() = 0;
 };
 
-class CPlayer : public IPlayerNotification
+class IPlayerCall
 {
 protected:
-	CPlayer() = default;
-	~CPlayer() = default;
+	IPlayerCall() = default;
+	virtual ~IPlayerCall() = default;
+public:
+	virtual int Enter(string roomName) = 0;
+	virtual int Leave(string roomName) = 0;
 };
+

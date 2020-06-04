@@ -1,6 +1,6 @@
 #include "RtmpClient.h"
 
-CRtmpClient::CRtmpClient(int id,  uint32_t chunkSize):CChunks(chunkSize),\
+CRtmpClient::CRtmpClient(int id,uint32_t chunkSize):CChunks(chunkSize),\
 														m_TotalReceive(0)
 {
 
@@ -23,10 +23,7 @@ void CRtmpClient::Destroy()
 	delete this;
 }
 
-int CRtmpClient::Handle(uint8_t *src, const int srcLen)
-{
-	return 0;
-}
+
 
 //CHandshake
 int CRtmpClient::SendPacket(const uint8_t* src, const int srcLength)
@@ -34,11 +31,10 @@ int CRtmpClient::SendPacket(const uint8_t* src, const int srcLength)
 	return 0;
 }
 
-
-
 //
 int CRtmpClient::SendChunks(uint8_t* src, const int srcLength)
 {
 	return 0;
 }
+
 

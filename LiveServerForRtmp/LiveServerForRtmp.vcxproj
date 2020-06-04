@@ -190,6 +190,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\UserControlMessages.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\WindowAcknowledgementSize.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Stream.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRooms.h" />

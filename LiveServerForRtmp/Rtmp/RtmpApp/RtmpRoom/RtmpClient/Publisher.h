@@ -1,21 +1,26 @@
 #pragma once
 
-class IPublishNotification
+class IPublishEvent
 {
 protected:
-	IPublishNotification() = default;
-	~IPublishNotification() = default;
+	IPublishEvent() = default;
+	virtual ~IPublishEvent() = default;
 
-	virtual int OnEnter() = 0;
-	virtual int OnLeave() = 0;
+public:
+	virtual int OnPlayerEnter() = 0;
+	virtual int OnPlayerLeave() = 0;
 };
 
-class CPublisher : public IPublishNotification
+class IPublishCall
 {
 protected:
-	CPublisher() = default;
-	~CPublisher() = default;
+	IPublishCall() = default;
+	virtual ~IPublishCall() = default;
 
-
-	
+public:
+	virtual int CreateRoom(string name) = 0;
+	virtual int DestroyRoom(int roomId) = 0;
+	virtual int PublishVideo(int roomId,const char* buf,const int bufLen) = 0;
+	virtual int PublishAudio(int roomId, const char* buf, const int bufLen) = 0;
+	virtual int PublishMsg(int roomId, const char* buf, const int bufLen) = 0;
 };
