@@ -2,22 +2,35 @@
 
 #include "stdafx.h"
 
-#include "Player.h"
-#include "Publisher.h"
-
+class CPlayer;
+class CPublish;
 
 class CRtmpRoom 
 {
-private:
-	CRtmpRoom();
+public:
+	CRtmpRoom(string name,CPublish* pPublish);
 	~CRtmpRoom();
 
+	//
 public:
-	static CRtmpRoom* Create(string name);
+	void BroadcastAudio(const char* src,const int srcLen);
+	void BroadcastVideo(const char* src, const int srcLen);
+	void BroadcastMsg(const char* src, const int srcLen);
+	void Disband();
 
-//property
-	string GetName(); 
+	//
+public:
+	void Enter(CPlayer* pPlayer);
+	void Leave(CPlayer* pPlayer);
+
+
+public:
+	string GetName();
 	
 private:
 	string m_Name;
+	CPublish *m_Publish;
+
+	vector<CPlayer*> m_Players;
+	
 };

@@ -1,26 +1,19 @@
 #pragma once
 
-class IPublishEvent
+#include "stdafx.h"
+class CPlayer;
+
+class CPublish
 {
 protected:
-	IPublishEvent() = default;
-	virtual ~IPublishEvent() = default;
-
+	CPublish();
+	virtual ~CPublish();
 public:
-	virtual int OnPlayerEnter() = 0;
-	virtual int OnPlayerLeave() = 0;
-};
+	void OnEnter(CPlayer* pPlayer);
+	void OnLeave(CPlayer* pPlayer);
 
-class IPublishCall
-{
 protected:
-	IPublishCall() = default;
-	virtual ~IPublishCall() = default;
-
-public:
-	virtual int CreateRoom(string name) = 0;
-	virtual int DestroyRoom(int roomId) = 0;
-	virtual int PublishVideo(int roomId,const char* buf,const int bufLen) = 0;
-	virtual int PublishAudio(int roomId, const char* buf, const int bufLen) = 0;
-	virtual int PublishMsg(int roomId, const char* buf, const int bufLen) = 0;
+	virtual int CreateRoom() final;
+	virtual int DestroyRoom() final;
 };
+

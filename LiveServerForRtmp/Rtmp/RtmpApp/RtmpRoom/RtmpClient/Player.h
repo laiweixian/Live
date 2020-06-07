@@ -1,26 +1,24 @@
 #pragma once
+#include "stdafx.h"
 
-class IPlayerEvent
+class CRtmpRoom;
+
+
+class CPlayer
 {
 protected:
-	IPlayerEvent() = default;
-	virtual ~IPlayerEvent() = default;
-
+	CPlayer() ;
+	virtual ~CPlayer() ;
 public:
-	//interface for other class
-	virtual int OnVideo(const char* buf, const int bufLen) = 0;
-	virtual int OnAudio(const char* buf, const int bufLen) = 0;
-	virtual int OnMsg(const char* buf, const int bufLen) = 0;
-	virtual int OnDisband() = 0;
-};
+	virtual void OnConnect(CRtmpRoom* pRoom) = 0;
+	virtual void OnDisConnect() = 0;
+	
+	virtual int SendVideo(const char* src,const int srcLen) = 0;
+	virtual int SendAudio(const char* src, const int srcLen) = 0;
+	virtual int SendMsg(const char* src, const int srcLen) = 0;
 
-class IPlayerCall
-{
 protected:
-	IPlayerCall() = default;
-	virtual ~IPlayerCall() = default;
-public:
-	virtual int Enter(string roomName) = 0;
-	virtual int Leave(string roomName) = 0;
+	virtual void SetRoom(CRtmpRoom* pRoom) = 0;
+	virtual CRtmpRoom* GetRoom() = 0;
 };
 
