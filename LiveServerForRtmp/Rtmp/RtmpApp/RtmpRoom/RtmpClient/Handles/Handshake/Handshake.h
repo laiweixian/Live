@@ -18,15 +18,15 @@
 
 class CHandshake 
 {
-public:
+protected:
 	CHandshake();
-	~CHandshake();
+	virtual ~CHandshake();
 
+public:
 	virtual int OnHandshake(uint8_t* src, const int srcLength,uint32_t *outLen) final;
 
-	//call
-	virtual int SendPacket(const uint8_t* src, const int srcLength) = 0;
-	virtual int CloseServer() = 0;
+protected:
+	virtual int Send2Peer(const uint8_t* src, const int srcLength) = 0;
 
 private:
 	DECLARE_HANDSHAKE

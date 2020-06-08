@@ -114,9 +114,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRooms.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\BaseHandle.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetConnection\Call.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -160,6 +157,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Publisher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\SendChunk\SendChunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -255,6 +258,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Publisher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\SendChunk\SendChunk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

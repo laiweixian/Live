@@ -8,29 +8,29 @@ class CPublish;
 class CRtmpRoom 
 {
 public:
-	CRtmpRoom(string name,CPublish* pPublish);
+	CRtmpRoom(string name);
 	~CRtmpRoom();
 
-	//
+	//interface for publisher
 public:
-	void BroadcastAudio(const char* src,const int srcLen);
-	void BroadcastVideo(const char* src, const int srcLen);
-	void BroadcastMsg(const char* src, const int srcLen);
-	void Disband();
+	int SetOwner(CPublish* pPublish);
+	int BroadcastAudio(CPublish* pPublish,const char* src,const int srcLen);
+	int BroadcastVideo(CPublish* pPublish,const char* src, const int srcLen);
+	int BroadcastMsg(CPublish* pPublish,const char* src, const int srcLen);
+	int DisbandRoom(CPublish* pPublish);
 
-	//
+	//interface for player
 public:
-	void Enter(CPlayer* pPlayer);
-	void Leave(CPlayer* pPlayer);
-
+	int Enter(CPlayer* pPlayer);
+	int Leave(CPlayer* pPlayer);
 
 public:
 	string GetName();
+	int GetCount();
+	CPlayer* GetPlayer(int index);
 	
 private:
 	string m_Name;
 	CPublish *m_Publish;
-
 	vector<CPlayer*> m_Players;
-	
 };

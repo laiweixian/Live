@@ -3,8 +3,11 @@
 #include "stdafx.h"
 #include "RtmpRoom.h"
 
-class CPlayer;
-class CPublish;
+#define	ROOMS_OK		0
+#define ROOMS_FAILURE	1
+#define ERR_ROOM_NO_EXIST -1
+
+
 
 class CRtmpRooms
 {
@@ -15,16 +18,11 @@ public:
 	static CRtmpRooms* GetInstance();
 	void Destroy();
 
-	bool SearchRoom(string name);
-	CRtmpRoom* GetRoom(string name) const;
-
-	int CreateRoom(string name);
-	int DestroyRoom(string name);
-
-
+	CRtmpRoom* SearchRoom(string name);
+	CRtmpRoom* CreateRoom(string name);
 
 public:
 	static CRtmpRooms* m_Instance;
-protected:
+private:
 	vector<CRtmpRoom*> m_Rooms;
 };

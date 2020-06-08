@@ -152,9 +152,10 @@
     <ClInclude Include="Global\Stru.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\SendChunk\SendChunk.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Player.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Publisher.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\BaseHandle.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\Chunks.h" />
@@ -199,8 +200,10 @@
   <ItemGroup>
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\RtmpMessage\Command\NetConnection\Connect.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Handles\Chunks\SendChunk\SendChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Player.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\Publisher.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpClient\RtmpClient.cpp" />
