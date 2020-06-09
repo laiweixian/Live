@@ -47,6 +47,12 @@ public:
 	//interface
 	virtual CBaseMessage::MessageType GetType()	 = 0;
 
+	//
+	char* GetPtr() const;
+	int   GetSize() const;
+	CBaseMessage* Clone() ;
+
+
 protected:
 	uint32_t			  m_CSID;
 	CBaseMessage::Header  m_Header;

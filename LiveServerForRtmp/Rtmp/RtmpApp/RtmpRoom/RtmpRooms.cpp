@@ -24,7 +24,7 @@ void CRtmpRooms::Destroy()
 	delete this;
 }
 
-bool CRtmpRooms::SearchRoom(string name)
+CRtmpRoom* CRtmpRooms::EnterRoom(string name,CPlayer* pPlayer)
 {
 	auto it = m_Rooms.begin();
 	CRtmpRoom *pRoom = NULL;
@@ -35,25 +35,26 @@ bool CRtmpRooms::SearchRoom(string name)
 		if (name.compare(pRoom->GetName()) == 0)
 			goto success;
 	}
-
-	return false;
-success:
-	return true;
-}
-
-CRtmpRoom* CRtmpRooms::GetRoom(string name) const
-{
-	auto it = m_Rooms.begin();
-	CRtmpRoom *pRoom = NULL;
-
-	for (it = m_Rooms.begin(); it != m_Rooms.end(); it++)
-	{
-		pRoom = *it;
-		if (name.compare(pRoom->GetName()) == 0)
-			goto success;
-	}
-
 	return NULL;
 success:
 	return pRoom;
+}
+
+CRtmpRoom* CRtmpRooms::CreateRoom(string name,CPublish* pPublish)
+{
+	auto it = m_Rooms.begin();
+	CRtmpRoom *pRoom = NULL;
+
+	for (it = m_Rooms.begin(); it != m_Rooms.end(); it++)
+	{
+		pRoom = *it;
+		if (name.compare(pRoom->GetName()) == 0)
+			goto exist;
+	}
+
+	pRoom = new CRtmpRoom(name);
+
+	
+exist:
+	return NULL;
 }

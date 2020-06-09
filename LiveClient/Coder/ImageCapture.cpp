@@ -225,10 +225,7 @@ int CImageCapture::InitCapture()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
-	hr = m_Builder->RenderStream(&PIN_CATEGORY_CAPTURE, &MEDIATYPE_Video,
-		m_Filter, NULL, NULL);
-	if (!SUCCEEDED(hr))
-		goto fail;
+	InitInfo();
 
 
 
@@ -249,6 +246,7 @@ int CImageCapture::InitInfo()
 	CComPtr<IMediaEvent>  pEvent;
 	CComPtr<IMediaControl> pControl;
 	OAFilterState fs;
+	long buffSize = 0;
 
 	if (!m_Graph || !m_Builder)
 		return -1;
@@ -263,7 +261,13 @@ int CImageCapture::InitInfo()
 	if (!SUCCEEDED(hr))
 		goto fail;
 
-	
+	hr = pControl->Run();
+	if (!SUCCEEDED(hr))
+		goto fail;
+
+	hr = pVideo->GetCurrentImage(&buffSize,NULL);
+	if (!SUCCEEDED(hr))
+		goto fail;
 	
 	return 0;
 fail:

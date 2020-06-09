@@ -2,6 +2,8 @@
 #include "RtmpClient/Publisher.h"
 #include "RtmpRoom.h"
 
+
+
 CRtmpRoom::CRtmpRoom(string name) : m_Name(name),m_Publish(NULL)
 {
 	
@@ -12,56 +14,95 @@ CRtmpRoom::~CRtmpRoom()
 
 }
 
-int CRtmpRoom::SetOwner(CPublish* pPublish)
+int CRtmpRoom::Join(CPlayer* pPlayer)
 {
-	if (!m_Publish)
-		m_Publish = pPublish;
-}
+	auto it = m_Players.begin();
 
-int CRtmpRoom::BroadcastAudio(CPublish* pPublish,const char* src, const int srcLen)
-{
+	for (it = m_Players.begin(); it != m_Players.end(); it++)
+	{
+		if (pPlayer == *it)
+			goto exist;
+	}
 
-}
+	m_Players.push_back(pPlayer);
 
-int CRtmpRoom::BroadcastVideo(CPublish* pPublish,const char* src, const int srcLen)
-{
 
-}
-
-int CRtmpRoom::BroadcastMsg(CPublish* pPublish,const char* src, const int srcLen)
-{
-
-}
-
-int CRtmpRoom::DisbandRoom(CPublish* pPublish)
-{
-
-}
-
-int CRtmpRoom::Enter(CPlayer* pPlayer)
-{
-
+	return 0;
+exist:
+	return 0;
+fail:
+	return -1;
 }
 
 int CRtmpRoom::Leave(CPlayer* pPlayer)
 {
+	auto it = m_Players.begin();
 
+	for (it = m_Players.begin(); it != m_Players.end(); it++)
+	{
+		if (pPlayer == *it)
+		{
+			m_Players.erase(it);
+			goto succeed;
+		}	
+	}
+
+	return -1;
+succeed:
+	return 0;
+fail:
+	return -1;
 }
 
-string CRtmpRoom::GetName()
+//IRoom4Publisher
+int CRtmpRoom::SetOwner(CPublisher *pPublish)
 {
-	return m_Name;
+	if (m_Publish == NULL)
+		m_Publish = pPublish;
+	else 
+		return -1;
+	return 0;
 }
 
-int CRtmpRoom::GetCount()
+int CRtmpRoom::Disband()
 {
-	return m_Players.size();
+	auto it = m_Players.begin();
+
+	for (it = m_Players.begin(); it != m_Players.end(); it++)
+		(*it)->OffLineEvent();
+	for (it = m_Players.begin(); it != m_Players.end(); it++)
+		m_Players.erase(it);
+	
+	return 0;
 }
 
-CPlayer* CRtmpRoom::GetPlayer(int index)
+int CRtmpRoom::BroadcastVideo(CVideoMessage* pMsg)
 {
-	const int count = m_Players.size();
-	if (count == 0)
-		return NULL;
-	return m_Players.at(index);
+	m_Msgs.push_back(pMsg);
+	Refresh();
+	return 0;
+}
+
+int CRtmpRoom::BroadcastAudio(CAudioMessage* pMsg)
+{
+	m_Msgs.push_back(pMsg);
+	Refresh();
+	return 0;
+}
+
+int CRtmpRoom::BroadcastMsg(CBaseMessage* pMsg)
+{
+	//
+	
+	return 0;
+}
+
+int CRtmpRoom::Refresh()
+{
+	auto it = m_Players.begin();
+
+	for (it = m_Players.begin(); it != m_Players.end(); it++)
+	{
+
+	}
 }

@@ -7,8 +7,6 @@
 #define ROOMS_FAILURE	1
 #define ERR_ROOM_NO_EXIST -1
 
-
-
 class CRtmpRooms
 {
 private:
@@ -18,9 +16,8 @@ public:
 	static CRtmpRooms* GetInstance();
 	void Destroy();
 
-	CRtmpRoom* SearchRoom(string name);
-	CRtmpRoom* CreateRoom(string name);
-
+	CRtmpRoom*	SearchRoom(CPlayer  *pPlayer);
+	CRtmpRoom*  SearchRoom(CPublisher *pPublisher);
 public:
 	static CRtmpRooms* m_Instance;
 private:

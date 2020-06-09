@@ -31,7 +31,7 @@ int CPublish::CreateRoom(string name)
 		return PUBLISHER_OK;
 
 	pInstance = CRtmpRooms::GetInstance();
-	pRoom = pInstance->CreateRoom(name);
+	pRoom = pInstance->CreateRoom(name,this);
 	if (pRoom == NULL)
 		goto fail;
 

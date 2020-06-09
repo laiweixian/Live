@@ -12,39 +12,53 @@ CPlayer::~CPlayer()
 
 }
 
-int CPlayer::ConnectRoom(string name)
+int CPlayer::Run(string name)
 {
 	CRtmpRooms *pInstance = NULL;
-	int ret = ROOMS_FAILURE;
-	CRtmpRoom *pRoom = NULL;
+	CRtmpRoom  *pRoom = NULL;
 
-	if (m_Room)
-		goto exist;
+	if (m_Room != NULL)
+		return 0;
 
 	pInstance = CRtmpRooms::GetInstance();
-
-	pRoom = pInstance->SearchRoom(name);
+	pRoom = pInstance->SearchRoom(this);
 	if (pRoom == NULL)
-		goto fail;
-	
-	m_Room = pRoom;
-	m_Room->Enter(this);
-	return PLAYER_OK;
+		return -1;
 
-fail:
-	return ERR_NO_ROOM;
-exist:
-	return PLAYER_OK;
+	m_Room = pRoom;
+	m_Room->Join(this);
+	return 0;
+}
+
+int CPlayer::Pause()
+{
+	if (m_Room == NULL)	return -1;
+}
+
+int CPlayer::Stop()
+{
+	if (m_Room == NULL)	return -1;
+
+	m_Room->Leave(this);
+	m_Room = NULL;
+}
+
+int CPlayer::ConnectRoom(string name)
+{
+	return Run(name);
 }
 
 int CPlayer::DisConnectRoom()
 {
-	if (m_Room == NULL)
-		goto fail;
+	return Stop();
+}
 
-	m_Room->Leave(this);
-	return PLAYER_OK;
-	
-fail:
-	return ERR_NO_ROOM;
+bool CPlayer::GetActive()
+{
+	return (m_Room != NULL);
+}
+
+string CPlayer::GetName()
+{
+	return m_Name;
 }

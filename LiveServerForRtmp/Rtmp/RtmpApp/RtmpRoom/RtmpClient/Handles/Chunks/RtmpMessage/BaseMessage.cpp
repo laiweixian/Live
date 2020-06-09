@@ -1,4 +1,5 @@
 #include "BaseMessage.h"
+#include "RtmpMessage.h"
 
 CBaseMessage::CBaseMessage(uint32_t csid, uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
 		 m_CSID(csid),m_AppendLength(0)
@@ -53,4 +54,25 @@ int CBaseMessage::Append(const uint8_t* src, const int srcLen)
 	memcpy(m_Payload.buff+m_AppendLength,src,srcLen);
 	m_AppendLength += srcLen;
 	return srcLen;
+}
+
+char* CBaseMessage::GetPtr() const
+{
+	return m_Payload.buff;
+}
+
+int   CBaseMessage::GetSize() const
+{
+	return m_Payload.buffLength;
+}
+
+CBaseMessage* CBaseMessage::Clone()
+{
+	if (m_AppendLength - m_Header.messageLength != 0)
+		return NULL;
+
+	CBaseMessage* pMsg = CRtmpMessage::CreateMessage(m_CSID,m_Header.timestamp,m_Header.messageLength,m_Header.messageTypeID,m_Header.messageStreamID);
+	memcpy(pMsg->m_Payload.buff,this->m_Payload.buff,this->m_Payload.buffLength);
+
+	return pMsg;
 }
