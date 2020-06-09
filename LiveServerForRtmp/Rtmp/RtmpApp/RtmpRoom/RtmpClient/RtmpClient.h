@@ -3,13 +3,12 @@
 #include "Handles/Handshake/Handshake.h"
 #include "Handles/Chunks/Chunks.h"
 
-#include "Player.h"
-#include "Publisher.h"
+
 
 class CRtmpClient : public CHandshake,\
 					public CChunks,\
-					public CPlayer,\
-					public CPublish
+			
+				
 
 {
 public:

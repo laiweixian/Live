@@ -26,10 +26,8 @@ public:
 	 int BroadcastVideo(CVideoMessage* pMsg);
 	 int BroadcastAudio(CAudioMessage* pMsg);
 	 int BroadcastMsg(CBaseMessage* pMsg);
-
 private:
 	int Refresh();
-
 private:
 	string m_Name;
 	

@@ -28,7 +28,7 @@ int CReceiveChunk::OnChunks(uint8_t* src, const int srcLength)
 
 		if (m_Message->GetRemainSize() == 0)
 		{
-			OnMessage(m_Message);
+			HandleMessage(m_Message);
 		}
 		offset += chunkLen;
 	}
@@ -146,49 +146,54 @@ void CReceiveChunk::RefreshHeader(CChunkHeader *pHeader)
 	m_ChunkHeader = pHeader;
 }
 
-void CReceiveChunk::OnMessage(CBaseMessage* pMsg)
+void CReceiveChunk::HandleMessage(CBaseMessage* pMsg)
 {
 	switch (pMsg->GetType())
 	{
 	case CBaseMessage::MessageType::INVALID:
 		break;
 	case CBaseMessage::MessageType::SET_CHUNK_SIZE:
-		OnSetChunkSize(dynamic_cast<CSetChunkSize*>(pMsg));
+		HandleSetChunkSize(dynamic_cast<CSetChunkSize*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::ABORT_MESSAGE:
-		OnAbortMessage(dynamic_cast<CAbortMessage*>(pMsg));
+		HandleAbortMessage(dynamic_cast<CAbortMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::ACKNOWLEDGEMENT:
-		OnAcknowledgement(dynamic_cast<CAcknowledgement*>(pMsg));
+		HandleAcknowledgement(dynamic_cast<CAcknowledgement*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::WINDOW_ACKNOWLEDGEMENT_SIZE:
-		OnWindowAcknowledgementSize(dynamic_cast<CWindowAcknowledgementSize*>(pMsg));
+		HandleWindowAcknowledgementSize(dynamic_cast<CWindowAcknowledgementSize*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::SET_PEER_BADNWIDTH:
-		OnSetPeerBandwidth(dynamic_cast<CSetPeerBandwidth*>(pMsg));
+		HandleSetPeerBandwidth(dynamic_cast<CSetPeerBandwidth*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::USER_CONTROL_MESSAGES:
-		OnUserControlMessages(dynamic_cast<CUserControlMessages*>(pMsg));
+		HandleUserControlMessages(dynamic_cast<CUserControlMessages*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::COMMAND_MESSAGE:
-		OnCommandMessage(dynamic_cast<CCommandMessage*>(pMsg));
+		HandleCommandMessage(dynamic_cast<CCommandMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::DATA_MESSAGE:
-		OnDataMessage(dynamic_cast<CDataMessage*>(pMsg));
+		HandleDataMessage(dynamic_cast<CDataMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::SHARED_OBJECT_MESSAGE:
-		OnSharedObjectMessage(dynamic_cast<CSharedObjectMessage*>(pMsg));
+		HandleSharedObjectMessage(dynamic_cast<CSharedObjectMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::AUDIO_MESSAGE:
-		OnAudioMessage(dynamic_cast<CAudioMessage*>(pMsg));
+		HandleAudioMessage(dynamic_cast<CAudioMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::VIDEO_MESSAGE:
-		OnVideoMessage(dynamic_cast<CVideoMessage*>(pMsg));
+		HandleVideoMessage(dynamic_cast<CVideoMessage*>(pMsg));
 		break;
 	case CBaseMessage::MessageType::AGGREGATE_MESSAGE:
-		OnAggregateMessage(dynamic_cast<CAggregateMessage*>(pMsg));
+		HandleAggregateMessage(dynamic_cast<CAggregateMessage*>(pMsg));
 		break;
 	default:
 		break;
 	}
+}
+
+void CReceiveChunk::HandleAbortMessage(CAbortMessage* pMsg)
+{
+
 }

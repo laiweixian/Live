@@ -3,7 +3,27 @@
 #include "../ChunkHeader/ChunkHeader.h"
 #include "../RtmpMessage/RtmpMessage.h"
 
-class CReceiveChunk
+class IChunkHandle
+{
+protected:
+	IChunkHandle() = default;
+	virtual ~IChunkHandle() = default;
+
+	virtual void HandleSetChunkSize(CSetChunkSize* pMsg) = 0;
+	virtual void HandleAbortMessage(CAbortMessage* pMsg) = 0;
+	virtual void HandleAcknowledgement(CAcknowledgement* pMsg) = 0;
+	virtual void HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg) = 0;
+	virtual void HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg) = 0;
+	virtual void HandleUserControlMessages(CUserControlMessages* pMsg) = 0;
+	virtual void HandleCommandMessage(CCommandMessage* pMsg) = 0;
+	virtual void HandleDataMessage(CDataMessage* pMsg) = 0;
+	virtual void HandleSharedObjectMessage(CSharedObjectMessage* pMsg) = 0;
+	virtual void HandleAudioMessage(CAudioMessage* pMsg) = 0;
+	virtual void HandleVideoMessage(CVideoMessage* pMsg) = 0;
+	virtual void HandleAggregateMessage(CAggregateMessage* pMsg) = 0;
+};
+
+class CReceiveChunk : public IChunkHandle
 {
 protected:
 	CReceiveChunk() ;
@@ -11,6 +31,8 @@ protected:
 
 protected:
 	virtual int OnChunks(uint8_t* src, const int srcLength) final;
+
+	virtual void HandleAbortMessage(CAbortMessage* pMsg) final;
 
 private:
 	int ReadChunk(uint8_t* src, const int srcLength);
@@ -21,22 +43,10 @@ private:
 	void RefreshHeader(CChunkHeader *pHeader);
 	void RefreshMessage(CBaseMessage *pMsg);
 
-	void OnMessage(CBaseMessage* pMsg);
+	void HandleMessage(CBaseMessage* pMsg);
 protected:
 	virtual uint32_t GetChunkSize() = 0;
-
-	virtual void OnSetChunkSize(CSetChunkSize* pMsg) = 0;
-	virtual void OnAbortMessage(CAbortMessage* pMsg) = 0;
-	virtual void OnAcknowledgement(CAcknowledgement* pMsg) = 0;
-	virtual void OnWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg) = 0;
-	virtual void OnSetPeerBandwidth(CSetPeerBandwidth* pMsg) = 0;
-	virtual void OnUserControlMessages(CUserControlMessages* pMsg) = 0;
-	virtual void OnCommandMessage(CCommandMessage* pMsg) = 0;
-	virtual void OnDataMessage(CDataMessage* pMsg) = 0;
-	virtual void OnSharedObjectMessage(CSharedObjectMessage* pMsg) = 0;
-	virtual void OnAudioMessage(CAudioMessage* pMsg) = 0;
-	virtual void OnVideoMessage(CVideoMessage* pMsg) = 0;
-	virtual void OnAggregateMessage(CAggregateMessage* pMsg) = 0;
+	
 private:
 	CChunkHeader *m_ChunkHeader;
 	CBaseMessage *m_Message;

@@ -14,7 +14,6 @@ protected:
 	virtual ~CPlayer() ;
 
 public:
-	virtual int OffLineEvent() = 0;
 
 	
 private:

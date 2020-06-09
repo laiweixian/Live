@@ -22,6 +22,10 @@ public:
 	virtual int OnLeave(CPlayer* pPlayer) final;
 
 protected:
+	virtual bool GetActive()  final;
+	virtual string GetName() final;
+
+private:
 	virtual int Run(string name) final;
 	virtual int Pause() final;
 	virtual int Stop()  final;
@@ -29,11 +33,6 @@ protected:
 protected:
 	virtual uint32_t GetChunkSize() = 0;
 	virtual int Send2Peer(const uint8_t* src, const int srcLength) = 0;
-protected:
-	virtual bool GetActive()  final;
-	virtual string GetName() final;
-	
-	
 private:
 	bool   m_Active;
 	string m_Name;
