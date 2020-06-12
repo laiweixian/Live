@@ -13,8 +13,6 @@ CSocketClient::~CSocketClient()
 	
 }
 
-
-
 int CSocketClient::InitReadBuff()
 {
 	m_Reader->totalLen = BUFF_LEN;
@@ -75,7 +73,7 @@ CSocketClient::SocketState CSocketClient::CheckWrite()
 	return m_Writer->state;
 }
 
-int CSocketClient::Read(char *src, size_t srcSize, int *outSize)
+int CSocketClient::Read(char *src, size_t srcSize)
 {
 	int length = 0;
 
@@ -112,7 +110,7 @@ int CSocketClient::Read(char *src, size_t srcSize, int *outSize)
 	return length;
 }
 
-int CSocketClient::Write(char *src, size_t srcSize, int *outSize)
+int CSocketClient::Write(char *src, size_t srcSize)
 {
 	if (m_Reader->state != WARITEABLE)
 		return -1;

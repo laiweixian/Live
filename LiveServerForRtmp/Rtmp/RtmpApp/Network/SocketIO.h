@@ -20,7 +20,19 @@
 			int timeout;		\
 			int maxConnect;};
 
-class CClientManager;
+
+class ISocketEvent
+{
+protected:
+	ISocketEvent() = default;
+	virtual ~ISocketEvent() = default;
+public:	
+	virtual int Connect(CSocketClient *pClient) = 0;
+	virtual int DisConnect(CSocketClient *pClient) = 0;
+	virtual int Receive(CSocketClient *pClient) = 0;
+	virtual int SocketErr(CSocketClient *pClient) = 0;
+};
+
 
 class CSocketIO 
 {
@@ -30,20 +42,23 @@ protected:
 	CSocketIO(const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
 	virtual ~CSocketIO();
 protected:
-	int Init();
-	int Run();
-	int Stop();
+	int CheckEvent();
+	void CloseServer();
 
-	virtual CClientManager* GetClientManager() = 0;
-
+	void RegisterEvent(ISocketEvent* event);
 private:
 	static int SetSocketNonblock(SOCKET sock);
+	int InitListenSocket();
+	
 	int CheckConnect();
-	void CloseServer();
+	int CheckReceive();
+
 private:
 	SOCKET m_ListSock;
 	Optional m_Optional;
 
+	ISocketEvent* m_Event;
+	vector<CSocketClient*> m_Clients; 
 
 
 };

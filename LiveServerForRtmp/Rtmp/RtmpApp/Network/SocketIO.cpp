@@ -3,7 +3,8 @@
 
 #define DEFAULT_BUFF_LENGTH	1024
 
-CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect)
+CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):
+		m_Event(NULL)
 {
 	strcpy_s(m_Optional.ip,ip);
 	m_Optional.port = port;
@@ -12,6 +13,8 @@ CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const i
 	m_Optional.timeout = 0;
 	
 	m_ListSock = INVALID_SOCKET;
+
+	InitListenSocket();
 }
 
 CSocketIO::~CSocketIO()
@@ -26,7 +29,7 @@ int CSocketIO::SetSocketNonblock(SOCKET sock)
 	return ioctlsocket(sock, sockCmd, &arg);
 }
 
-int CSocketIO::Init()
+int CSocketIO::InitListenSocket()
 {
 	WSADATA wsa;
 	int ret ;
@@ -86,17 +89,30 @@ sock_listen_err:
 	return ERROR_SOCK_LISTEN;
 }
 
-
-int CSocketIO::Run()
+int CSocketIO::CheckEvent()
 {
 	CheckConnect();
+	CheckReceive();
 	return 0;
 }
 
-int CSocketIO::Stop()
+int CSocketIO::CheckReceive()
 {
+	auto it = m_Clients.begin();
+	CSocketClient *client = NULL;
+	CSocketClient::SocketState state ;
 
+	for (it= m_Clients.begin(); it != m_Clients.end();it++)
+	{
+		client = *it;
+		state = client->CheckRead();
+		if (state == CSocketClient::READABLE)
+		{
+			m_Event->Receive(client);
+		}
+	}
 }
+
 
 int CSocketIO::CheckConnect()
 {
@@ -104,6 +120,7 @@ int CSocketIO::CheckConnect()
 	sockaddr_in addr;
 	int len = sizeof(sockaddr_in);
 	int errorCode;
+	CSocketClient *client = NULL;
 
 	connSock = accept(m_ListSock, (sockaddr*)&addr, &len);
 	if (connSock == INVALID_SOCKET)
@@ -117,10 +134,12 @@ int CSocketIO::CheckConnect()
 	}
 	else
 	{
+		
 		SetSocketNonblock(connSock);
-		GetClientManager()->CreateClient(new CSocketClient(connSock, addr));
+		client = new CSocketClient(connSock,addr);
+		m_Clients.push_back(client);
+		m_Event->Connect(client);
 	}
-
 
 	return 0;
 }
@@ -130,6 +149,11 @@ int CSocketIO::CheckConnect()
 void CSocketIO::CloseServer()
 {
 
+}
+
+void CSocketIO::RegisterEvent(ISocketEvent* event)
+{
+	m_Event = event;
 }
 
 

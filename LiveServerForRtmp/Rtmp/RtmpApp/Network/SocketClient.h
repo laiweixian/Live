@@ -2,8 +2,6 @@
 
 #include "stdafx.h"
 
-
-
 class CSocketClient
 {
 public:
@@ -14,8 +12,8 @@ public:
 public:
 	SocketState CheckRead();
 	SocketState CheckWrite();
-	int Read( char *src, size_t srcSize, int *outSize);
-	int Write( char *src, size_t srcSize, int *outSize);
+	int Read( char *src, size_t srcSize);
+	int Write( char *src, size_t srcSize);
 	int Close();
 
 private:
