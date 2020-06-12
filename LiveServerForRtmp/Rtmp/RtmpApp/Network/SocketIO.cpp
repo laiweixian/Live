@@ -55,7 +55,7 @@ int CSocketIO::Open(ISocket::Optional opti)
 	//bind socket
 	service.sin_family = AF_INET;
 	service.sin_port = htons(opti.port);
-	service.sin_addr.s_addr = inet_addr(opti.ip);
+	//service.sin_addr.s_addr = inet_addr(opti.ip);
 	ret = bind(listenSocket, (sockaddr*)&service, sizeof(service));
 	if (ret == SOCKET_ERROR)
 		goto sock_bind_err;
@@ -130,7 +130,7 @@ int CSocketIO::Write(const int ioID, const void *src, size_t srcSize, int *outSi
 
 int CSocketIO::Close(const int ioID)
 {
-
+	return 0;
 }
 
 void CSocketIO::Loop()
@@ -221,4 +221,19 @@ int CSocketIO::CheckReceive()
 		}
 		
 	}
+
+	return 0;
+}
+
+void CSocketIO::CloseServer()
+{
+
+}
+
+int CSocketIO::GenIOID()
+{
+	static int ioid = 1;
+
+	ioid++;
+	return ioid;
 }

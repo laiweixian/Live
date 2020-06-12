@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "Network/SocketIO.h"
-#include "RtmpRoom/RtmpRooms.h"
+
 
 #define DECLARE_RTMP_APP	\
 	struct AppOptional{string name;string ip;int port;};
@@ -15,6 +15,7 @@ public:
 	~CRtmpApp();
 
 public:	
+
 	//ISocketEvent
 	void OnConnect(const int ioID) ;
 	void OnReceive(const int ioID) ;
@@ -23,7 +24,7 @@ public:
 
 private:
 	CRtmpApp::AppOptional m_Option;
+	
 	CSocketIO			  m_IO;
 
-	CRtmpRooms			  m_Rooms;
 };

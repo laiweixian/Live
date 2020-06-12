@@ -66,12 +66,7 @@ int CRtmpRoom::SetOwner(CPublisher *pPublish)
 
 int CRtmpRoom::Disband()
 {
-	auto it = m_Players.begin();
-
-	for (it = m_Players.begin(); it != m_Players.end(); it++)
-		(*it)->OffLineEvent();
-	for (it = m_Players.begin(); it != m_Players.end(); it++)
-		m_Players.erase(it);
+	
 	
 	return 0;
 }
@@ -99,10 +94,5 @@ int CRtmpRoom::BroadcastMsg(CBaseMessage* pMsg)
 
 int CRtmpRoom::Refresh()
 {
-	auto it = m_Players.begin();
-
-	for (it = m_Players.begin(); it != m_Players.end(); it++)
-	{
-
-	}
+	return 0;
 }

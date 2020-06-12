@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "stdafx.h"
 #include "RtmpApp/RtmpApp.h"
 
 class CRtmp 
@@ -8,7 +8,7 @@ class CRtmp
 public:
 	CRtmp();
 	~CRtmp();
-private:
+public:
 
 	void PreInit();
 	void Init() ;

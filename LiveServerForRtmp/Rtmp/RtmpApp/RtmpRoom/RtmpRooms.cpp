@@ -24,37 +24,12 @@ void CRtmpRooms::Destroy()
 	delete this;
 }
 
-CRtmpRoom* CRtmpRooms::EnterRoom(string name,CPlayer* pPlayer)
+CRtmpRoom*	CRtmpRooms::SearchRoom(CPlayer  *pPlayer)
 {
-	auto it = m_Rooms.begin();
-	CRtmpRoom *pRoom = NULL;
-
-	for (it = m_Rooms.begin(); it != m_Rooms.end(); it++)
-	{
-		pRoom = *it;
-		if (name.compare(pRoom->GetName()) == 0)
-			goto success;
-	}
 	return NULL;
-success:
-	return pRoom;
 }
 
-CRtmpRoom* CRtmpRooms::CreateRoom(string name,CPublish* pPublish)
+CRtmpRoom*  CRtmpRooms::SearchRoom(CPublisher *pPublisher)
 {
-	auto it = m_Rooms.begin();
-	CRtmpRoom *pRoom = NULL;
-
-	for (it = m_Rooms.begin(); it != m_Rooms.end(); it++)
-	{
-		pRoom = *it;
-		if (name.compare(pRoom->GetName()) == 0)
-			goto exist;
-	}
-
-	pRoom = new CRtmpRoom(name);
-
-	
-exist:
 	return NULL;
 }

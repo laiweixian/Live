@@ -6,35 +6,6 @@
 
 class CPlayer;
 class CPublisher;
-class IRoom4Player;
-class IRoom4Publisher;
-
-class CRtmpRoom : public IRoom4Player,public IRoom4Publisher
-{
-public:
-	CRtmpRoom(string name);
-	~CRtmpRoom();
-
-	//IRoom4Player
-public:
-	 int Join(CPlayer* pPlayer);
-	 int Leave(CPlayer* pPlayer);
-
-	 //IRoom4Publisher
-	 int SetOwner(CPublisher *pPublish);
-	 int Disband() = 0;
-	 int BroadcastVideo(CVideoMessage* pMsg);
-	 int BroadcastAudio(CAudioMessage* pMsg);
-	 int BroadcastMsg(CBaseMessage* pMsg);
-private:
-	int Refresh();
-private:
-	string m_Name;
-	
-	CPublisher *m_Publish;
-	vector<CPlayer*> m_Players;
-	vector<CBaseMessage*> m_Msgs;
-};
 
 class IRoom4Player
 {
@@ -54,8 +25,37 @@ protected:
 public:
 	virtual int SetOwner(CPublisher *pPublish) = 0;
 	virtual int Disband() = 0;
-	virtual int BroadcastVideo(const uint8_t* src, const int srcLen) = 0 ;
+	virtual int BroadcastVideo(const uint8_t* src, const int srcLen) = 0;
 	virtual int BroadcastAudio(const uint8_t* src, const int srcLen) = 0;
 	virtual int BroadcastMsg(const uint8_t* src, const int srcLen) = 0;
 };
+
+class CRtmpRoom : public IRoom4Player,public IRoom4Publisher
+{
+public:
+	CRtmpRoom(string name);
+	~CRtmpRoom();
+
+	//IRoom4Player
+public:
+	 int Join(CPlayer* pPlayer);
+	 int Leave(CPlayer* pPlayer);
+
+	 //IRoom4Publisher
+	 int SetOwner(CPublisher *pPublish);
+	 int Disband() ;
+	 int BroadcastVideo(CVideoMessage* pMsg);
+	 int BroadcastAudio(CAudioMessage* pMsg);
+	 int BroadcastMsg(CBaseMessage* pMsg);
+private:
+	int Refresh();
+private:
+	string m_Name;
+	
+	CPublisher *m_Publish;
+	vector<CPlayer*> m_Players;
+	vector<CBaseMessage*> m_Msgs;
+};
+
+
 

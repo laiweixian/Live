@@ -10,6 +10,19 @@ CRtmpApp::~CRtmpApp()
 
 }
 
+void CRtmpApp::PreInit()
+{
+
+}
+void CRtmpApp::Init()
+{
+
+}
+void CRtmpApp::Run()
+{
+
+}
+
 //ISocketEvent
 void CRtmpApp::OnConnect(const int ioID)
 {

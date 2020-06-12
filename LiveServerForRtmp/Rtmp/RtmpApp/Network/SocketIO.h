@@ -34,7 +34,6 @@ class ISocketEvent
 protected:
 	ISocketEvent() = default;
 	virtual ~ISocketEvent() = default;
-
 public:
 	virtual	void OnConnect(const int ioID) = 0;
 	virtual void OnReceive(const int ioID)= 0;
