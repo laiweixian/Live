@@ -1,21 +1,17 @@
 #include "SocketIO.h"
+#include "Rtmp/RtmpApp/RtmpClient/ClientManager.h"
 
 #define DEFAULT_BUFF_LENGTH	1024
 
-
-ISocket::ISocket(ISocketEvent *pEvent) : m_Event(pEvent)
+CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect)
 {
-
-}
-
-ISocket::~ISocket()
-{
-
-}
-
-CSocketIO::CSocketIO(ISocketEvent *pEvent) : ISocket(pEvent), m_ListSock(INVALID_SOCKET)
-{
-
+	strcpy_s(m_Optional.ip,ip);
+	m_Optional.port = port;
+	m_Optional.backlog = 0;
+	m_Optional.maxConnect = 0;
+	m_Optional.timeout = 0;
+	
+	m_ListSock = INVALID_SOCKET;
 }
 
 CSocketIO::~CSocketIO()
@@ -30,7 +26,7 @@ int CSocketIO::SetSocketNonblock(SOCKET sock)
 	return ioctlsocket(sock, sockCmd, &arg);
 }
 
-int CSocketIO::Open(ISocket::Optional opti)
+int CSocketIO::Init()
 {
 	WSADATA wsa;
 	int ret ;
@@ -54,20 +50,19 @@ int CSocketIO::Open(ISocket::Optional opti)
 
 	//bind socket
 	service.sin_family = AF_INET;
-	service.sin_port = htons(opti.port);
-	//service.sin_addr.s_addr = inet_addr(opti.ip);
+	service.sin_port = htons(m_Optional.port);
+	service.sin_addr.s_addr = inet_addr(m_Optional.ip);
+	
 	ret = bind(listenSocket, (sockaddr*)&service, sizeof(service));
 	if (ret == SOCKET_ERROR)
 		goto sock_bind_err;
 
 	//set listen backlog
-	ret = listen(listenSocket, opti.backlog);
+	ret = listen(listenSocket, m_Optional.backlog);
 	if (ret == SOCKET_ERROR)
 		goto sock_listen_err;
 
 	m_ListSock = listenSocket;
-	m_Optional = opti;
-
 	return SOCKET_OK;
 
 sock_init_err:
@@ -91,52 +86,16 @@ sock_listen_err:
 	return ERROR_SOCK_LISTEN;
 }
 
-int CSocketIO::Read(const int ioID, const void *src, size_t srcSize,int *outSize)
+
+int CSocketIO::Run()
 {
-	auto it = m_Connecters.begin();
-	Connecter *pConn = NULL;
-	int readLen = 0;
-
-	for (it = m_Connecters.begin(); it != m_Connecters.end(); it++)
-	{
-		if ((*it)->ioid == ioID)
-			pConn = *it;
-	}
-		
-	if (pConn == NULL)
-		return ERROR_SOCK_NO_EXIST;
-
-
-	
-	return SOCKET_OK;
-}
-
-int CSocketIO::Write(const int ioID, const void *src, size_t srcSize, int *outSize)
-{
-	auto it = m_Connecters.begin();
-	Connecter *pConn = NULL;
-
-	for (it = m_Connecters.begin(); it != m_Connecters.end(); it++)
-	{
-		if ((*it)->ioid == ioID)
-			pConn = *it;
-	}
-
-	if (pConn == NULL)
-		return ERROR_SOCK_NO_EXIST;
-
-	return SOCKET_OK;
-}
-
-int CSocketIO::Close(const int ioID)
-{
+	CheckConnect();
 	return 0;
 }
 
-void CSocketIO::Loop()
+int CSocketIO::Stop()
 {
-	CheckConnect();
-	CheckReceive();
+
 }
 
 int CSocketIO::CheckConnect()
@@ -145,9 +104,6 @@ int CSocketIO::CheckConnect()
 	sockaddr_in addr;
 	int len = sizeof(sockaddr_in);
 	int errorCode;
-	Connecter *conn = NULL;
-	vector<int> newIds;
-	auto it = newIds.begin();
 
 	connSock = accept(m_ListSock, (sockaddr*)&addr, &len);
 	if (connSock == INVALID_SOCKET)
@@ -161,79 +117,19 @@ int CSocketIO::CheckConnect()
 	}
 	else
 	{
-		CSocketIO::SetSocketNonblock(connSock);
-
-		conn = new Connecter;
-		conn->ioid = GenIOID();
-		conn->sock = connSock;
-		conn->addr = addr;
-		conn->buff = new uint8_t[DEFAULT_BUFF_LENGTH];
-		conn->buffLen = DEFAULT_BUFF_LENGTH;
-		conn->length = 0;
-		m_Connecters.push_back(conn);
-		newIds.push_back(conn->ioid);
+		SetSocketNonblock(connSock);
+		GetClientManager()->CreateClient(new CSocketClient(connSock, addr));
 	}
 
-	//inform 
-	for (it = newIds.begin(); it != newIds.end(); it++)
-		m_Event->OnConnect(*it);
+
 	return 0;
 }
 
-int CSocketIO::CheckReceive()
-{
-	vector<Connecter*>::iterator it = m_Connecters.begin();
-	Connecter* pCon = NULL;
-	int errorCode;
-	int remainSize = 0;
-	uint8_t *ptr = NULL;
-	int length = 0;
 
-	for (it=m_Connecters.begin();it!= m_Connecters.end();it++)
-	{
-		pCon = (*it);
-		
-		
-		remainSize = (*it)->buffLen - (*it)->length;
-		if (remainSize <= 0)
-			continue;
-		ptr = (*it)->buff + (*it)->length;
-		length = ::recv((*it)->sock, (char*)ptr,remainSize,0);
-		if (length == 0)
-		{
-			
-			m_Event->OnClose((*it)->ioid);
-		}
-		else if (length > 0)
-		{
-			(*it)->length += length;
-			m_Event->OnReceive((*it)->ioid);
-		}
-		else
-		{
-			errorCode = WSAGetLastError();
-			if (errorCode == WSAEWOULDBLOCK)
-				continue;
-			else{
-				
-				m_Event->OnError((*it)->ioid, errorCode);
-			}
-		}
-		
-	}
-
-	return 0;
-}
 
 void CSocketIO::CloseServer()
 {
 
 }
 
-int CSocketIO::GenIOID()
-{
-	static int ioid = 1;
 
-	ioid++;
-	return ioid;
-}

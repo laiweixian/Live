@@ -1,8 +1,8 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Rtmp/RtmpApp/RtmpMessage/RtmpMessage.h"
 
-#include "RtmpClient/Handles/Chunks/RtmpMessage/RtmpMessage.h"
 
 class CPlayer;
 class CPublisher;
@@ -25,9 +25,9 @@ protected:
 public:
 	virtual int SetOwner(CPublisher *pPublish) = 0;
 	virtual int Disband() = 0;
-	virtual int BroadcastVideo(const uint8_t* src, const int srcLen) = 0;
-	virtual int BroadcastAudio(const uint8_t* src, const int srcLen) = 0;
-	virtual int BroadcastMsg(const uint8_t* src, const int srcLen) = 0;
+	virtual int BroadcastVideo(CVideoMessage* pMsg) = 0;
+	virtual int BroadcastAudio(CAudioMessage *pMsg) = 0;
+	virtual int BroadcastMsg(CBaseMessage *pMsg) = 0;
 };
 
 class CRtmpRoom : public IRoom4Player,public IRoom4Publisher

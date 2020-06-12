@@ -7,19 +7,16 @@
 #define ROOMS_FAILURE	1
 #define ERR_ROOM_NO_EXIST -1
 
-class CRtmpRooms
+class CRtmpRoomManager
 {
-private:
-	CRtmpRooms();
-	~CRtmpRooms();
 public:
-	static CRtmpRooms* GetInstance();
-	void Destroy();
+	CRtmpRoomManager();
+	~CRtmpRoomManager();
+
 
 	CRtmpRoom*	SearchRoom(CPlayer  *pPlayer);
 	CRtmpRoom*  SearchRoom(CPublisher *pPublisher);
-public:
-	static CRtmpRooms* m_Instance;
+
 private:
 	vector<CRtmpRoom*> m_Rooms;
 };

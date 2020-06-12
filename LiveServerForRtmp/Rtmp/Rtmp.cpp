@@ -16,7 +16,7 @@ CRtmp::~CRtmp()
 
 void CRtmp::PreInit()
 {
-	CRtmpApp::AppOptional optional;
+	CRtmpApp::Optional optional;
 	optional.name = DEFALUT_APP_NAME;
 	optional.ip = DEFALUT_IP;
 	optional.port = DEFALUT_PORT;
@@ -27,12 +27,12 @@ void CRtmp::PreInit()
 
 void CRtmp::Init()
 {
-
+	
 }
 
 void CRtmp::Run()
 {
-
+	
 }
 
 

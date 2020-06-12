@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "SocketClient.h"
 
 #define SOCKET_OK	0	
 #define ERROR_SOCK_INIT				-1
@@ -11,7 +12,7 @@
 #define ERROR_SOCK_NO_EXIST			-6
 
 
-#define DECLARE_SOCKET_EVENT	\
+#define DECLARE_SOCKET_OPT	\
 		struct Optional{		\
 			char ip[100];		\
 			int port;			\
@@ -19,70 +20,30 @@
 			int timeout;		\
 			int maxConnect;};
 
-#define DECLARE_SOCKET_STRUCT \
-		struct Connecter {			\
-			int ioid;\
-			SOCKET sock;\
-			sockaddr_in addr;\
-			uint8_t *buff;\
-			uint32_t buffLen;\
-			uint32_t length;\
-		};
+class CClientManager;
 
-class ISocketEvent
+class CSocketIO 
 {
 protected:
-	ISocketEvent() = default;
-	virtual ~ISocketEvent() = default;
-public:
-	virtual	void OnConnect(const int ioID) = 0;
-	virtual void OnReceive(const int ioID)= 0;
-	virtual void OnClose(const int ioID) = 0;
-	virtual void OnError(const int ioID,const int errorCode) = 0;
-};
+	DECLARE_SOCKET_OPT
 
-class ISocket {
-public:
-	DECLARE_SOCKET_EVENT
-	ISocket(ISocketEvent *pEvent);
-	~ISocket();
-
-public:
-	virtual int Open(ISocket::Optional opti) = 0;
-	virtual void Loop() = 0;
-	virtual int Read(const int ioID,const void *src,size_t srcSize,int *outSize) = 0;
-	virtual int Write(const int ioID,const void *src, size_t srcSize,int *outSize) = 0;
-	virtual int Close(const int ioID) =0;
-	
+	CSocketIO(const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
+	virtual ~CSocketIO();
 protected:
-	ISocketEvent *m_Event;
-	ISocket::Optional m_Optional;
-};
+	int Init();
+	int Run();
+	int Stop();
 
-class CSocketIO : public ISocket
-{
-public:
-	CSocketIO(ISocketEvent *pEvent);
-	~CSocketIO();
-
-	//ISocket
-	int Open(ISocket::Optional opti) ;
-	int Read(const int ioID, const void *src, size_t srcSize,int *outSize);
-	int Write(const int ioID, const void *src, size_t srcSize, int *outSize);
-	int Close(const int ioID) ;
-	void Loop();
+	virtual CClientManager* GetClientManager() = 0;
 
 private:
 	static int SetSocketNonblock(SOCKET sock);
 	int CheckConnect();
-	int CheckReceive();
-
 	void CloseServer();
-	int GenIOID();
 private:
-	DECLARE_SOCKET_STRUCT
-	
 	SOCKET m_ListSock;
-	ISocket::Optional m_Optional;
-	vector<Connecter*> m_Connecters;
+	Optional m_Optional;
+
+
+
 };

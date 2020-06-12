@@ -2,29 +2,30 @@
 
 #include "stdafx.h"
 #include "Network/SocketIO.h"
+#include "RtmpClient/ClientManager.h"
+#include "RtmpRoom/RoomManager.h"
 
+#define DECLARE_RTMP_APP struct Optional{string name;string ip;int port;uint32_t chunkSize;};
+	
 
-#define DECLARE_RTMP_APP	\
-	struct AppOptional{string name;string ip;int port;};
-
-class CRtmpApp : public ISocketEvent
+class CRtmpApp : public CSocketIO,
+				 public CClientManager,
+				 public CRtmpRoomManager
 {
 public:
 	DECLARE_RTMP_APP
-	CRtmpApp(AppOptional appOpt);
+	CRtmpApp(Optional appOpt);
 	~CRtmpApp();
+protected:
 
-public:	
+	string GetAppName() ;
+	uint32_t GetChunkSize();
 
-	//ISocketEvent
-	void OnConnect(const int ioID) ;
-	void OnReceive(const int ioID) ;
-	void OnClose(const int ioID) ;
-	void OnError(const int ioID, const int errorCode) ;
+	CClientManager* GetClientManager() ;
+	CRtmpRoomManager* GetRoomManager();
+	CSocketIO*		  GetSocketIO();
+
 
 private:
-	CRtmpApp::AppOptional m_Option;
-	
-	CSocketIO			  m_IO;
-
+	Optional m_Option;
 };

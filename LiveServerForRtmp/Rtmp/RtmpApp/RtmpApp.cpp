@@ -1,6 +1,6 @@
 #include "RtmpApp.h"
 
-CRtmpApp::CRtmpApp(AppOptional appOpt): m_IO(this),m_Option(appOpt)
+CRtmpApp::CRtmpApp(Optional appOpt): m_Option(appOpt),CSocketIO(appOpt.ip.data(),appOpt.port)
 {
 
 }
@@ -10,36 +10,33 @@ CRtmpApp::~CRtmpApp()
 
 }
 
-void CRtmpApp::PreInit()
+CClientManager* CRtmpApp::GetClientManager()
 {
-
-}
-void CRtmpApp::Init()
-{
-
-}
-void CRtmpApp::Run()
-{
-
+	return this;
 }
 
-//ISocketEvent
-void CRtmpApp::OnConnect(const int ioID)
+CRtmpRoomManager* CRtmpApp::GetRoomManager()
 {
-
+	return this;
 }
 
-void CRtmpApp::OnReceive(const int ioID)
+CSocketIO*		  CRtmpApp::GetSocketIO()
 {
-
+	return this;
 }
 
-void CRtmpApp::OnClose(const int ioID)
+string CRtmpApp::GetAppName()
 {
-
+	return m_Option.name;
 }
 
-void CRtmpApp::OnError(const int ioID, const int errorCode)
+uint32_t CRtmpApp::GetChunkSize()
 {
-
+	return m_Option.chunkSize;
 }
+
+
+
+
+
+
