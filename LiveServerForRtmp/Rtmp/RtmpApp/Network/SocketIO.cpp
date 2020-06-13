@@ -100,17 +100,19 @@ int CSocketIO::CheckReceive()
 {
 	auto it = m_Clients.begin();
 	CSocketClient *client = NULL;
-	CSocketClient::SocketState state ;
+	int length = 0;
 
 	for (it= m_Clients.begin(); it != m_Clients.end();it++)
 	{
 		client = *it;
-		state = client->CheckRead();
-		if (state == CSocketClient::READABLE)
+		length = client->CheckRead();
+		if (length > 0)
 		{
 			m_Event->Receive(client);
 		}
 	}
+
+	return 0;
 }
 
 

@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "SocketClient.h"
+#include "SockEvent.h"
 
 #define SOCKET_OK	0	
 #define ERROR_SOCK_INIT				-1
@@ -21,17 +22,7 @@
 			int maxConnect;};
 
 
-class ISocketEvent
-{
-protected:
-	ISocketEvent() = default;
-	virtual ~ISocketEvent() = default;
-public:	
-	virtual int Connect(CSocketClient *pClient) = 0;
-	virtual int DisConnect(CSocketClient *pClient) = 0;
-	virtual int Receive(CSocketClient *pClient) = 0;
-	virtual int SocketErr(CSocketClient *pClient) = 0;
-};
+
 
 
 class CSocketIO 

@@ -18,8 +18,9 @@ int CSocketClient::InitReadBuff()
 	m_Reader->totalLen = BUFF_LEN;
 	m_Reader->buff = new uint8_t[BUFF_LEN];
 	memset(m_Reader->buff,0,BUFF_LEN);
+	
 	m_Reader->length = 0;
-	m_Reader->state = SocketState::READ_WAIT;
+	m_Reader->ptr = m_Reader->buff;
 	return 0;
 }
 
@@ -28,100 +29,153 @@ int CSocketClient::InitWriteBuff()
 	m_Writer->totalLen = BUFF_LEN;
 	m_Writer->buff = new uint8_t[BUFF_LEN];
 	memset(m_Writer->buff, 0, BUFF_LEN);
+	
 	m_Writer->length = 0;
-	m_Writer->state = SocketState::WARITEABLE;
+	m_Writer->ptr = m_Writer->buff;
 	return 0;
 }
 
-CSocketClient::SocketState CSocketClient::CheckRead()
+int CSocketClient::CheckRead()
 {
-	int length ;
-	byte *ptr  = m_Reader->buff;
-	int receSize  = m_Reader->totalLen;
-	int errorCode;
+	int errorCode = 0;
+	int length = 0;
+	byte *buf = NULL;
 
-	if (m_Reader->state != SocketState::READ_WAIT)
-		return m_Reader->state;
+	if (m_Socket == INVALID_SOCKET)
+		goto closesock;
 
-	length = ::recv(m_Socket, (char*)ptr, receSize, 0);
-	if (length == 0)
+	buf =  new byte[1024];
+	while (1)
 	{
-		m_Reader->state = SocketState::CLOSE;
-	}
-	else if (length > 0)
-	{
-		m_Reader->state = SocketState::READABLE;
-		m_Reader->length += length;
-	}
-	else
-	{
-		errorCode = WSAGetLastError();
-		if (errorCode == WSAEWOULDBLOCK)
+		length = ::recv(m_Socket, (char*)buf, 1024, 0);
+		if (length == 0)
 		{
-			m_Reader->state = SocketState::READ_WAIT;
+			//对端关闭连接
+			closesocket(m_Socket);
+			m_Socket = INVALID_SOCKET;
+			break;
 		}
-			
-		else 
-			m_Reader->state = SocketState::ERR_SOCK;
+		else if (length > 0)
+		{
+			AppendReadBuff(buf,length);
+		}
+		else
+		{
+			errorCode = WSAGetLastError();
+			if (errorCode == WSAEWOULDBLOCK)
+				break;
+			else
+			{
+				closesocket(m_Socket);
+				m_Socket = INVALID_SOCKET;
+				break;
+			}
+		}
 	}
 
-	return m_Reader->state;
+	delete[] buf;
+	return GetReadBufLength();
+
+closesock:
+	return GetReadBufLength();
 }
 
-CSocketClient::SocketState CSocketClient::CheckWrite()
+int CSocketClient::CheckWrite()
 {
-	return m_Writer->state;
+	return m_Writer->length;
 }
 
 int CSocketClient::Read(char *src, size_t srcSize)
 {
-	int length = 0;
-
-	if (m_Reader->state != READABLE)
-		return 0;
-
-	if (srcSize >= m_Reader->length)
-	{
-		length = m_Reader->length;
-		memcpy(src,m_Reader->buff, length);
-
-		memset(m_Reader->buff,0,length);
-		m_Reader->length = 0;
-		m_Reader->state = READ_WAIT;
-	}
-	else
-	{	
-		length = srcSize;
-		memcpy(src, m_Reader->buff, length);
-
-		//
-		byte *temp = new byte[m_Reader->length - length];
-		memcpy(temp,m_Reader->buff+length, m_Reader->length - length);
-
-		memset(m_Reader->buff, 0, length);
-		memcpy(m_Reader->buff,temp, m_Reader->length - length);
-		m_Reader->length -= length;
-		m_Reader->state = READABLE;
-
-		delete[] temp;
-	}
-
-
-	return length;
+	
+	return	CopyReadBuf(src, srcSize);
 }
 
 int CSocketClient::Write(char *src, size_t srcSize)
 {
-	if (m_Reader->state != WARITEABLE)
+	if (m_Socket == INVALID_SOCKET)
 		return -1;
-
-	int length ;
-
-	length = send(m_Socket, src, srcSize ,0);
-	return length;
+	return send(m_Socket,src,srcSize,0);
 }	
 
 int CSocketClient::Close()
 {
 	return 0;
 }
+
+int CSocketClient::AppendReadBuff(byte* src, int length)
+{
+	const int newlen = length + m_Reader->length;
+	const int leftLen = m_Reader->totalLen - m_Reader->length;
+
+	if (newlen > m_Reader->totalLen)
+	{
+		//缓冲区扩容
+		ExtendReadBuf();
+		return AppendReadBuff(src, length);
+	}
+	else
+	{
+		if (leftLen < length)
+			CleanReadBuf(); 
+		m_Reader->length += length;
+		memcpy(m_Reader->ptr,src,length);
+	}
+
+	return m_Reader->length;
+}
+
+int CSocketClient::ExtendReadBuf()
+{
+	byte *temp = NULL;
+	temp = new byte[m_Reader->length];
+	memcpy(temp, m_Reader->ptr, m_Reader->length);
+
+	delete[] m_Reader->buff;
+	m_Reader->buff = NULL;
+
+	m_Reader->totalLen += BUFF_LEN;
+	m_Reader->buff = new uint8_t[m_Reader->totalLen];
+	memset(m_Reader->buff, 0, m_Reader->totalLen);
+	m_Reader->ptr = m_Reader->buff;
+
+	memcpy(m_Reader->buff, temp, m_Reader->length);
+	delete[] temp;
+	temp = NULL;
+
+	return 0;
+}
+
+int CSocketClient::CleanReadBuf()
+{
+	byte *temp = NULL;
+	temp = new byte[m_Reader->length];
+	memcpy(temp, m_Reader->ptr, m_Reader->length);
+
+	memset(m_Reader->buff,0,m_Reader->totalLen);
+	memcpy(m_Reader->buff,temp,m_Reader->length);
+
+	m_Reader->ptr = m_Reader->buff;
+
+	return 0;
+}
+
+int CSocketClient::GetReadBufLength()
+{
+	return m_Reader->length;
+}
+
+int CSocketClient::CopyReadBuf(char *src, size_t srcSize)
+{
+	const int maxNum = srcSize > m_Reader->length ? m_Reader->length : srcSize;
+
+	if (src == NULL)
+		return m_Reader->length;
+		
+
+	memcpy(src, m_Reader->ptr, maxNum);
+	m_Reader->ptr += maxNum;
+	m_Reader->length -= maxNum;
+	return maxNum;
+}
+

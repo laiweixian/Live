@@ -153,6 +153,7 @@
     <ClInclude Include="Global\Stru.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketClient.h" />
+    <ClInclude Include="Rtmp\RtmpApp\Network\SockEvent.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Player.h" />
