@@ -21,7 +21,7 @@ public:
 	
 protected:
 	virtual uint32_t GetChunkSize() = 0;
-	virtual int Send2Peer(const uint8_t* src, const int srcLength) = 0;
+	virtual int Send2Peer( uint8_t* src, const int srcLength) = 0;
 protected:
 	virtual int Connenct(string name) final;
 	virtual int DisConnect() final;

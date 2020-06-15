@@ -24,3 +24,13 @@ using namespace std;
 #pragma comment(lib, "wininet.lib")
 
 // TODO:  在此处引用程序需要的其他头文件
+
+static void TRACE(const char* strLogStr, ...)
+{
+	va_list args;
+	va_start(args, strLogStr);
+	vprintf(strLogStr, args);
+	va_end(args);
+	
+}
+

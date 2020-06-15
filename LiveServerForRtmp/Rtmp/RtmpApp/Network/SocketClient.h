@@ -2,25 +2,27 @@
 
 #include "stdafx.h"
 
+struct ClientBuffer
+{
+	uint8_t *buff;
+	uint32_t totalLen;
+
+	uint8_t  *ptr;
+	uint32_t length;
+};
+
 class CSocketClient
 {
 public:
-	struct Buffer
-	{
-		uint8_t *buff;
-		uint32_t totalLen;
-
-		uint8_t  *ptr;
-		uint32_t length;
-	};
+	
 	CSocketClient(SOCKET so, sockaddr_in addr);
 	~CSocketClient();
 
 public:
 	int CheckRead();
 	int CheckWrite();
-	int Read(char *src, size_t srcSize);
-	int Write(char *src, size_t srcSize);
+	int Read(uint8_t *src, size_t srcSize);
+	int Write(uint8_t *src, size_t srcSize);
 	int Close();
 
 private:
@@ -29,7 +31,7 @@ private:
 
 	int AppendReadBuff(byte* src,int length);
 	int GetReadBufLength();
-	int CopyReadBuf(char *src, size_t srcSize);
+	int CopyReadBuf(uint8_t *src, size_t srcSize);
 	int ExtendReadBuf();
 	int CleanReadBuf();
 
@@ -44,6 +46,6 @@ private:
 	SOCKET m_Socket;
 	sockaddr_in m_Addr;
 
-	Buffer *m_Reader;
-	Buffer *m_Writer;
+	ClientBuffer *m_Reader;
+	ClientBuffer *m_Writer;
 };

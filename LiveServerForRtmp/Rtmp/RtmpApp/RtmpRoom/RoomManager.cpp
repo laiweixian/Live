@@ -12,6 +12,11 @@ CRtmpRoomManager::~CRtmpRoomManager()
 
 }
 
+int CRtmpRoomManager::RoomManagerInit()
+{
+	return 0;
+}
+
 
 
 CRtmpRoom*	CRtmpRoomManager::SearchRoom(CPlayer  *pPlayer)

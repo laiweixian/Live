@@ -1,5 +1,5 @@
 #include "ClientManager.h"
-
+#include "Rtmp/RtmpApp/Network/SocketIO.h"
 
 CClientManager::CClientManager()
 {
@@ -9,6 +9,12 @@ CClientManager::CClientManager()
 CClientManager::~CClientManager()
 {
 
+}
+
+int CClientManager::ClientManagerInit()
+{
+	GetSocketIO()->RegisterEvent(this);
+	return 0;
 }
 
 int CClientManager::Connect(CSocketClient *pClient)

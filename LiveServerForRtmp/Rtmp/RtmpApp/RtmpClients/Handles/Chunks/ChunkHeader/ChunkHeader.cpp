@@ -13,6 +13,7 @@ CChunkHeader::~CChunkHeader()
 
 }
 
+
 CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLength)
 {
 	CChunkHeader *pValue = nullptr;

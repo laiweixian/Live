@@ -17,7 +17,8 @@ public:
 	CRtmpApp(Optional appOpt);
 	~CRtmpApp();
 public:
-	
+	int InitApp();
+	int RunApp();
 
 protected:
 

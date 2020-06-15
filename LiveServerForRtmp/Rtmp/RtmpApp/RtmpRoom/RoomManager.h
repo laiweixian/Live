@@ -17,6 +17,9 @@ public:
 	CRtmpRoom*	SearchRoom(CPlayer  *pPlayer);
 	CRtmpRoom*  SearchRoom(CPublisher *pPublisher);
 
+protected:
+	int RoomManagerInit();
+
 private:
 	vector<CRtmpRoom*> m_Rooms;
 };

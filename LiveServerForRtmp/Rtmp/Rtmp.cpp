@@ -27,12 +27,15 @@ void CRtmp::PreInit()
 
 void CRtmp::Init()
 {
-	
+	m_App->InitApp();
 }
 
 void CRtmp::Run()
 {
-	
+	while (1)
+	{
+		m_App->RunApp();
+	}
 }
 
 

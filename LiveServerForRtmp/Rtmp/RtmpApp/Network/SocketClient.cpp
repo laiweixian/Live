@@ -10,11 +10,12 @@ CSocketClient::CSocketClient(SOCKET so,sockaddr_in addr):m_Socket(so), m_Addr(ad
 
 CSocketClient::~CSocketClient()
 {
-	
+	closesocket(m_Socket);
 }
 
 int CSocketClient::InitReadBuff()
 {
+	m_Reader = new ClientBuffer;
 	m_Reader->totalLen = BUFF_LEN;
 	m_Reader->buff = new uint8_t[BUFF_LEN];
 	memset(m_Reader->buff,0,BUFF_LEN);
@@ -26,6 +27,7 @@ int CSocketClient::InitReadBuff()
 
 int CSocketClient::InitWriteBuff()
 {
+	m_Writer = new ClientBuffer;
 	m_Writer->totalLen = BUFF_LEN;
 	m_Writer->buff = new uint8_t[BUFF_LEN];
 	memset(m_Writer->buff, 0, BUFF_LEN);
@@ -53,31 +55,37 @@ int CSocketClient::CheckRead()
 			//对端关闭连接
 			closesocket(m_Socket);
 			m_Socket = INVALID_SOCKET;
-			break;
+			goto closesock;
 		}
-		else if (length > 0)
+		else if (length > 0 )
 		{
 			AppendReadBuff(buf,length);
+			if (length < 1024)
+				goto data;
 		}
 		else
 		{
 			errorCode = WSAGetLastError();
 			if (errorCode == WSAEWOULDBLOCK)
-				break;
+				goto data;
 			else
 			{
 				closesocket(m_Socket);
 				m_Socket = INVALID_SOCKET;
-				break;
+				goto closesock;
 			}
 		}
 	}
 
-	delete[] buf;
-	return GetReadBufLength();
+	return -1;
 
 closesock:
+	if (buf)delete[] buf;
 	return GetReadBufLength();
+
+data:
+	length = GetReadBufLength();
+	return length;
 }
 
 int CSocketClient::CheckWrite()
@@ -85,17 +93,18 @@ int CSocketClient::CheckWrite()
 	return m_Writer->length;
 }
 
-int CSocketClient::Read(char *src, size_t srcSize)
+int CSocketClient::Read(uint8_t *src, size_t srcSize)
 {
-	
+	if (src == NULL)
+		return GetReadBufLength();
 	return	CopyReadBuf(src, srcSize);
 }
 
-int CSocketClient::Write(char *src, size_t srcSize)
+int CSocketClient::Write(uint8_t *src, size_t srcSize)
 {
 	if (m_Socket == INVALID_SOCKET)
 		return -1;
-	return send(m_Socket,src,srcSize,0);
+	return send(m_Socket,(char*)src,srcSize,0);
 }	
 
 int CSocketClient::Close()
@@ -165,7 +174,7 @@ int CSocketClient::GetReadBufLength()
 	return m_Reader->length;
 }
 
-int CSocketClient::CopyReadBuf(char *src, size_t srcSize)
+int CSocketClient::CopyReadBuf(uint8_t *src, size_t srcSize)
 {
 	const int maxNum = srcSize > m_Reader->length ? m_Reader->length : srcSize;
 

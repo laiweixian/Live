@@ -14,12 +14,25 @@ CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const i
 	
 	m_ListSock = INVALID_SOCKET;
 
-	InitListenSocket();
+	
 }
 
 CSocketIO::~CSocketIO()
-{
+{	
+	auto it = m_Clients.begin();
+	for (it = m_Clients.begin(); it != m_Clients.end(); it++)
+	{
+		delete (*it);
+		(*it) = NULL;
+	}
 
+	closesocket(m_ListSock);
+}
+
+int CSocketIO::SocketInit()
+{
+	InitListenSocket();
+	return 0;
 }
 
 int CSocketIO::SetSocketNonblock(SOCKET sock)
