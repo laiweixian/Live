@@ -12,12 +12,28 @@ CPlayer::~CPlayer()
 
 }
 
-bool CPlayer::GetActive()
+int CPlayer::PlayVideo(CVideoMessage *pMsg)
 {
-	return (m_Room != NULL);
+	return 0;
 }
 
-string CPlayer::GetName()
+int CPlayer::PlayAudio(CAudioMessage *pMsg)
 {
-	return m_Name;
+	return 0;
 }
+
+int CPlayer::PlayMsg(CBaseMessage *pMsg)
+{
+	return 0;
+}
+
+int CPlayer::Connenct(string name)
+{
+	return 0;
+}
+
+int CPlayer::DisConnect()
+{
+	return 0;
+}
+

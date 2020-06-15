@@ -1,7 +1,7 @@
 
 #include "RtmpRoom.h"
-#include "Rtmp/RtmpApp/RtmpClient/Player.h"
-#include "Rtmp/RtmpApp/RtmpClient/Publisher.h"
+#include "Rtmp/RtmpApp/RtmpClients/Player.h"
+#include "Rtmp/RtmpApp/RtmpClients/Publisher.h"
 
 CRtmpRoom::CRtmpRoom(string name) : m_Name(name),m_Publish(NULL)
 {

@@ -17,12 +17,9 @@ public:
 	virtual int SocketErr(CSocketClient *pClient) final;
 	
 
-
 	virtual string GetAppName() = 0;
 	virtual uint32_t GetChunkSize() = 0;
 	virtual CSocketIO*		GetSocketIO() = 0;
-
-	
 private:
 	vector<CRtmpClient*> m_Clients;
 };

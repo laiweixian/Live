@@ -4,12 +4,7 @@
 
 #define AMF0_OK				0
 #define AMF0_FAILURE		1
-#define END_OF_OBJECT	    3
-#define NO_END_OF_OBJECT	4
-#define ERROR_INPUT			-1		//INVALID_INPUT_ARGS
-#define ERROR_LOSS_DATA		-2		//OUT_OF_DATA
-#define ERROR_INVALID_TYHE	-3		//NO_THIS_TYPE
-#define ERROR_INVALID_UTF8	-4		//INVALID_UTF8_CHAR
+
 
 typedef uint8_t		U8;
 typedef uint16_t	U16;
@@ -17,15 +12,6 @@ typedef int16_t		S16;
 typedef uint32_t	U32;
 typedef double		DOUBLE;
 
-struct Utf8 { uint8_t* ptr;uint64_t len; };
-struct NullData { void *p; };
-
-void Utf8_copy(Utf8& dst, Utf8& src);
-void Utf8_free(Utf8& utf8);
-
-#define DELCARE_FUNC(TYPE)	\
-	void TYPE##_free(TYPE& val);	\
-	void TYPE##_copy(TYPE& dst, TYPE& src);
 
 namespace AMF0
 {
@@ -47,98 +33,41 @@ namespace AMF0
 	static const uint8_t  MARKER_XML_DOCUMENT = 16;
 	static const uint8_t  MARKER_TYPE_OBJECT = 17;
 
-	struct Number;
-	struct Boolean;
-	struct String;
-	struct Object;
-	struct Movieclip;
-	struct Null;
-	struct Undefined;
-	struct Reference;
-	struct ECMA_Array;
-	struct ObjectEnd;
-	struct StrictArray;
-	struct Date;
-	struct LongString;
-	struct Unsupported;
-	struct RecordSet;
-	struct XML_Document;
-	struct TypedObject;
-	
-	union Variable
+	typedef struct Data{
+		uint8_t marker;
+		uint8_t *buf;
+		uint64_t len;
+	}Number, Boolean, String, Object,\
+	Reference, ECMA_Array, StrictArray,\
+	Date, LongString,XML_Document, TypedObject;
+
+	typedef struct UTF8
 	{
-		Number *pNum;
-		Boolean *pBool;
-		String *pStr;
-		Object *pObj;
-		Movieclip *pMov;			//not use/support
-		Null *pNull;			//not use/support
-		Undefined *pUnd;			//not use/support
-		Reference *pRef;
-		ECMA_Array *pECMA;
-		ObjectEnd *pObjEnd;			//not use/support
-		StrictArray *pStrArr;
-		Date *pDate;
-		LongString *pLonStr;
-		Unsupported *pUns;			//not use/support
-		RecordSet *pRec;			//not use/support
-		XML_Document *pXML;
-		TypedObject *pTypeObj;
+		uint8_t *buf;
+		uint64_t len ;
 	};
 
-	struct Member;
-	struct Data;
+	void AllocDataBuff(Data& data,uint8_t* src,uint64_t len);
+	bool IsNumber(Data& data);
+	bool IsBoolean(Data& data);
+	bool IsString(Data& data);
+	bool IsObject(Data& data);
+	bool IsReference(Data& data);
+	bool IsECMA_Array(Data& data);
+	bool IsStrictArray(Data& data);
+	bool IsDate(Data& data);
+	bool IsXMLDocument(Data& data);
+	bool IsTypeObject(Data& data);
+
+	int ParseUTF8(uint8_t* src,uint32_t len, UTF8& utf8,int *outLen);
+	int ParseUTF8Long(uint8_t* src, uint32_t len, UTF8& utf8, int *outLen);
+
+	int ParseObject(Data& data,int *outLen);
 
 	class CParse;
-
-	DELCARE_FUNC(Number)
-	DELCARE_FUNC(Boolean)
-	DELCARE_FUNC(String)
-	DELCARE_FUNC(Object)
-	DELCARE_FUNC(Movieclip)
-	DELCARE_FUNC(Null)
-	DELCARE_FUNC(Undefined)
-	DELCARE_FUNC(Reference)
-	DELCARE_FUNC(ECMA_Array)
-	DELCARE_FUNC(ObjectEnd)
-	DELCARE_FUNC(StrictArray)
-	DELCARE_FUNC(Date)
-	DELCARE_FUNC(LongString)
-	DELCARE_FUNC(Unsupported)
-	DELCARE_FUNC(RecordSet)
-	DELCARE_FUNC(XML_Document)
-	DELCARE_FUNC(TypedObject)
-	DELCARE_FUNC(Member)
-	DELCARE_FUNC(Data)
-
-	bool IsString(Data& val);
-	bool IsNumber(Data& val);
-	bool IsBoolean(Data& val);
-	void CopyString(string& dst, Data& src);
-	void CopyNumber(int &dst,Data& src);
-	void CopyBoolean(bool &dst,Data& src);
-	int Utf8Cmp(const char* dst,Utf8& src);
 };
 
-struct AMF0::Number{DOUBLE num;};
-struct AMF0::Boolean{U8 bol;};
-struct AMF0::String{Utf8 utf8;};
-struct AMF0::LongString{Utf8 utf8;};
-struct AMF0::XML_Document{Utf8 utf8;};
-struct AMF0::Movieclip{ NullData  nData;};
-struct AMF0::Null { NullData  nData; };
-struct AMF0::Undefined { NullData  nData; };
-struct AMF0::ObjectEnd { NullData  nData; };
-struct AMF0::Unsupported { NullData  nData; };
-struct AMF0::RecordSet { NullData  nData; };
-struct AMF0::Object{ U32 count; AMF0::Member* pMems; };
-struct AMF0::Reference{ U16 ref;};
-struct AMF0::ECMA_Array{U32 count;AMF0::Member *pMems;};
-struct AMF0::StrictArray{U32 count; AMF0::Data *pDatas;};
-struct AMF0::Date{ DOUBLE date; };
-struct AMF0::TypedObject { Utf8 className; U32 count; AMF0::Member* pMems; };
-struct AMF0::Data { uint8_t dType; Variable dValue; };
-struct AMF0::Member{Utf8 name;AMF0::Data value;};
+
 
 class AMF0::CParse
 {
@@ -162,12 +91,12 @@ private:
 	static int ParseObjectEnd(uint8_t *src, const int srcLen, int* outLen);
 	static int ParseStrictArray(uint8_t *src, const int srcLen, AMF0::StrictArray& strictArray, int* outLen);
 	static int ParseDate(uint8_t *src, const int srcLen, AMF0::Date& date, int* outLen);
-	static int ParseLongString(uint8_t *src, const int srcLen, AMF0::LongString &utf8, int* outLen);
+	static int ParseLongString(uint8_t *src, const int srcLen, AMF0::LongString &longStr, int* outLen);
 	static int ParseUnsupported(uint8_t *src, const int srcLen, int* outLen);
 	static int ParseRecordSet(uint8_t *src, const int srcLen, int* outLen);
-	static int ParseXmlDocument(uint8_t *src, const int srcLen, AMF0::XML_Document &utf8, int* outLen);
+	static int ParseXmlDocument(uint8_t *src, const int srcLen, AMF0::XML_Document &xml, int* outLen);
 	static int ParseTypeObject(uint8_t *src, const int srcLen, AMF0::TypedObject &typeObject, int* outLen);
-	static int ParseObjectProperty(uint8_t *src, const int srcLen, AMF0::Member& mem, int* outLen);
+	
 public:
 	std::vector<AMF0::Data*> m_Datas;
 };
