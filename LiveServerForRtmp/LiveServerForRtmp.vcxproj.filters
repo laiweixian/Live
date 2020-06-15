@@ -45,30 +45,6 @@
     <ClInclude Include="Global\Stru.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\Chunks.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Handles\Handshake\Handshake.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Player.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\Publisher.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\RtmpClient.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClient\ClientManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RoomManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -171,6 +147,30 @@
     <ClInclude Include="Rtmp\RtmpApp\Network\SockEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\ClientManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Player.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Publisher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -189,30 +189,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\ChunkHeader\ChunkHeader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\ReceChunk\ReceChunk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Handles\Chunks\Chunks.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Handles\Handshake\Handshake.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Player.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\Publisher.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\RtmpClient.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClient\ClientManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RoomManager.cpp">
@@ -273,6 +249,30 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Player.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Publisher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
