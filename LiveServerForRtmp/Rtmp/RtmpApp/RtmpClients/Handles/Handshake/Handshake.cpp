@@ -40,15 +40,30 @@ int CHandshake::RecePacket(uint8_t* buff, const int buffLen, int *outLen)
 	int length = 0;
 
 	if (m_ReceState == RECE_NONE)
-		result = ReceC0(buff,buffLen,&length);
-	
+	{
+		result = ReceC0(buff, buffLen, &length);
+		if (result == HANDSHAKE_OK)
+			*outLen += length;
+	}
 	if (m_ReceState == C0)
-		result = ReceC1(buff,buffLen,&length);
-	
+	{
+		result = ReceC1(buff, buffLen, &length);
+		if (result == HANDSHAKE_OK)
+			*outLen += length;
+	}
 	if (m_ReceState == C1)
-		result = ReceC2(buff,buffLen,&length);
-	else 
-		return HANDSHAKE_FAILURE;
+	{
+		result = ReceC2(buff, buffLen, &length);
+		if (result == HANDSHAKE_OK)
+			*outLen += length;
+	}
+	if (m_ReceState == C2)
+	{
+		*outLen += 0;
+		return HANDSHAKE_OK;
+	}
+
+	return result;
 }
 
 int CHandshake::ReceC0(uint8_t *buff, const int buffLen, int *outLen)

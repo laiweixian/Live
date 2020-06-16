@@ -40,17 +40,16 @@ int CBuffer::Append(uint8_t* src, int len)
 	return GetLength();
 }
 
-int CBuffer::Seek(int len)
+int CBuffer::Offset(int len)
 {
-	if (m_Length >= len)
+	if (len <= m_Length)
 	{
 		m_Ptr += len;
 		m_Length -= len;
+		return 0;
 	}
-	else 
-		return -1;
 
-	return 0;
+	return -1;
 }
 
 void CBuffer::ExtendBuff()
@@ -70,6 +69,8 @@ void CBuffer::ExtendBuff()
 	m_Length = length;
 
 	delete[] temp; temp = NULL;
+
+	CleanBuff();
 }
 
 int CBuffer::GetLength()

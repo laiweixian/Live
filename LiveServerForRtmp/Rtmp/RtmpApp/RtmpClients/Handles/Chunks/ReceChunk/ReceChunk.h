@@ -33,6 +33,7 @@ protected:
 	virtual int OnChunks(uint8_t* src, const int srcLength) final;
 	virtual void HandleAbortMessage(CAbortMessage* pMsg) final;
 private:
+	int ReceiveMsg(uint8_t* src, const int srcLength,CBaseMessage* pMsg);
 	int ReadChunk(uint8_t* src, const int srcLength);
 	int ReadChunkHeader(uint8_t* src, const int srcLength,CChunkHeader **ppHeader);
 	int ReadChunkBody(CChunkHeader* pHeader, uint8_t* src, const int srcLen,bool *outNewMsg);

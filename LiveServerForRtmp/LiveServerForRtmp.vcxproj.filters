@@ -147,9 +147,6 @@
     <ClInclude Include="Rtmp\RtmpApp\Network\SockEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -254,9 +254,6 @@
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -279,6 +276,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

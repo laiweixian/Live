@@ -160,7 +160,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Player.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Publisher.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\AbortMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\Acknowledgement.h" />
@@ -218,7 +218,7 @@
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ChunkHeader\ChunkHeader.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\AbortMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\Acknowledgement.cpp" />

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "ChunkHeader/ChunkHeader.h"
 
 #define SET_CHUNK_SIZE_TYPE_ID				((uint8_t)1)
 #define ABORT_MESSAGE_TYPE_ID				((uint8_t)2)
@@ -19,43 +20,30 @@
 #define AGGREGATE_MESSAGE_TYPE_ID			((uint8_t)22)
 
 #define DECLARE_BASE_MESSAGE \
-	struct Header {uint32_t timestamp;uint32_t messageLength;uint8_t messageTypeID;uint32_t messageStreamID;};\
-	struct Payload{char* buff;int buffLength;};									\
-	enum MessageType {INVALID,													\
-	SET_CHUNK_SIZE, ABORT_MESSAGE, ACKNOWLEDGEMENT, WINDOW_ACKNOWLEDGEMENT_SIZE,\
-	SET_PEER_BADNWIDTH, USER_CONTROL_MESSAGES, COMMAND_MESSAGE, DATA_MESSAGE,	\
-	SHARED_OBJECT_MESSAGE, AUDIO_MESSAGE, VIDEO_MESSAGE, AGGREGATE_MESSAGE};
+	struct Payload{uint8_t* buf;uint32_t len;};	
 
 /*-----------------------------------------------------------------------------------------*/
 class CBaseMessage
 {
+protected:
+	CBaseMessage();
+	virtual ~CBaseMessage();
 public:
 	DECLARE_BASE_MESSAGE
-	CBaseMessage(uint32_t csid,uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId);
-	virtual ~CBaseMessage();
 
-	//property
-	uint32_t GetTimestamp() const ;
-	uint32_t GetLength() const;
-	uint8_t	 GetTypeID() const;
-	uint32_t GetStreamID() const ;
-
-	//ability
-	uint32_t GetRemainSize() const;
-	int Append(const uint8_t* src, const int srcLen );
-
-	//interface
-	virtual CBaseMessage::MessageType GetType()	 = 0;
-
-	//
-	char* GetPtr() const;
-	int   GetSize() const;
-	CBaseMessage* Clone() ;
+	static CBaseMessage* Create(CBaseMessage* prev,uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int* outTotalLen);
+	void Destroy();
 
 
+
+	virtual char* GetData() final;
+	virtual int   GetDataLength() final;
+	virtual CChunkHeader* GetChunkHeader() final;
+private:
+	void Parse(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int* outTotalLen);
+
+	
 protected:
-	uint32_t			  m_CSID;
-	CBaseMessage::Header  m_Header;
-	CBaseMessage::Payload m_Payload;
-	int m_AppendLength;
+	CChunkHeader* m_Header;
+	Payload m_Payload;
 };

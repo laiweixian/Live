@@ -14,26 +14,44 @@ CReceiveChunk::~CReceiveChunk()
 
 int CReceiveChunk::OnChunks(uint8_t* src, const int srcLength)
 {
-	int chunkLen = 0;
-	int offset = 0;
-
-	if (srcLength <= 0 || src == NULL)
-		return 0;
-
-	while (srcLength > offset)
-	{
-		chunkLen = this->ReadChunk(src + offset, srcLength - offset);
-		if (chunkLen == 0)
-			break;
-
-		if (m_Message->GetRemainSize() == 0)
-		{
-			HandleMessage(m_Message);
-		}
-		offset += chunkLen;
-	}
-	return offset;
+	ReceiveMsg(src,srcLength,NULL);
 }
+
+int CReceiveChunk::ReceiveMsg(uint8_t* src, const int srcLength, CBaseMessage* pMsg)
+{
+	CChunkHeader *pHeader = NULL;
+	CChunkHeader::Head header;
+	bool newMsg = false;
+	int headerLen = 0, dataLen = 0;
+
+	//receive chunk head
+	headerLen = ReadChunkHeader(src, srcLength, &pHeader);
+	if (pHeader == NULL || headerLen == 0)
+		goto failure;
+
+	header = pHeader->GetHead();
+	switch (header.fmt)
+	{
+	case 0x00:	newMsg = true;	break;
+	case 0x01:	newMsg = true;	break;
+	case 0x02:	newMsg = true;	break;
+	case 0x03:	
+		if (pMsg == NULL)
+			newMsg = true;
+		else
+			newMsg = false;
+		break;
+	}
+
+	
+
+	
+
+failure:
+	return 0;
+}
+
+
 
 int CReceiveChunk::ReadChunk(uint8_t* src, const int srcLength)
 {

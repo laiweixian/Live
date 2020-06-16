@@ -1,4 +1,19 @@
+
 #include "RtmpMessage.h"
+
+#include "AbortMessage.h"
+#include "Acknowledgement.h"
+#include "AudioMessage.h"
+#include "AggregateMessage.h"
+#include "CommandMessage.h"
+#include "DataMessage.h"
+#include "SetChunkSize.h"
+#include "SetPeerBandwidth.h"
+#include "SharedObjectMessage.h"
+#include "UserControlMessages.h"
+#include "VideoMessage.h"
+#include "WindowAcknowledgementSize.h"
+#include "ChunkHeader/ChunkHeader.h"
 
 CRtmpMessage::CRtmpMessage()
 {
@@ -67,4 +82,36 @@ CBaseMessage* CRtmpMessage::CreateMessage(uint32_t csid,uint32_t ts, uint32_t ms
 	}
 
 	return pMsg;
+}
+
+
+CBaseMessage* CRtmpMessage::CreateMessage(CBaseMessage* prev, uint32_t chunkSize, uint8_t *src, const uint32_t len, int *outLen)
+{
+	const uint8_t *start = src, *end = src + len;
+	uint8_t *ptr = src;
+	uint32_t length = len;
+	CChunkHeader *pHeader = NULL;
+	CChunkHeader::Head head;
+	CBaseMessage *pMsg = NULL;
+	int headerLen;
+
+	pHeader = CChunkHeader::Parse(src, length, &headerLen);
+	if (pHeader == NULL)
+		goto failure;
+
+	head = pHeader->GetHead();
+	switch (head.fmt)
+	{
+	case 0x00: pMsg = 		break;
+	case 0x01:break;
+	case 0x02:break;
+	case 0x03:break;
+	default:
+		break;
+	}
+
+
+failure:
+	*outLen = 0;
+	return NULL;
 }

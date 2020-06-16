@@ -13,7 +13,7 @@ public:
 	int Append(uint8_t* src,int len);
 	int GetLength();
 	uint8_t* GetData();
-	int Seek(int len);
+	int Offset(int len);
 private:
 	void ExtendBuff();
 	void CleanBuff();

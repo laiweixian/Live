@@ -1,78 +1,53 @@
 #include "BaseMessage.h"
-#include "RtmpMessage.h"
 
-CBaseMessage::CBaseMessage(uint32_t csid, uint32_t ts, uint32_t msgLength, uint8_t msgTypeId, uint32_t msgStreamId) :
-		 m_CSID(csid),m_AppendLength(0)
+
+CBaseMessage::CBaseMessage() : m_Header(NULL)
 {
-	m_Header.timestamp = ts;
-	m_Header.messageLength = msgLength;
-	m_Header.messageTypeID = msgTypeId;
-	m_Header.messageStreamID = msgStreamId;
-
-	m_Payload.buffLength = msgLength;
-	m_Payload.buff = new char[msgLength];
-	memset(m_Payload.buff,0,msgLength);
+	
 }
 
 CBaseMessage::~CBaseMessage()
 {
-	delete[] m_Payload.buff;
+	
 }
 
-uint32_t CBaseMessage::GetTimestamp() const
+CBaseMessage* CBaseMessage::Create(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int* outTotalLen)
 {
-	return m_Header.timestamp;
+	CChunkHeader *pHead = NULL;
+	CChunkHeader::Head head;
+	int headerLen = 0, dataLen = 0;
+	bool newMsg = false;
+
+	pHead = CChunkHeader::Parse(src, srcLen, &headerLen);
+	if (pHead == NULL)
+		goto fail;
+
+	head = pHead->GetHead();
+	switch (head.fmt)
+	{
+	case 0x00:
+		newMsg = true;
+		break;
+	case 0x01:	
+		newMsg = true;
+		pHead->CopyFrom(prev->GetChunkHeader());
+		break;
+	case 0x02:		break;
+	case 0x03:		break;
+	}
+
+
+	return;
+fail:
+	*outTotalLen = 0;
 }
 
-uint32_t CBaseMessage::GetLength() const
+void CBaseMessage::Destroy()
 {
-	return m_Header.messageLength;
+	delete this;
 }
 
-uint8_t	 CBaseMessage::GetTypeID() const
-{
-	return m_Header.messageTypeID;
-}
 
-uint32_t CBaseMessage::GetStreamID() const
-{
-	return m_Header.messageStreamID;
-}
 
-uint32_t CBaseMessage::GetRemainSize() const
-{
-	return (m_Header.messageLength - m_AppendLength);
-}
 
-int CBaseMessage::Append(const uint8_t* src, const int srcLen)
-{
-	const int remainSize = GetRemainSize();
 
-	if (srcLen > remainSize)
-		return 0;
-
-	memcpy(m_Payload.buff+m_AppendLength,src,srcLen);
-	m_AppendLength += srcLen;
-	return srcLen;
-}
-
-char* CBaseMessage::GetPtr() const
-{
-	return m_Payload.buff;
-}
-
-int   CBaseMessage::GetSize() const
-{
-	return m_Payload.buffLength;
-}
-
-CBaseMessage* CBaseMessage::Clone()
-{
-	if (m_AppendLength - m_Header.messageLength != 0)
-		return NULL;
-
-	CBaseMessage* pMsg = CRtmpMessage::CreateMessage(m_CSID,m_Header.timestamp,m_Header.messageLength,m_Header.messageTypeID,m_Header.messageStreamID);
-	memcpy(pMsg->m_Payload.buff,this->m_Payload.buff,this->m_Payload.buffLength);
-
-	return pMsg;
-}

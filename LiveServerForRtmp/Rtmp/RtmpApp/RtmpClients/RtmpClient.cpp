@@ -26,15 +26,16 @@ void CRtmpClient::OnReceive()
 		return;
 
 	if (HandshakeEnd() == false)
+	{
 		length = OnHandshake(m_Readable.GetData(), m_Readable.GetLength());
-	else
-		length = OnChunks(m_Readable.GetData(),m_Readable.GetLength());
-
-	m_Readable.Seek(length);
-	
-	if (m_Readable.GetLength() > 0)
-		return OnReceive();
-
+		m_Readable.Offset(length);
+	}
+		
+	if (HandshakeEnd() == true)
+	{
+		length = OnChunks(m_Readable.GetData(), m_Readable.GetLength());
+		m_Readable.Offset(length);
+	}
 	return;
 }
 
