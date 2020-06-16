@@ -19,31 +19,35 @@
 #define VIDEO_MESSAGE_TYPE_ID				((uint8_t)9)
 #define AGGREGATE_MESSAGE_TYPE_ID			((uint8_t)22)
 
-#define DECLARE_BASE_MESSAGE \
-	struct Payload{uint8_t* buf;uint32_t len;};	
+#define DECLARE_BASE_MESSAGE struct Payload{uint8_t* buf;uint32_t bufSize;uint8_t *ptr;};	
+	
 
 /*-----------------------------------------------------------------------------------------*/
 class CBaseMessage
 {
 protected:
-	CBaseMessage();
+	CBaseMessage(uint32_t chunkSize);
 	virtual ~CBaseMessage();
 public:
 	DECLARE_BASE_MESSAGE
 
-	static CBaseMessage* Create(CBaseMessage* prev,uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int* outTotalLen);
+	static CBaseMessage* Create(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
 	void Destroy();
 
-
-
-	virtual char* GetData() final;
+	virtual int AppendChunk(uint8_t* src,const uint32_t srcLen) final;
+	virtual uint8_t* GetData() final;
 	virtual int   GetDataLength() final;
-	virtual CChunkHeader* GetChunkHeader() final;
-private:
-	void Parse(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int* outTotalLen);
+	virtual CChunkHeader* GetHead() final;
+	virtual bool Full() final;
 
-	
+private:
+	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
 protected:
 	CChunkHeader* m_Header;
+	uint32_t m_ChunkSize;
+	
 	Payload m_Payload;
 };
+
+
+static 

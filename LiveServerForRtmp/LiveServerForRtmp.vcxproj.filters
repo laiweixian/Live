@@ -99,46 +99,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\Command\Commands.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\AbortMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\Acknowledgement.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\AggregateMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\AudioMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\BaseMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\CommandMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\DataMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\RtmpMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\SetChunkSize.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\SetPeerBandwidth.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\SharedObjectMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\UserControlMessages.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\VideoMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\WindowAcknowledgementSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketClient.h">
@@ -228,9 +189,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\DataMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\RtmpMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\SetChunkSize.cpp">
