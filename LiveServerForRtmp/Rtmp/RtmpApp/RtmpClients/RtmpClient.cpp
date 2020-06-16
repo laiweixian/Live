@@ -20,6 +20,7 @@ CSocketClient* CRtmpClient::GetClietnIo()
 void CRtmpClient::OnReceive()
 {
 	int length = 0;
+	int ret = 0;
 	UpdateReadBuff();
 
 	if (m_Readable.GetLength() <= 0)
@@ -28,14 +29,18 @@ void CRtmpClient::OnReceive()
 	if (HandshakeEnd() == false)
 	{
 		length = OnHandshake(m_Readable.GetData(), m_Readable.GetLength());
-		m_Readable.Offset(length);
+		ret = m_Readable.Offset(length);
+		if (HandshakeEnd() == true)
+			return OnReceive();
 	}
-		
-	if (HandshakeEnd() == true)
+	else
 	{
 		length = OnChunks(m_Readable.GetData(), m_Readable.GetLength());
-		m_Readable.Offset(length);
+		ret = m_Readable.Offset(length);
+		if (ret == -1)
+			return;
 	}
+
 	return;
 }
 
@@ -51,6 +56,11 @@ void CRtmpClient::UpdateReadBuff()
 	buf = new uint8_t[length];
 	length = m_IO->Read(buf,length);
 	m_Readable.Append(buf,length);
+
+	TRACE("append %d bytes\n",length);
+
+	delete[] buf;
+	buf = NULL;
 }
 
 void CRtmpClient::OnDisConnct()

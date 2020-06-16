@@ -4,6 +4,7 @@
 #include <sys/timeb.h>
 #include <time.h>
 #include <stdio.h>
+#include <math.h>
 
 static uint32_t GetTimestamp()
 {
@@ -12,29 +13,54 @@ static uint32_t GetTimestamp()
 	return rawTime.time * 1000 + rawTime.millitm;
 }
 
-static uint16_t BigToHost16(void* src)
+static uint16_t BigToHost16(uint8_t* src)
 {
-	uint16_t srcNumber = 0;
-	memcpy(&srcNumber,src,2);
+	uint8_t number[2] = { 0 };
+	uint8_t dst[2] = { 0 };
+	uint16_t dstNum = 0;
 
+	memcpy(number,src,2);
+
+	dst[0] = number[1];
+	dst[1] = number[0];
+
+	memcpy(&dstNum,dst,2);
+	return dstNum;
+}
+
+static uint32_t BigToHost24(uint8_t* src)
+{
+	uint8_t number[4] = {0};
+	uint8_t dst[4] = { 0 };
+	uint32_t dstNumber ;
+
+	memcpy(number,src,3);
 	
-	return ntohs(srcNumber);
+	dst[0] = number[3];
+	dst[1] = number[2];
+	dst[2] = number[1];
+	dst[3] = number[0];
+
+	memcpy(&dstNumber,dst,4);
+	return dstNumber;
 }
 
-static uint32_t BigToHost24(void* src)
+static uint32_t BigToHost32(uint8_t* src)
 {
-	uint32_t srcNumber = 0;
-	memcpy(&srcNumber,src,3);
+	uint8_t number[4] = { 0 };
+	uint8_t dst[4] = { 0 };
+	uint32_t dstNumber;
 
-	return ntohl(srcNumber);
-}
+	memcpy(number, src,4);
 
-static uint32_t BigToHost32(void* src)
-{
-	uint32_t srcNumber = 0;
-	memcpy(&srcNumber, src, 4);
+	dst[0] = number[3];
+	dst[1] = number[2];
+	dst[2] = number[1];
+	dst[3] = number[0];
 
-	return ntohl(srcNumber);
+	memcpy(&dstNumber, dst, 4);
+
+	return dstNumber;
 }
 
 static uint16_t HostToBig16(uint16_t src)
@@ -68,11 +94,3 @@ static void GenRamdomByte(char* buff, const int buffLen)
 	}
 }
 
-static double BigToHostDouble(void *src,const int srcLen)
-{
-	double number = 0 ;
-
-	memcpy(&number,src,srcLen);
-
-	return number;
-}

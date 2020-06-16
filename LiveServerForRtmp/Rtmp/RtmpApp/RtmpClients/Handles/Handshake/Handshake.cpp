@@ -36,33 +36,26 @@ int CHandshake::OnHandshake(uint8_t* src, const int srcLength)
 
 int CHandshake::RecePacket(uint8_t* buff, const int buffLen, int *outLen)
 {
-	int result = HANDSHAKE_FAILURE;
+	int result = HANDSHAKE_OK;
 	int length = 0;
+	int len0 = 0, len1 = 0;
 
-	if (m_ReceState == RECE_NONE)
-	{
-		result = ReceC0(buff, buffLen, &length);
-		if (result == HANDSHAKE_OK)
-			*outLen += length;
-	}
-	if (m_ReceState == C0)
-	{
-		result = ReceC1(buff, buffLen, &length);
-		if (result == HANDSHAKE_OK)
-			*outLen += length;
-	}
-	if (m_ReceState == C1)
-	{
-		result = ReceC2(buff, buffLen, &length);
-		if (result == HANDSHAKE_OK)
-			*outLen += length;
-	}
 	if (m_ReceState == C2)
 	{
-		*outLen += 0;
 		return HANDSHAKE_OK;
 	}
+	else if (m_ReceState == C1)
+	{
+		result = ReceC2(buff,buffLen,&length);
+	}
+	else 
+	{
+		result &= ReceC0(buff,buffLen,&len0);
+		result &= ReceC1(buff+len0,buffLen-len0,&len1);
+		length = len0 + len1;
+	}
 
+	*outLen = length;
 	return result;
 }
 
@@ -78,7 +71,7 @@ int CHandshake::ReceC0(uint8_t *buff, const int buffLen, int *outLen)
 
 	m_ReceState = C0;
 	*outLen = length;
-	TRACE("Receive c0 success");
+	TRACE("Receive c0 success\n");
 
 	return HANDSHAKE_OK;
 }
@@ -95,7 +88,7 @@ int CHandshake::ReceC1(uint8_t *buff, const int buffLen, int *outLen)
 
 	m_ReceState = C1;
 	*outLen = length;
-	TRACE("Receive c1 success");
+	TRACE("Receive c1 success\n");
 	return HANDSHAKE_OK;
 }
 
@@ -111,7 +104,7 @@ int CHandshake::ReceC2(uint8_t *buff, const int buffLen, int *outLen)
 
 	m_ReceState = C2;
 	*outLen = length;
-	TRACE("Receive c2 success");
+	TRACE("Receive c2 success\n");
 	return HANDSHAKE_OK;
 }
 
@@ -145,9 +138,9 @@ int CHandshake::SendS0()
 	length = Send2Peer(m_RecePack.data0,1);
 	if (length == 1)
 	{
-		TRACE("send s0 success");
+		TRACE("send s0 success\n");
 		m_SendState = S0;
-		m_SendPack.data0[0] = m_RecePack.data0[0];
+		m_SendPack.data0[0] = 0x03;
 		return HANDSHAKE_OK;
 	}
 
@@ -173,7 +166,7 @@ int CHandshake::SendS1()
 	length = SendHandshake(s1,1536);
 	if (length == 1536)
 	{
-		TRACE("send s1 success");
+		TRACE("send s1 success\n");
 		m_SendState = S1;
 		memcpy(m_SendPack.data1, s1, 1536);
 		return HANDSHAKE_FAILURE;
@@ -196,7 +189,7 @@ int CHandshake::SendS2()
 	length = SendHandshake(s2, 1536);
 	if (length == 1536)
 	{
-		TRACE("send s2 success");
+		TRACE("send s2 success\n");
 		m_SendState = S2;
 		memcpy(m_SendPack.data2, s2, 1536);
 		return HANDSHAKE_OK;

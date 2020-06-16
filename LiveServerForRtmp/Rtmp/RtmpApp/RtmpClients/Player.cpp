@@ -12,12 +12,12 @@ CPlayer::~CPlayer()
 
 }
 
-int CPlayer::PlayVideo(CVideoMessage *pMsg)
+int CPlayer::PlayVideo(CBaseMessage *pMsg)
 {
 	return 0;
 }
 
-int CPlayer::PlayAudio(CAudioMessage *pMsg)
+int CPlayer::PlayAudio(CBaseMessage *pMsg)
 {
 	return 0;
 }

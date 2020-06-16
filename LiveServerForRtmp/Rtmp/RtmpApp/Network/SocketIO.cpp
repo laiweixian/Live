@@ -1,5 +1,6 @@
 #include "SocketIO.h"
 #include "Rtmp/RtmpApp/RtmpClients/ClientManager.h"
+#include "stdafx.h"
 
 #define DEFAULT_BUFF_LENGTH	1024
 
@@ -37,9 +38,8 @@ int CSocketIO::SocketInit()
 
 int CSocketIO::SetSocketNonblock(SOCKET sock)
 {
-	long sockCmd = FIONBIO;
-	u_long arg = 0;
-	return ioctlsocket(sock, sockCmd, &arg);
+	int imode = 1;
+	return ioctlsocket(sock, FIONBIO, (u_long *)&imode);
 }
 
 int CSocketIO::InitListenSocket()
@@ -59,11 +59,6 @@ int CSocketIO::InitListenSocket()
 	if (listenSocket == INVALID_SOCKET)
 		goto sock_create_err;
 
-	// set socket non block
-	ret = CSocketIO::SetSocketNonblock(listenSocket);
-	if (ret == SOCKET_ERROR)
-		goto sock_nonblock_err;
-
 	//bind socket
 	service.sin_family = AF_INET;
 	service.sin_port = htons(m_Optional.port);
@@ -77,6 +72,11 @@ int CSocketIO::InitListenSocket()
 	ret = listen(listenSocket, m_Optional.backlog);
 	if (ret == SOCKET_ERROR)
 		goto sock_listen_err;
+
+	// set socket non block
+	ret = CSocketIO::SetSocketNonblock(listenSocket);
+	if (ret == SOCKET_ERROR)
+		goto sock_nonblock_err;
 
 	m_ListSock = listenSocket;
 	return SOCKET_OK;
@@ -149,7 +149,6 @@ int CSocketIO::CheckConnect()
 	}
 	else
 	{
-		
 		SetSocketNonblock(connSock);
 		client = new CSocketClient(connSock,addr);
 		m_Clients.push_back(client);

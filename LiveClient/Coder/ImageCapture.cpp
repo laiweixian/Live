@@ -226,12 +226,6 @@ int CImageCapture::InitCapture()
 		goto fail;
 
 	InitInfo();
-
-
-
-
-
-
 	return S_OK;
 fail:
 	return hr;

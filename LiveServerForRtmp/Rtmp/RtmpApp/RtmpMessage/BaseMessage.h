@@ -49,5 +49,3 @@ protected:
 	Payload m_Payload;
 };
 
-
-static 

@@ -70,14 +70,14 @@ int CRtmpRoom::Disband()
 	return 0;
 }
 
-int CRtmpRoom::BroadcastVideo(CVideoMessage* pMsg)
+int CRtmpRoom::BroadcastVideo(CBaseMessage* pMsg)
 {
 	m_Msgs.push_back(pMsg);
 	Refresh();
 	return 0;
 }
 
-int CRtmpRoom::BroadcastAudio(CAudioMessage* pMsg)
+int CRtmpRoom::BroadcastAudio(CBaseMessage* pMsg)
 {
 	m_Msgs.push_back(pMsg);
 	Refresh();

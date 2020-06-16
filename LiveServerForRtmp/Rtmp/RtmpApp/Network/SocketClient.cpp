@@ -1,5 +1,5 @@
 #include "SocketClient.h"
-
+#include "stdafx.h"
 #define BUFF_LEN	1024
 
 CSocketClient::CSocketClient(SOCKET so,sockaddr_in addr):m_Socket(so), m_Addr(addr)
@@ -10,6 +10,7 @@ CSocketClient::CSocketClient(SOCKET so,sockaddr_in addr):m_Socket(so), m_Addr(ad
 
 CSocketClient::~CSocketClient()
 {
+	TRACE("addr:%s close\n ", inet_ntoa(m_Addr.sin_addr));
 	closesocket(m_Socket);
 }
 

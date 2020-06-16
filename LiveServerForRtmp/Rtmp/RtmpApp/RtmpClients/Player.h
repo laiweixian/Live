@@ -1,7 +1,7 @@
 #pragma once
 #include "stdafx.h"
 
-#include "Rtmp/RtmpApp/RtmpMessage/RtmpMessage.h"
+#include "Rtmp/RtmpApp/RtmpMessage/BaseMessage.h"
 
 #define PLAYER_OK		0
 #define PLAYER_FAILURE	1
@@ -15,9 +15,9 @@ protected:
 	CPlayer() ;
 	virtual ~CPlayer() ;
 public:
-	virtual int PlayVideo(CVideoMessage *pMsg) final;
-	virtual int PlayAudio(CAudioMessage *pMsg) final;
-	virtual int PlayMsg(CBaseMessage *pMsg) final; 
+	virtual int PlayVideo(CBaseMessage *pMsg) final;
+	virtual int PlayAudio(CBaseMessage *pMsg) final;
+	virtual int PlayMsg(CBaseMessage *pMsg) final;
 	
 protected:
 	virtual uint32_t GetChunkSize() = 0;

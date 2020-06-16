@@ -17,57 +17,52 @@ uint32_t CChunks::GetChunkSize()
 	return m_ChunkSize;
 }
 
-
-void CChunks::HandleSetChunkSize(CSetChunkSize* pMsg)
-{
-	if (!pMsg)	return ;
-	const CSetChunkSize::Content content = pMsg->GetContent();
-
-	m_ChunkSize = content.chunkSize;
-
-	delete pMsg;
-}
-
-
-void CChunks::HandleAcknowledgement(CAcknowledgement* pMsg)
-{
-
-}
-void CChunks::HandleWindowAcknowledgementSize(CWindowAcknowledgementSize* pMsg)
-{
-
-}
-void CChunks::HandleSetPeerBandwidth(CSetPeerBandwidth* pMsg)
-{
-
-}
-void CChunks::HandleUserControlMessages(CUserControlMessages* pMsg)
-{
-
-}
-void CChunks::HandleCommandMessage(CCommandMessage* pMsg)
-{
-
-}
-void CChunks::HandleDataMessage(CDataMessage* pMsg)
-{
-
-}
-void CChunks::HandleSharedObjectMessage(CSharedObjectMessage* pMsg)
-{
-
-}
-void CChunks::HandleAudioMessage(CAudioMessage* pMsg)
-{
-
-}
-void CChunks::HandleVideoMessage(CVideoMessage* pMsg)
-{
-
-}
-void CChunks::HandleAggregateMessage(CAggregateMessage* pMsg)
+void CChunks::HandleSetChunkSize(CBaseMessage* pMsg)
 {
 
 }
 
+void CChunks::HandleAcknowledgement(CBaseMessage* pMsg)
+{
+
+}
+void CChunks::HandleWindowAcknowledgementSize(CBaseMessage* pMsg)
+{
+
+}
+void CChunks::HandleSetPeerBandwidth(CBaseMessage* pMsg)
+{
+
+}
+void CChunks::HandleUserControlMessages(CBaseMessage* pMsg)
+{
+
+}
+void CChunks::HandleCommandMessage(CBaseMessage* pMsg, const bool isVersion3)
+{
+
+}
+void CChunks::HandleDataMessage(CBaseMessage* pMsg, const bool isVersion3 )
+{
+
+}
+void CChunks::HandleSharedObjectMessage(CBaseMessage* pMsg, const bool isVersion3)
+{
+
+}
+
+void CChunks::HandleAudioMessage(CBaseMessage* pMsg)
+{
+
+}
+
+void CChunks::HandleVideoMessage(CBaseMessage* pMsg)
+{
+
+}
+
+void CChunks::HandleAggregateMessage(CBaseMessage* pMsg)
+{
+
+}
 

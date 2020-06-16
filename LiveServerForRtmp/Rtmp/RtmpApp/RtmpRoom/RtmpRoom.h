@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Rtmp/RtmpApp/RtmpMessage/RtmpMessage.h"
+#include "Rtmp/RtmpApp/RtmpMessage/BaseMessage.h"
 
 
 class CPlayer;
@@ -25,8 +25,8 @@ protected:
 public:
 	virtual int SetOwner(CPublisher *pPublish) = 0;
 	virtual int Disband() = 0;
-	virtual int BroadcastVideo(CVideoMessage* pMsg) = 0;
-	virtual int BroadcastAudio(CAudioMessage *pMsg) = 0;
+	virtual int BroadcastVideo(CBaseMessage* pMsg) = 0;
+	virtual int BroadcastAudio(CBaseMessage *pMsg) = 0;
 	virtual int BroadcastMsg(CBaseMessage *pMsg) = 0;
 };
 
@@ -44,8 +44,8 @@ public:
 	 //IRoom4Publisher
 	 int SetOwner(CPublisher *pPublish);
 	 int Disband() ;
-	 int BroadcastVideo(CVideoMessage* pMsg);
-	 int BroadcastAudio(CAudioMessage* pMsg);
+	 int BroadcastVideo(CBaseMessage* pMsg);
+	 int BroadcastAudio(CBaseMessage* pMsg);
 	 int BroadcastMsg(CBaseMessage* pMsg);
 private:
 	int Refresh();
