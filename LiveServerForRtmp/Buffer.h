@@ -7,22 +7,21 @@
 class CBuffer
 {
 public:
-	CBuffer(const int len = DEFAULT_SIZE);
+	CBuffer();
 	~CBuffer();
 
-	int Append(uint8_t* src,int len);
-	int GetLength();
-	uint8_t* GetData();
-	int Offset(int len);
+	int WriteIn(uint8_t *src,uint32_t length);
+	int ReadOut(uint8_t *dst,uint32_t length);
+	int GetReadableLen();
+
 private:
 	void ExtendBuff();
 	void CleanBuff();
+	int  GetWritableLen();
 private:
-	uint8_t *m_Buff;
-	uint64_t m_BuffSize;
+	uint8_t *m_Buf;
+	uint32_t m_BufLen;
 
-	uint8_t *m_Ptr;
-	uint32_t m_Length;
-
-	uint64_t m_Base;
+	uint8_t *m_WritePtr;
+	uint8_t *m_ReadPtr;
 };

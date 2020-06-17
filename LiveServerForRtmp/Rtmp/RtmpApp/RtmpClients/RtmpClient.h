@@ -15,8 +15,6 @@ public:
 	CRtmpClient(string appName, uint32_t chunkSize, CSocketClient *io);
 	~CRtmpClient();
 
-	enum State{NONE,WAIT_HANDSHAKE,WAIT_CHUNK,ERR};
-
 	CSocketClient* GetClietnIo();
 
 	void OnReceive();
@@ -25,11 +23,11 @@ public:
 	
 protected:
 	int Send2Peer( uint8_t* src, const int srcLength);
+
 private:
-	void UpdateReadBuff();
+
 private:
 	CSocketClient *m_IO;
-	State m_State;
 
-	CBuffer m_Readable;
+	CBuffer m_Buf;
 };

@@ -1,96 +1,80 @@
 #include "Buffer.h"
 
-CBuffer::CBuffer(const int len) :m_Base(len),m_Buff(NULL),m_BuffSize(0),m_Ptr(NULL),m_Length(0)
+CBuffer::CBuffer():m_Buf(NULL),m_WritePtr(NULL),m_ReadPtr(NULL),m_BufLen(0)
 {	
-	m_BuffSize = m_Base;
-	m_Buff = new uint8_t[m_BuffSize];
+	m_BufLen = DEFAULT_SIZE;
+	m_Buf = new uint8_t[m_BufLen];
+	memset(m_Buf,0,m_BufLen);
 
-	m_Ptr = m_Buff;
-	m_Length = 0;
+	m_WritePtr = m_Buf;
+	m_ReadPtr = m_WritePtr;
 }
 
 CBuffer::~CBuffer()
 {
-	delete[] m_Buff;
-	m_Buff = NULL;
-	m_Ptr = NULL;
-	m_BuffSize = 0;
-	m_Length = 0;
+	if (m_Buf) delete[] m_Buf;	m_Buf = NULL;
+	m_WritePtr = NULL;
+	m_ReadPtr = NULL;
 }
 
-int CBuffer::Append(uint8_t* src, int len)
+int CBuffer::WriteIn(uint8_t *src, uint32_t length)
 {
-	const int newlen = len + m_Length;
-	const int leftLen = m_BuffSize - m_Length;
+	const int len = GetWritableLen();
+	
 
-	if (newlen > m_BuffSize)
-	{
-		//»º³åÇøÀ©Èİ
-		ExtendBuff();
-		return Append(src, len);
-	}
-	else
-	{
-		if (leftLen < len)
-			CleanBuff();
-		memcpy(m_Ptr, src, len);
-		m_Length += len;
-	}
 
-	return GetLength();
+
+
 }
 
-int CBuffer::Offset(int len)
+int CBuffer::ReadOut(uint8_t *dst, uint32_t length)
 {
-	if (len <= m_Length)
-	{
-		m_Ptr += len;
-		m_Length -= len;
-		return 0;
-	}
 
-	return -1;
 }
+
+int CBuffer::GetReadableLen()
+{
+	return (m_WritePtr - m_ReadPtr);
+}
+
+int  CBuffer::GetWritableLen()
+{
+	return (m_Buf+m_BufLen - m_WritePtr);
+}
+
 
 void CBuffer::ExtendBuff()
 {
+	const int readLen = GetReadableLen();
 	uint8_t *temp = NULL;
-	int length = m_Length;
-	temp = new uint8_t[length];
-	memcpy(temp, m_Ptr, length);
 
-	delete[] m_Buff;
-	m_BuffSize += m_Base;
-	m_Buff = new uint8_t[m_BuffSize];
-	memset(m_Buff,0,m_BuffSize);
-	m_Ptr = m_Buff;	
+	temp = new uint8_t[readLen];
+	memcpy(temp,m_ReadPtr,readLen);
 
-	memcpy(m_Ptr,temp,length);
-	m_Length = length;
+	delete[] m_Buf;	m_Buf = NULL;
+
+	m_BufLen += DEFAULT_SIZE;
+	m_Buf = new uint8_t[m_BufLen];
+	memset(m_Buf,0,m_BufLen);
+
+	memcpy(m_Buf,temp,readLen);
+	m_WritePtr = m_Buf + readLen;
+	m_ReadPtr = m_Buf;
 
 	delete[] temp; temp = NULL;
 
-	CleanBuff();
 }
 
-int CBuffer::GetLength()
-{
-	return m_Length;
-}
-uint8_t* CBuffer::GetData()
-{
-	return m_Ptr;
-}
 
 void CBuffer::CleanBuff()
 {
 	uint8_t *temp = NULL;
-	int length = m_Length;
+	const int length = m_Length;
+
 	temp = new uint8_t[length];
 	memcpy(temp, m_Ptr, length);
 
 	memset(m_Buff,0,m_BuffSize);
-
 	memcpy(m_Buff,temp,length);
 
 	m_Ptr = m_Buff;
