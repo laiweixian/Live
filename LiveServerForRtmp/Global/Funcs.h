@@ -15,50 +15,34 @@ static uint32_t GetTimestamp()
 
 static uint16_t BigToHost16(uint8_t* src)
 {
-	uint8_t number[2] = { 0 };
-	uint8_t dst[2] = { 0 };
 	uint16_t dstNum = 0;
 
-	memcpy(number,src,2);
+	dstNum = src[1] * pow(0xff,0)+\
+			 src[0] * pow(0xff,1);
+	
 
-	dst[0] = number[1];
-	dst[1] = number[0];
 
-	memcpy(&dstNum,dst,2);
 	return dstNum;
 }
 
 static uint32_t BigToHost24(uint8_t* src)
 {
-	uint8_t number[4] = {0};
-	uint8_t dst[4] = { 0 };
 	uint32_t dstNumber ;
 
-	memcpy(number,src,3);
-	
-	dst[0] = number[3];
-	dst[1] = number[2];
-	dst[2] = number[1];
-	dst[3] = number[0];
-
-	memcpy(&dstNumber,dst,4);
+	dstNumber = src[2] * pow(0xff,0)+\
+				src[1] * pow(0xff,1)+\
+				src[0] * pow(0xff,2);
 	return dstNumber;
 }
 
 static uint32_t BigToHost32(uint8_t* src)
 {
-	uint8_t number[4] = { 0 };
-	uint8_t dst[4] = { 0 };
 	uint32_t dstNumber;
 
-	memcpy(number, src,4);
-
-	dst[0] = number[3];
-	dst[1] = number[2];
-	dst[2] = number[1];
-	dst[3] = number[0];
-
-	memcpy(&dstNumber, dst, 4);
+	dstNumber = src[3] * pow(0xff,0)+ \
+				src[2] * pow(0xff,1)+ \
+				src[1] * pow(0xff,2)+\
+				src[0] * pow(0xff,3);
 
 	return dstNumber;
 }

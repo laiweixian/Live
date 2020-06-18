@@ -13,20 +13,15 @@ CSocketClient::~CSocketClient()
 	closesocket(m_Socket);
 }
 
-
-
-
-
 int CSocketClient::CheckRead()
 {
 	int errorCode = 0;
 	int length = 0;
-	byte *buf = NULL;
+	byte buf[1024] = {0};
 
 	if (m_Socket == INVALID_SOCKET)
 		goto closesock;
 
-	buf =  new byte[1024];
 	while (1)
 	{
 		length = ::recv(m_Socket, (char*)buf, 1024, 0);
@@ -39,13 +34,14 @@ int CSocketClient::CheckRead()
 		}
 		else if (length > 0 )
 		{
-			m_Reader.Append(buf,length);
+			write2file(TEXT("socketclient"),buf,length);
+			m_Reader.WriteIn(buf,length);
 		}
 		else
 		{
 			errorCode = WSAGetLastError();
 			if (errorCode == WSAEWOULDBLOCK)
-				goto data;
+				break;
 			else
 			{
 				closesocket(m_Socket);
@@ -54,32 +50,17 @@ int CSocketClient::CheckRead()
 			}
 		}
 	}
-
-	return -1;
-
-closesock:
-	if (buf)delete[] buf;
 	return m_Reader.GetLength();
-
-data:
-	return  m_Reader.GetLength();
+closesock:
+	return m_Reader.GetLength();
 }
 
-int CSocketClient::CheckWrite()
-{
-	return m_Write.GetLength();
-}
+
 
 int CSocketClient::Read(uint8_t *src, size_t srcSize)
 {
-	const int bufLen = m_Reader.GetLength();
-	const int readLen = bufLen > srcSize ? srcSize : bufLen;
-	if (src == NULL)
-		return m_Reader.GetLength();
-	
-	memcpy(src,m_Reader.GetData(),readLen);
-	m_Reader.Offset(readLen);
-	return readLen;
+	int length = m_Reader.ReadOut(src, srcSize);
+	return length;
 }
 
 int CSocketClient::Write(uint8_t *src, size_t srcSize)

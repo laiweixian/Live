@@ -13,16 +13,13 @@ public:
 
 public:
 	int CheckRead();
-	int CheckWrite();
 	int Read(uint8_t *src, size_t srcSize);
 	int Write(uint8_t *src, size_t srcSize);
 	int Close();
-
-	
 private:
 	SOCKET m_Socket;
 	sockaddr_in m_Addr;
 
 	CBuffer  m_Reader;
-	CBuffer  m_Write;
+	
 };

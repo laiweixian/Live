@@ -25,9 +25,6 @@ protected:
 	int Send2Peer( uint8_t* src, const int srcLength);
 
 private:
-
-private:
 	CSocketClient *m_IO;
-
-	CBuffer m_Buf;
+	CBuffer m_Read;
 };

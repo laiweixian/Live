@@ -12,12 +12,15 @@ public:
 
 	int WriteIn(uint8_t *src,uint32_t length);
 	int ReadOut(uint8_t *dst,uint32_t length);
-	int GetReadableLen();
+	
 
+	uint8_t* GetData();
+	int GetLength(); 
+	int MoveReaderPtr(int length);
 private:
 	void ExtendBuff();
-	void CleanBuff();
 	int  GetWritableLen();
+	int GetReadLength();
 private:
 	uint8_t *m_Buf;
 	uint32_t m_BufLen;

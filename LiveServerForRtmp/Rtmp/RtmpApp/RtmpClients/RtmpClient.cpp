@@ -19,27 +19,41 @@ CSocketClient* CRtmpClient::GetClietnIo()
 
 void CRtmpClient::OnReceive()
 {
-	int length = 0;
+	uint8_t *buf = NULL;
+	size_t length = 0,newLength = 0,prevLength = 0,useLength = 0;
+	int ret ;
 
+	prevLength = m_Read.GetLength();
+	newLength = m_IO->Read(NULL,0);
+	length = prevLength + newLength;
 
+	if (length < 0 )
+		return ;
 
-	
-	
+	buf = new uint8_t[length];
+	m_Read.ReadOut(buf,prevLength);
+	m_IO->Read(buf+prevLength,newLength);
+
 	if (HandshakeEnd() == false)
 	{
-		length = OnHandshake(m_Buff.GetData(), m_Buff.GetLength());
-		ret = m_Buff.Offset(length);
+		useLength = OnHandshake(buf, length);
+		if (useLength < length)
+			m_Read.WriteIn(buf+useLength,length-useLength);
+		if (HandshakeEnd() == true)
+			return OnReceive();
 	}
 	else
 	{
-		length = OnChunks(m_Buff.GetData(), m_Buff.GetLength());
-		ret = m_Buff.Offset(length);
+		useLength = OnChunks(buf, length);
+		if (useLength < length)
+			m_Read.WriteIn(buf + useLength, length - useLength);
 	}
+
+	if (buf) delete[] buf;
+	TRACE("Handle Dta:%d\n", length);
 
 	return;
 }
-
-
 
 
 void CRtmpClient::OnDisConnct()

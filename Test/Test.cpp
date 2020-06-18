@@ -63,11 +63,8 @@ void parse_valist_by_flag(t *pt, ...)
 
 int main()
 {
-	uint32_t a = 0x414243;
-
-	uint8_t buf[4] = {0};
-	
-	memcpy(buf,&a,4);
+	uint8_t a = 0x03;
+	uint8_t b = a << 1;
     return 0;
 }
 

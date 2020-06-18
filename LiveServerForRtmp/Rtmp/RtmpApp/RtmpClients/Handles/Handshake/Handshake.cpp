@@ -31,6 +31,8 @@ int CHandshake::OnHandshake(uint8_t* src, const int srcLength)
 
 	ret = RecePacket(src,srcLength,&length);
 	ret = SendPacket();
+
+	write2file(TEXT("RTMP"), src, length);
 	return length;
 }
 
@@ -40,19 +42,24 @@ int CHandshake::RecePacket(uint8_t* buff, const int buffLen, int *outLen)
 	int length = 0;
 	int len0 = 0, len1 = 0;
 
-	if (m_ReceState == C2)
+	if (m_ReceState == RECE_NONE)
 	{
-		return HANDSHAKE_OK;
+		result &= ReceC0(buff, buffLen, &len0);
+		result &= ReceC1(buff + len0, buffLen - len0, &len1);
+		length = len0 + len1;
 	}
 	else if (m_ReceState == C1)
 	{
-		result = ReceC2(buff,buffLen,&length);
+		result = ReceC2(buff, buffLen, &length);
+	}
+	else if (m_ReceState == C2)
+	{
+		return HANDSHAKE_OK;
 	}
 	else 
 	{
-		result &= ReceC0(buff,buffLen,&len0);
-		result &= ReceC1(buff+len0,buffLen-len0,&len1);
-		length = len0 + len1;
+		*outLen = 0;
+		return HANDSHAKE_OK;
 	}
 
 	*outLen = length;

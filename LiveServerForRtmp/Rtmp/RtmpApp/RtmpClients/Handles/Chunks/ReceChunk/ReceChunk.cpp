@@ -1,5 +1,5 @@
 #include "ReceChunk.h"
-
+#include "stdafx.h"
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 
 CReceiveChunk::CReceiveChunk() :m_Lastest(NULL)
@@ -14,12 +14,21 @@ CReceiveChunk::~CReceiveChunk()
 
 int CReceiveChunk::OnChunks(uint8_t* src, const int srcLength)
 {
-	uint8_t buf[1024] = {0};
+	/*
+	uint8_t buf[1024] = { 0 };
 	int len = srcLength > 1024 ? 1024 : srcLength;
 
-	memcpy(buf,src, len);
+	memcpy(buf, src, len);
+
+	write2file(TEXT("RTMP"),src,srcLength);
+
 	return len;
-	//return ReceiveMessage(src,srcLength);
+	*/
+	
+	int length = ReceiveMessage(src, srcLength);
+	write2file(TEXT("RTMP"),src,length);
+	return length;
+
 }
 
 int CReceiveChunk::ReceiveMessage(uint8_t* src, const int srcLen)
