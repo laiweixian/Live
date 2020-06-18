@@ -19,7 +19,7 @@ uint32_t CChunks::GetChunkSize()
 
 void CChunks::HandleSetChunkSize(CBaseMessage* pMsg)
 {
-
+	uint32_t chunkSize = 0;
 }
 
 void CChunks::HandleAcknowledgement(CBaseMessage* pMsg)
