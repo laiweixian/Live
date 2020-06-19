@@ -150,3 +150,4 @@ fail:
 	*outLen = 0;
 	return AMF0_FAILURE;
 }
+
