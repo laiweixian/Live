@@ -1,7 +1,11 @@
 #include "AMF0.h"
+
+
+
 using namespace AMF0;
 
-#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off > end  ) return AMF0_FAILURE;
+#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off > end) \
+											return AMF0_FAILURE;
 
 CParse::CParse()
 {
@@ -21,15 +25,29 @@ CParse* CParse::Create(uint8_t *src, const int srcLen)
 	const uint8_t *start = src, *end = src + srcLen ;
 	int len = 0;
 	int ret = AMF0_OK;
+	int count = 0;
 
 	while (ptr != end)
 	{
 		pData = new Data;
+		memset(pData,0,sizeof(Data));
 		ret = CParse::ParseData(ptr, end - ptr, *pData, &len);
-		if (ret == AMF0_OK)
-			parse->m_Datas.push_back(pData);
+		if (ret != AMF0_OK)
+			break;	
+		parse->m_Datas.push_back(pData);
 		ptr += len;
+		count++;
 	}
+
+	pData = parse->m_Datas[0];
+	pData = parse->m_Datas[1];
+	pData = parse->m_Datas[2];
+
+
+	char buf[1024] = {0};
+	memset(buf,0,1024);
+
+	memcpy(buf,pData->buf,pData->len);
 
 	return parse;
 }
@@ -49,7 +67,7 @@ int CParse::ParseData(uint8_t *src, const int srcLen, Data& data, int *outLen)
 	CHECK_OFFSET(start, end, ptr, 1)
 	data.marker = *ptr;
 
-	ptr += 1;
+	ptr += 1;	
 	switch (data.marker)
 	{
 	case MARKER_NUMBER:
@@ -172,9 +190,8 @@ int CParse::ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outLen
 
 	while (1)
 	{
-		CHECK_OFFSET(start,end,ptr,3)
-		memcpy(tag,ptr,3);
-
+		CHECK_OFFSET(start,end,ptr,3);
+		memcpy(tag, ptr, 3);
 		if (tag[0] == 0x00 && tag[1] == 0x00 && tag[2] == MARKER_OBJECT_END)
 		{
 			ptr += 3;
@@ -183,11 +200,14 @@ int CParse::ParseObject(uint8_t *src, const int srcLen, Object& obj, int* outLen
 
 		utf8 = new UTF8;
 		ret = ParseUTF8(ptr,end-ptr,*utf8,&length);
+	
+			
 		utf8s.push_back(utf8);
 		ptr += length;
 
 		data = new Data;
 		ret = ParseData(ptr,end-ptr,*data,&length);
+			
 		datas.push_back(data);
 		ptr += length;
 	}

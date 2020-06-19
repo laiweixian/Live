@@ -65,7 +65,7 @@ int CReceiveChunk::ReceiveMessage(uint8_t* src, const int srcLen)
 void CReceiveChunk::HandleMessage(CBaseMessage* pMsg)
 {
 	const uint8_t msgTypeId = pMsg->GetHead()->GetHead().messageTypeID;
-
+	TRACE("handle message ,id:%d\n",msgTypeId);
 	switch (msgTypeId)
 	{
 	case SET_CHUNK_SIZE_TYPE_ID:	

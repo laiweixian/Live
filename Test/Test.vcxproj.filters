@@ -24,12 +24,30 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AMF\AMF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AMF\AMF0.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AMF\AMF3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AMF\AMF0.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AMF\AMF3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AMF\Parse0.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

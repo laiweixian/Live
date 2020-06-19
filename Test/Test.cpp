@@ -9,6 +9,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#include "AMF/AMF.h"
 using namespace std;
 
 void SetInt(int *i)
@@ -63,8 +65,14 @@ void parse_valist_by_flag(t *pt, ...)
 
 int main()
 {
-	uint8_t a = 0x03;
-	uint8_t b = a << 1;
+	AMF0::CParse *pParse = NULL;
+	int length = 0;
+
+	uint8_t *connectamf0 = ReadConnect(&length);
+
+	pParse = AMF0::CParse::Create(connectamf0, length);
+
+	int count = pParse->m_Datas.size();
     return 0;
 }
 

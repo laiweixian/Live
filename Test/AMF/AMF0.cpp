@@ -1,7 +1,7 @@
 #include "AMF0.h"
 using namespace AMF0;
 
-#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off  > end ) goto fail;
+#define CHECK_OFFSET(start,end,ptr,off)	if (ptr + off  >= end ) goto fail;
 
 void AMF0::AllocDataBuff(Data& data, uint8_t* src, uint64_t len)
 {

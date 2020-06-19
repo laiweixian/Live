@@ -1,6 +1,16 @@
 #pragma once
 
-#include "stdafx.h"
+#include <stdint.h>
+#include <string.h>
+#include <vector>
+#include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/timeb.h>
+#include <time.h>
+
+
+using namespace std;
 
 #define AMF0_OK				0
 #define AMF0_FAILURE		1
@@ -63,6 +73,8 @@ namespace AMF0
 	class CParse;
 };
 
+
+
 class AMF0::CParse
 {
 private:
@@ -94,3 +106,61 @@ private:
 public:
 	std::vector<AMF0::Data*> m_Datas;
 };
+
+static uint32_t GetTimestamp()
+{
+	timeb rawTime;
+	ftime(&rawTime);
+	return rawTime.time * 1000 + rawTime.millitm;
+}
+
+static uint16_t BigToHost16(uint8_t* src)
+{
+	uint16_t dstNum = 0;
+
+	dstNum = src[1] * pow(0xff, 0) + \
+		src[0] * pow(0xff, 1);
+
+
+
+	return dstNum;
+}
+
+static uint32_t BigToHost24(uint8_t* src)
+{
+	uint32_t dstNumber;
+
+	dstNumber = src[2] * pow(0xff, 0) + \
+		src[1] * pow(0xff, 1) + \
+		src[0] * pow(0xff, 2);
+	return dstNumber;
+}
+
+static uint32_t BigToHost32(uint8_t* src)
+{
+	uint32_t dstNumber;
+
+	dstNumber = src[3] * pow(0xff, 0) + \
+		src[2] * pow(0xff, 1) + \
+		src[1] * pow(0xff, 2) + \
+		src[0] * pow(0xff, 3);
+
+	return dstNumber;
+}
+
+
+static void GenRamdomByte(char* buff, const int buffLen)
+{
+	int i;
+	int s;
+	char c;
+
+	for (i = 0;i < buffLen;i++)
+	{
+		srand((unsigned)time(NULL));
+		s = rand() % 256;
+		c = 0x00 + s;
+
+		memcpy(buff + i, &c, 1);
+	}
+}

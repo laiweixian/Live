@@ -25,14 +25,6 @@ using namespace std;
 
 // TODO:  在此处引用程序需要的其他头文件
 
-static void TRACE(const char* strLogStr, ...)
-{
-	va_list args;
-	va_start(args, strLogStr);
-	vprintf(strLogStr, args);
-	va_end(args);
-}
-
 static int write2file(LPCSTR name,uint8_t *src, const int srcLen)
 {
 	if (src == NULL || srcLen == 0)
@@ -61,4 +53,15 @@ static int write2file(LPCSTR name,uint8_t *src, const int srcLen)
 
 	CloseHandle(hFILE);
 	return 0;
+}
+
+static void TRACE(const char* strLogStr, ...)
+{
+	va_list args;
+	va_start(args, strLogStr);
+	vprintf(strLogStr, args);
+	va_end(args);
+
+	//
+	write2file("log.txt", (uint8_t*) const_cast<char*>(strLogStr), strlen(strLogStr)+1);
 }

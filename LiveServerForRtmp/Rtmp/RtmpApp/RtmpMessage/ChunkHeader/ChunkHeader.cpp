@@ -15,7 +15,7 @@ CChunkHeader::~CChunkHeader()
 
 CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLength)
 {
-	CChunkHeader *pValue = nullptr;
+	CChunkHeader *pValue = NULL;
 	const uint8_t *start = (uint8_t*)src ,*end = (uint8_t*)src + srcLength  - 1;
 	uint8_t *ptr = (uint8_t*)src;
 
@@ -24,10 +24,10 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	//Basic Header 
 	const uint8_t max6Bits = 0x3f;
 	const uint8_t min6Bits = 0x00;
+	
 	//uint8_t fmt = 0x00;
 	uint8_t csidBits  = 0xff;
 	int csidLength = 0;
-	//uint32_t csid = 0;
 
 	//Message Header
 	uint8_t tsBuf[3] = {0};
@@ -121,7 +121,6 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	memset(pValue,0,sizeof(CChunkHeader));
 
 	pValue->m_Head = head;
-
 
 	*outLength = ptr - start;
 	return pValue;

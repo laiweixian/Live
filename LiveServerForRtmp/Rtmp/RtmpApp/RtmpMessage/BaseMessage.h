@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "ChunkHeader/ChunkHeader.h"
+#include "AMF/AMF.h"
 
 #define SET_CHUNK_SIZE_TYPE_ID				((uint8_t)1)
 #define ABORT_MESSAGE_TYPE_ID				((uint8_t)2)
