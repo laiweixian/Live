@@ -12,5 +12,5 @@ CAbortMessage::~CAbortMessage()
 
 int CAbortMessage::HandleAbortMessage(CBaseMessage* pMsg)
 {
-	
+	return -1;
 }

@@ -6,6 +6,7 @@
 #include "CommandMessage.h"
 #include "DataMessage.h"
 #include "SetChunkSize.h"
+#include "SetPeerBandwidth.h"
 #include "SharedObjectMessage.h"
 #include "UserControlMessages.h"
 #include "VideoMessage.h"
@@ -18,6 +19,7 @@ class CRtmpMessage :public CAbortMessage,\
 					public CCommandMessage,\
 					public CDataMessage,\
 					public CSetChunkSize,\
+					public CSetPeerBandwidth,\
 					public CSharedObjectMessage,\
 					public CUserControlMessages,\
 					public CVideoMessage,\
@@ -28,6 +30,5 @@ protected:
 	virtual ~CRtmpMessage() ;
 
 protected:
-	virtual int HandleMessage(CBaseMessage* pMsg) final;
-
+	int HandleMessage(CBaseMessage* pMsg);
 };

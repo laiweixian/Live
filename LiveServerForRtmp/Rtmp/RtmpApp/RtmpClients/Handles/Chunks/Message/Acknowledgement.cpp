@@ -12,5 +12,5 @@ CAcknowledgement::~CAcknowledgement()
 
 int CAcknowledgement::HandleAcknowledgement(CBaseMessage* pMsg)
 {
-
+	return -1;
 }

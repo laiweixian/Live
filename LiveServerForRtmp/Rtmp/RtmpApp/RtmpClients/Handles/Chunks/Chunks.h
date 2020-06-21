@@ -1,10 +1,13 @@
 #pragma once
 
 #include "ReceChunk/ReceChunk.h"
+#include "Message/RtmpMessage.h"
 #include "../../Player.h"
 #include "../../Publisher.h"
 
-class CChunks :public CPlayer, public CPublisher, public CReceiveChunk
+class CChunks : public CRtmpMessage,
+				public CReceiveChunk
+				
 {
 protected:
 	CChunks(string appName,uint32_t chunkSize);
@@ -13,17 +16,11 @@ protected:
 private:
 	uint32_t GetChunkSize();
 protected:
-	void HandleSetChunkSize(CBaseMessage* pMsg) ;
-	void HandleAcknowledgement(CBaseMessage* pMsg) ;
-	void HandleWindowAcknowledgementSize(CBaseMessage* pMsg);
-	void HandleSetPeerBandwidth(CBaseMessage* pMsg);
-	void HandleUserControlMessages(CBaseMessage* pMsg) ;
-	void HandleCommandMessage(CBaseMessage* pMsg, const bool isVersion3 = false);
-	void HandleDataMessage(CBaseMessage* pMsg, const bool isVersion3 = false);
-	void HandleSharedObjectMessage(CBaseMessage* pMsg, const bool isVersion3 = false) ;
-	void HandleAudioMessage(CBaseMessage* pMsg);
-	void HandleVideoMessage(CBaseMessage* pMsg) ;
-	void HandleAggregateMessage(CBaseMessage* pMsg);
+	int HandleMessage(CBaseMessage* pMsg);
+
+protected:
+	int AbortMessage(uint32_t csid);
+	int SetChunkSize(uint32_t chunkSize);
 
 private:
 	string m_Application;

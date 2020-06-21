@@ -209,7 +209,6 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\AMF\Parse0.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetConnection\Connect.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Player.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Publisher.cpp" />

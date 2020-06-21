@@ -17,63 +17,12 @@ uint32_t CChunks::GetChunkSize()
 	return m_ChunkSize;
 }
 
-void CChunks::HandleSetChunkSize(CBaseMessage* pMsg)
+int CChunks::HandleMessage(CBaseMessage* pMsg)
 {
-	uint32_t chunkSize = 0;
-	uint8_t buf[4] = {0};
-
-	memcpy(buf,pMsg->GetData(),4);
-	chunkSize = BigToHost32(buf);
-
-	m_ChunkSize = chunkSize;
+	return CRtmpMessage::HandleMessage(pMsg);
 }
 
-void CChunks::HandleAcknowledgement(CBaseMessage* pMsg)
+int CChunks::AbortMessage(uint32_t csid)
 {
-
+	return -1;
 }
-void CChunks::HandleWindowAcknowledgementSize(CBaseMessage* pMsg)
-{
-
-}
-void CChunks::HandleSetPeerBandwidth(CBaseMessage* pMsg)
-{
-
-}
-
-void CChunks::HandleUserControlMessages(CBaseMessage* pMsg)
-{
-
-}
-
-void CChunks::HandleCommandMessage(CBaseMessage* pMsg, const bool isVersion3)
-{
-	bool v0 = isVersion3;
-
-	write2file("command",pMsg->GetData(),pMsg->GetDataLength());
-}
-
-void CChunks::HandleDataMessage(CBaseMessage* pMsg, const bool isVersion3 )
-{
-
-}
-void CChunks::HandleSharedObjectMessage(CBaseMessage* pMsg, const bool isVersion3)
-{
-
-}
-
-void CChunks::HandleAudioMessage(CBaseMessage* pMsg)
-{
-
-}
-
-void CChunks::HandleVideoMessage(CBaseMessage* pMsg)
-{
-
-}
-
-void CChunks::HandleAggregateMessage(CBaseMessage* pMsg)
-{
-
-}
-

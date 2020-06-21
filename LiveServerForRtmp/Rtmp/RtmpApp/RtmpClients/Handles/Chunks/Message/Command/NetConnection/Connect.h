@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../AMF/AMF.h"
 
 //AudioCodes
 static const uint16_t SUPPORT_SND_NONE = 0x0001;
@@ -46,54 +45,5 @@ static const char* COMMAND_OBJECT_MEMBER_NAME[10] = {
 	"tcUrl","fpad","audioCodecs",
 	"videoCodecs","videoFunction",
 	"pageUrl" , "objectEncoding"
-};
-
-
-
-
-class CConnect
-{
-private:
-	CConnect();
-	~CConnect();
-
-public:
-	struct CmdObj
-	{
-		string App;
-		string Flashver;
-		string SwfUrl;
-		string TcUrl;
-		bool   Fpad;
-		int    AudioCodecs;
-		int    VideoCodecs;
-		int    VideoFunction;
-		string PageUrl;
-		int    ObjectEncoding;
-	};
-
-	static CConnect* Create(AMF0::CParse* parse);
-	static CConnect* Create(AMF3::CParse* parse);
-
-	string GetCommandName();
-	int GetTransactionID();
-	CmdObj GetCmdObj();
-	
-
-private:
-	bool CheckOut(AMF0::CParse* parse);
-	bool CheckCommandName(AMF0::CParse* parse);
-	bool CheckTransactionID(AMF0::CParse* parse);
-	bool CheckCommandObject(AMF0::CParse* parse);
-	bool CheckOptionalUserArgumemts(AMF0::CParse* parse);
-	
-	bool CheckOut(AMF3::CParse* parse);
-	bool CheckCommandName(AMF3::CParse* parse);
-	bool CheckTransactionID(AMF3::CParse* parse);
-	bool CheckCommandObject(AMF3::CParse* parse);
-	bool CheckOptionalUserArgumemts(AMF3::CParse* parse);
-
-private:
-	CmdObj m_Obj;
 };
 
