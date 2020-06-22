@@ -10,26 +10,22 @@ class CChunks : public CRtmpMessage,
 				
 {
 protected:
-	CChunks(uint32_t chunkSize);
+	CChunks(uint32_t chunkSize,CInstanceManager* appInstance);
 	virtual ~CChunks();
 	
 private:
 	uint32_t GetChunkSize();
-protected:
-	int HandleMessage(CBaseMessage* pMsg);
 
-	virtual CInstanceManager* GetRtmpInstance() = 0;
 private:
-	//receive message
+	int HandleMessage(CBaseMessage* pMsg);
 	int SetAbortMessage(uint32_t csid);
 	int SetSequenceNumber(uint32_t sequenceNumber);
 	int SetWinAckSize(uint32_t winAckSize);
 	int SetChunkSize(uint32_t chunkSize);
 	int SetConnectCmd(const char* app,const char* instance);
-
 	int SetAudioMessage(CBaseMessage* pMsg);
 	int SetVideoMessage(CBaseMessage* pMsg);
 private:
-
+	CInstanceManager* m_AppInstance;
 	uint32_t m_ChunkSize;
 };

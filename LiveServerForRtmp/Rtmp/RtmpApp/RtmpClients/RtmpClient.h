@@ -21,10 +21,9 @@ public:
 	void OnSockErr();
 	
 protected:
-	int Send2Peer( uint8_t* src, const int srcLength);
-	CInstanceManager* GetRtmpInstance();
+	int Send2Peer(uint8_t* src, const int srcLength);
+
 private:
 	CSocketClient *m_IO;
-	CInstanceManager *m_AppInstance;
 	CBuffer m_Read;
 };
