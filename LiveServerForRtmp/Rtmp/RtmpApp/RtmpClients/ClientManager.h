@@ -8,21 +8,25 @@ class CSocketIO;
 class CClientManager : private ISocketEvent
 {
 public:
-	CClientManager();
+	CClientManager(uint32_t chunkSize);
 	~CClientManager();
 
 protected:
-	int ClientManagerInit();
+	int PreInitialize();
+	int Initialize();
+	int Run();
+	int Pause();
+	int Stop();
+
 public:
 	virtual int Connect(CSocketClient *pClient) final;
 	virtual int DisConnect(CSocketClient *pClient)final;
 	virtual int Receive(CSocketClient *pClient) final;
 	virtual int SocketErr(CSocketClient *pClient) final;
-	
-
-	virtual string GetAppName() = 0;
-	virtual uint32_t GetChunkSize() = 0;
-	virtual CSocketIO*	GetSocketIO() = 0;
+protected:
+	virtual CSocketIO*			GetSocketIO() = 0;
+	virtual CInstanceManager*	GetInstanceManager() = 0;
 private:
+	uint32_t m_ChunkSize;
 	vector<CRtmpClient*> m_Clients;
 };

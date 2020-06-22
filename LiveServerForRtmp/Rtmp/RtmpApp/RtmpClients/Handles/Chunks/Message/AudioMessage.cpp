@@ -12,5 +12,5 @@ CAudioMessage::~CAudioMessage()
 
 int CAudioMessage::HandleAudioMessage(CBaseMessage* pMsg)
 {
-	return -1;
+	return SetAudioMessage(pMsg);
 }

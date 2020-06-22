@@ -29,19 +29,23 @@ class CSocketIO
 {
 protected:
 	DECLARE_SOCKET_OPT
-
 	CSocketIO(const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
 	virtual ~CSocketIO();
 
 public:
 	void RegisterEvent(ISocketEvent* event);
 protected:
-	int SocketInit();
-
-	int CheckEvent();
-	void CloseServer();
+	int PreInitialize();
+	int Initialize();
+	int Run();
+	int Pause();
+	int Stop();
 	
 private:
+	int SocketInit();
+	int CheckEvent();
+	void CloseServer();
+
 	static int SetSocketNonblock(SOCKET sock);
 	int InitListenSocket();
 	

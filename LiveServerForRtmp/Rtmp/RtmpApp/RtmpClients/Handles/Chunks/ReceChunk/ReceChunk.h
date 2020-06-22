@@ -14,6 +14,9 @@ private:
 protected:
 	virtual uint32_t GetChunkSize() = 0;
 	virtual int HandleMessage(CBaseMessage* pMsg) = 0;
+
+protected:
+	int AbortMessage(uint32_t csid);
 private:
 	CBaseMessage *m_Lastest;
 };

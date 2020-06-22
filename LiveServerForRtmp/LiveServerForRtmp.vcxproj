@@ -170,8 +170,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\VideoMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Player.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Publisher.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h" />
@@ -195,9 +193,9 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Seek.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\ClientManager.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpRoom\RoomManager.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -206,15 +204,14 @@
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Player.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Publisher.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RtmpRoom.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpRoom\RoomManager.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.cpp" />

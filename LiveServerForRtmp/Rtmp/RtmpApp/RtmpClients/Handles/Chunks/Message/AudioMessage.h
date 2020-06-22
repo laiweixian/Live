@@ -9,4 +9,7 @@ protected:
 
 protected:
 	virtual int HandleAudioMessage(CBaseMessage* pMsg) final;
+
+protected:
+	virtual int SetAudioMessage(CBaseMessage* pMsg) = 0;
 };

@@ -2,15 +2,15 @@
 
 #include "ReceChunk/ReceChunk.h"
 #include "Message/RtmpMessage.h"
-#include "../../Player.h"
-#include "../../Publisher.h"
+
+class CInstanceManager;
 
 class CChunks : public CRtmpMessage,
 				public CReceiveChunk
 				
 {
 protected:
-	CChunks(string appName,uint32_t chunkSize);
+	CChunks(uint32_t chunkSize);
 	virtual ~CChunks();
 	
 private:
@@ -18,11 +18,18 @@ private:
 protected:
 	int HandleMessage(CBaseMessage* pMsg);
 
-protected:
-	int AbortMessage(uint32_t csid);
-	int SetChunkSize(uint32_t chunkSize);
-
+	virtual CInstanceManager* GetRtmpInstance() = 0;
 private:
-	string m_Application;
+	//receive message
+	int SetAbortMessage(uint32_t csid);
+	int SetSequenceNumber(uint32_t sequenceNumber);
+	int SetWinAckSize(uint32_t winAckSize);
+	int SetChunkSize(uint32_t chunkSize);
+	int SetConnectCmd(const char* app,const char* instance);
+
+	int SetAudioMessage(CBaseMessage* pMsg);
+	int SetVideoMessage(CBaseMessage* pMsg);
+private:
+
 	uint32_t m_ChunkSize;
 };

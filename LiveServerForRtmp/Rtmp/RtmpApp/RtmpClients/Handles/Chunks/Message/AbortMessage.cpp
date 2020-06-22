@@ -17,5 +17,5 @@ int CAbortMessage::HandleAbortMessage(CBaseMessage* pMsg)
 
 	memcpy(buf,pMsg->GetData(),4);
 	csid = BigToHost32(buf);
-	return AbortMessage(csid);
+	return SetAbortMessage(csid);
 }

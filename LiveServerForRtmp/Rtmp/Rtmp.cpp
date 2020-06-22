@@ -14,7 +14,7 @@ CRtmp::~CRtmp()
 
 }
 
-void CRtmp::PreInit()
+int CRtmp::PreInitialize()
 {
 	CRtmpApp::Optional optional;
 	optional.name = DEFALUT_APP_NAME;
@@ -22,20 +22,33 @@ void CRtmp::PreInit()
 	optional.port = DEFALUT_PORT;
 
 	m_App = new CRtmpApp(optional);
-	
+	m_App->PreInitialize();
+	return 0;
 }	
 
-void CRtmp::Init()
+int CRtmp::Initialize()
 {
-	m_App->InitApp();
+	m_App->Initialize();
+	return 0;
 }
 
-void CRtmp::Run()
+int CRtmp::Run()
 {
 	while (1)
 	{
-		m_App->RunApp();
+		m_App->Run();
 	}
+	return 0;
+}
+
+int CRtmp::Pause()
+{
+	return 0;
+}
+
+int CRtmp::Stop()
+{
+	return 0;
 }
 
 

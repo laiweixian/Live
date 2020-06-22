@@ -1,6 +1,9 @@
 #include "RtmpApp.h"
 
-CRtmpApp::CRtmpApp(Optional appOpt): m_Option(appOpt),CSocketIO(appOpt.ip.data(),appOpt.port)
+CRtmpApp::CRtmpApp(Optional appOpt): m_Option(appOpt),\
+									CSocketIO(appOpt.ip.data(),appOpt.port),\
+									CClientManager(appOpt.chunkSize),\
+									CInstanceManager(appOpt.name)
 {
 
 }
@@ -10,17 +13,43 @@ CRtmpApp::~CRtmpApp()
 
 }
 
-int CRtmpApp::InitApp()
+int CRtmpApp::PreInitialize()
 {
-	CSocketIO::SocketInit();
-	CClientManager::ClientManagerInit();
-	CRtmpRoomManager::RoomManagerInit();
+	CSocketIO::PreInitialize();
+	CClientManager::PreInitialize();
+	CInstanceManager::PreInitialize();
+	return 0;
+}	
+
+int CRtmpApp::Initialize()
+{
+	CSocketIO::Initialize();
+	CClientManager::Initialize();
+	CInstanceManager::Initialize();
 	return 0;
 }
 
-int CRtmpApp::RunApp()
+int CRtmpApp::Run()
 {
-	CheckEvent();
+	CSocketIO::Run();
+	CClientManager::Run();
+	CInstanceManager::Run();
+	return 0;
+}
+
+int CRtmpApp::Pause()
+{
+	CSocketIO::Pause();
+	CClientManager::Pause();
+	CInstanceManager::Pause();
+	return 0;
+}	
+
+int CRtmpApp::Stop()
+{
+	CSocketIO::Stop();
+	CClientManager::Stop();
+	CInstanceManager::Stop();
 	return 0;
 }
 
@@ -29,7 +58,7 @@ CClientManager* CRtmpApp::GetClientManager()
 	return this;
 }
 
-CRtmpRoomManager* CRtmpApp::GetRoomManager()
+CInstanceManager* CRtmpApp::GetInstanceManager()
 {
 	return this;
 }
@@ -39,10 +68,6 @@ CSocketIO* CRtmpApp::GetSocketIO()
 	return this;
 }
 
-string CRtmpApp::GetAppName()
-{
-	return m_Option.name;
-}
 
 uint32_t CRtmpApp::GetChunkSize()
 {

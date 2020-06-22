@@ -10,4 +10,6 @@ protected:
 
 protected:
 	virtual int HandleVideoMessage(CBaseMessage* pMsg) final;
+protected:
+	virtual int SetVideoMessage(CBaseMessage* pMsg) = 0;
 };

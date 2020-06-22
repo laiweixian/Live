@@ -9,6 +9,6 @@ protected:
 protected:
 	virtual int HandleAbortMessage(CBaseMessage* pMsg) final;
 protected:
-	virtual int AbortMessage(uint32_t csid) = 0;
+	virtual int SetAbortMessage(uint32_t csid) = 0;
 
 };

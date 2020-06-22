@@ -14,8 +14,6 @@ CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const i
 	m_Optional.timeout = 0;
 	
 	m_ListSock = INVALID_SOCKET;
-
-	
 }
 
 CSocketIO::~CSocketIO()
@@ -170,4 +168,28 @@ void CSocketIO::RegisterEvent(ISocketEvent* event)
 	m_Event = event;
 }
 
+int CSocketIO::PreInitialize()
+{
+	return SocketInit();
+}
+
+int CSocketIO::Initialize()
+{
+	return 0;
+}
+
+int CSocketIO::Run()
+{
+	return CheckEvent();
+}
+
+int CSocketIO::Pause()
+{
+	return 0;
+}
+
+int CSocketIO::Stop()
+{
+	return 0;
+}
 

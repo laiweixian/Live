@@ -1,8 +1,8 @@
 #include "RtmpClient.h"
 #include "Rtmp/RtmpApp/Network/SocketIO.h"
 
-CRtmpClient::CRtmpClient(string appName, uint32_t chunkSize, CSocketClient *io):\
-		m_IO(io), CChunks(appName,chunkSize)
+CRtmpClient::CRtmpClient(uint32_t chunkSize, CSocketClient *io, CInstanceManager* appInstance):\
+		m_IO(io), CChunks(chunkSize),m_AppInstance(appInstance)
 {
 
 }
@@ -15,6 +15,11 @@ CRtmpClient::~CRtmpClient()
 CSocketClient* CRtmpClient::GetClietnIo()
 {
 	return m_IO;
+}
+
+CInstanceManager* CRtmpClient::GetRtmpInstance()
+{
+	return m_AppInstance;
 }
 
 void CRtmpClient::OnReceive()

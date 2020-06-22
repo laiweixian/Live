@@ -75,7 +75,7 @@ int CUserControlMessages::HandleStreamDry(uint8_t* data, int dataLen)
 
 int CUserControlMessages::HandleSetBufferLength(uint8_t* data, int dataLen)
 {
-
+	return -1;
 }
 
 int CUserControlMessages::HandleStreamIsRecorded(uint8_t* data, int dataLen)
@@ -90,5 +90,5 @@ int CUserControlMessages::HandlePingRequest(uint8_t* data, int dataLen)
 
 int CUserControlMessages::HandlePingRespose(uint8_t* data, int dataLen)
 {
-
+	return -1;
 }
