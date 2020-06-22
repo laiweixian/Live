@@ -12,5 +12,5 @@ CCommandMessage::~CCommandMessage()
 
 int CCommandMessage::HandleCommandMessage(CBaseMessage* pMsg)
 {
-	return -1;
+	
 }

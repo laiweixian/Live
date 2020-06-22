@@ -16,10 +16,3 @@
 #include "NetStream/ReceiveAudio.h"
 #include "NetStream/ReceiveVideo.h"
 #include "NetStream/Seek.h"
-
-enum ContentType
-{
-	NONE,
-	CONNECT, CALL, CLOSE, CREATE_STREAM,
-	PLAY, PLAY2, DELETE_STREAM, CLOSE_STREAM, RECEIVE_AUDIO, RECEIVE_VIDEO, PUBLISH, SEEK, PAUSE
-};

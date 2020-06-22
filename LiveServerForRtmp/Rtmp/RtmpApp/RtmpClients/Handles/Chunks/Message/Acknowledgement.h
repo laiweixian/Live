@@ -9,5 +9,7 @@ protected:
 protected:
 	virtual int HandleAcknowledgement(CBaseMessage* pMsg) final;
 protected:
+	virtual int SetSequenceNumber(uint32_t sequenceNumber) = 0;
+public:
 	
 };
