@@ -13,6 +13,7 @@ typedef double		DOUBLE;
 
 namespace AMF0
 {
+	static const U8  MARKER_NONE = 0xFF;
 	static const U8  MARKER_NUMBER = 0x00;
 	static const U8  MARKER_BOOLEAN = 0x01;
 	static const U8  MARKER_STRING = 0x02;
@@ -59,7 +60,11 @@ namespace AMF0
 
 	int ParseUTF8(uint8_t* src,uint32_t len, UTF8& utf8,int *outLen);
 	int ParseUTF8Long(uint8_t* src, uint32_t len, UTF8& utf8, int *outLen);
-
+	bool CompareUtf8(UTF8& u1,UTF8& u2);
+	void CopyData(Data& dst,Data& src);
+	void Utf8Free(UTF8** ppUtf8);
+	void DataFree(Data** ppData);
+	UTF8* Convert(const char* c);
 	class CParse;
 };
 
@@ -71,6 +76,9 @@ private:
 public:
 	static CParse* Create(uint8_t *src, const int srcLen);
 	void Destroy();
+
+	static int MatchField(Data& src,UTF8 key,Data& value);
+
 private:
 	static int ParseData(uint8_t *src, const int srcLen, AMF0::Data& data, int *outLen);
 	static int ParseNumber(uint8_t *src, const int srcLen, AMF0::Number& number, int* outLen);

@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "Rtmp/RtmpApp/RtmpMessage/BaseMessage.h"
 
-class CRtmpClient;
+
 
 class CRtmpInstance
 {
@@ -20,14 +20,11 @@ public:
 	int BroadcastVideo(CRtmpClient *pActor ,CBaseMessage* pVideo);
 	int BroadcastAudio(CRtmpClient *pActor, CBaseMessage* pVideo);
 	int BroadcastMsg(CRtmpClient *pActor, CBaseMessage* pVideo);
-	
-
 private:
 	string m_Name;
 
 	CRtmpClient* m_Actor;
 	vector<CRtmpClient*> m_Audiences;
-
 };
 
 

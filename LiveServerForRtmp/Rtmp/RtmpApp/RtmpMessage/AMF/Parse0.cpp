@@ -326,3 +326,40 @@ int CParse::ParseTypeObject(uint8_t *src, const int srcLen, TypedObject &typeObj
 	return -1;
 }
 
+int CParse::MatchField(Data& src,UTF8 key, Data& value)
+{
+	const uint8_t *start = src.buf , *end = src.buf + src.len;
+	uint8_t *ptr = src.buf;
+	UTF8 *pTempUtf8 = NULL;
+	Data *pTempData = NULL;
+	int length = 0;
+	
+	while (ptr < end)
+	{
+		pTempUtf8 = new UTF8;
+		ParseUTF8(ptr, end - ptr, *pTempUtf8, &length);
+		ptr += length;
+
+		pTempData = new Data;
+		ParseData(ptr,end-ptr,*pTempData,&length);
+		ptr += length;
+		
+		if (CompareUtf8(key, *pTempUtf8))
+		{
+			CopyData(value,*pTempData);
+			Utf8Free(&pTempUtf8);
+			DataFree(&pTempData);
+			return 0;
+		}
+
+		Utf8Free(&pTempUtf8);
+		DataFree(&pTempData);
+	}
+
+
+	value.marker = MARKER_NONE;
+	value.buf = NULL;
+	value.len = 0;
+	return 0;
+}
+

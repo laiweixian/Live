@@ -67,6 +67,9 @@ int CCommandMessage::HandleCommandMessage(CBaseMessage* pMsg)
 
 int CCommandMessage::HandleConnect(AMF0::CParse *parse)
 {
+	AMF0::Data* pData = NULL;
+
+	pData = parse->m_Datas.at(2);
 	return -1;
 }
 
