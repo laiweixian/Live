@@ -81,48 +81,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetConnection\Call.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetConnection\Close.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetConnection\Connect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetConnection\CreateStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\CloseStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\DeleteStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Pause.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Play.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Play2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Publish.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\ReceiveAudio.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\ReceiveVideo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\NetStream\Seek.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\Command\Commands.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\AbortMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>

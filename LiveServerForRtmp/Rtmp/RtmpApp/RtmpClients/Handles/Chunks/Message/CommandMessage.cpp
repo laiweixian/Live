@@ -1,9 +1,5 @@
 #include "CommandMessage.h"
 
-
-
-
-
 CCommandMessage::CCommandMessage()
 {
 
