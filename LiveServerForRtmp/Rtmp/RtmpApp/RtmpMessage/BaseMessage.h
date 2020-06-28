@@ -29,18 +29,19 @@ class CBaseMessage
 protected:
 	CBaseMessage(uint32_t chunkSize);
 	virtual ~CBaseMessage();
+
 public:
 	DECLARE_BASE_MESSAGE
 
 	static CBaseMessage* Create(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
 	void Destroy();
 
-	virtual int AppendChunk(uint8_t* src,const uint32_t srcLen) final;
-	virtual uint8_t* GetData() final;
-	virtual int   GetDataLength() final;
-	virtual CChunkHeader* GetHead() final;
-	virtual bool Full() final;
-
+	int AppendChunk(uint8_t* src, const uint32_t srcLen);
+	uint8_t* GetData();
+	int   GetDataLength();
+	CChunkHeader* GetHead();
+	bool Full();
+	CBaseMessage* Clone();
 private:
 	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
 protected:

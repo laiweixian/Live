@@ -163,6 +163,3 @@ full:
 err:
 	return -1;
 }
-
-
-
