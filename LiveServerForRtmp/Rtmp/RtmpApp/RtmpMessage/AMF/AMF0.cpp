@@ -194,6 +194,15 @@ void AMF0::DataFree(Data** ppData)
 	p = NULL;
 }
 
+Data* AMF0::DataAlloc()
+{
+	Data* pdata = new Data;
+	pdata->buf = NULL;
+	pdata->len = 0;
+	pdata->marker = MARKER_NONE;
+	return pdata;
+}
+
 UTF8* AMF0::Convert(const char* c)
 {
 	const int length = strlen(c);

@@ -63,7 +63,9 @@ namespace AMF0
 	bool CompareUtf8(UTF8& u1,UTF8& u2);
 	void CopyData(Data& dst,Data& src);
 	void Utf8Free(UTF8** ppUtf8);
+	Data* DataAlloc();
 	void DataFree(Data** ppData);
+
 	UTF8* Convert(const char* c);
 	class CParse;
 };

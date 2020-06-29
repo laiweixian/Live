@@ -1,5 +1,17 @@
 #include "CommandMessage.h"
 
+#define CONNECT_APP						"app"
+#define CONNECT_FLASHVER				"flashver"
+#define CONNECT_SWFURL					"swfUrl"
+#define CONNECT_TCURL					"tcUrl"
+#define CONNECT_FPAD					"fpad"
+#define CONNECT_AUDIOCODECS				"audioCodecs"
+#define CONNECT_VIDEOCODECS				"videoCodecs"
+#define CONNECT_VIDEOFUNCTION			"videoFunction"
+#define CONNECT_PAGEURL					"pageUrl"
+#define CONNECT_OBJECTFUNCTION			"objectEncoding"
+
+
 CCommandMessage::CCommandMessage()
 {
 
@@ -61,12 +73,27 @@ int CCommandMessage::HandleCommandMessage(CBaseMessage* pMsg)
 	return ret; 
 }
 
+
+
 int CCommandMessage::HandleConnect(AMF0::CParse *parse)
 {
-	AMF0::Data* pData = NULL;
+	//the command obejct of connnect
+	AMF0::Data* pCommandObject = NULL;
+	AMF0::UTF8 *pKey = NULL;
+	AMF0::Data *pValue = NULL;
+	int ret = 0;
 
-	pData = parse->m_Datas.at(2);
-	return -1;
+	pCommandObject = parse->m_Datas.at(2);
+	
+	pKey = AMF0::Convert(CONNECT_TCURL);
+	pValue = AMF0::DataAlloc();
+	ret = AMF0::CParse::MatchField(*pCommandObject,*pKey,*pValue);
+	if (ret != 0)
+		return ERR_VALID_OBJECT;
+
+	ret = SetConnect(pKey->b)
+
+	return SetConnect();
 }
 
 int CCommandMessage::HandleCall(AMF0::CParse *parse)
@@ -125,6 +152,71 @@ int CCommandMessage::HandleSeek(AMF0::CParse *parse)
 }
 
 int CCommandMessage::HandlePause(AMF0::CParse *parse)
+{
+	return -1;
+}
+
+int CCommandMessage::ConnectRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::CallRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::CloseRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::CreateStreamRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::PlayRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::Play2Respose()
+{
+	return -1;
+}
+
+int CCommandMessage::DeleteStreamRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::CloseStreamRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::ReceiveAudioRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::ReceiveVideoRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::PublishRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::SeekRespose()
+{
+	return -1;
+}
+
+int CCommandMessage::PauseRespose()
 {
 	return -1;
 }

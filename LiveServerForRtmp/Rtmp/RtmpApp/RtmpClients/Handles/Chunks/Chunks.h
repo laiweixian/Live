@@ -22,9 +22,11 @@ private:
 	int SetSequenceNumber(uint32_t sequenceNumber);
 	int SetWinAckSize(uint32_t winAckSize);
 	int SetChunkSize(uint32_t chunkSize);
-	int SetConnectCmd(const char* app,const char* instance);
 	int SetAudioMessage(CBaseMessage* pMsg);
 	int SetVideoMessage(CBaseMessage* pMsg);
+
+	//command message
+	
 private:
 	CInstanceManager* m_AppInstance;
 	uint32_t m_ChunkSize;

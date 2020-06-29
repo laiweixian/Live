@@ -4,6 +4,7 @@
 #define ERR_NO_AMF3	-1
 #define ERR_AMF0_PARSE	-2
 #define ERR_NO_COMMAND_NAME -3
+#define ERR_VALID_OBJECT	-4
 
 static const char	*CONNECT_COMMAND = "connect",	\
 					*CALL_COMMAND = "call",\
@@ -19,7 +20,6 @@ static const char	*CONNECT_COMMAND = "connect",	\
 					*PUBLISH_COMMAND		=  "publish",\
 					*SEEK_COMMAND			= "seek",\
 					*PAUSE_COMMAND			= "pause";
-
 
 class CCommandMessage
 {
@@ -46,8 +46,22 @@ private:
 	int HandlePause(AMF0::CParse *parse);
 
 protected:
-	virtual int SetConnectCmd(const char* app,const char* instance) = 0;
-
+	virtual int SetConnect() = 0;
+	
+private:
+	int ConnectRespose();
+	int CallRespose();
+	int CloseRespose();
+	int CreateStreamRespose();
+	int PlayRespose();
+	int Play2Respose();
+	int DeleteStreamRespose();
+	int CloseStreamRespose();
+	int ReceiveAudioRespose();
+	int ReceiveVideoRespose();
+	int PublishRespose();
+	int SeekRespose();
+	int PauseRespose();
 };
 
 enum AudioCodes

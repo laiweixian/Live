@@ -360,6 +360,6 @@ int CParse::MatchField(Data& src,UTF8 key, Data& value)
 	value.marker = MARKER_NONE;
 	value.buf = NULL;
 	value.len = 0;
-	return 0;
+	return -1;
 }
 
