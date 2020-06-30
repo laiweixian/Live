@@ -26,6 +26,7 @@ private:
 	int SetVideoMessage(CBaseMessage* pMsg);
 
 	//command message
+	int SetConnect(const char* rtmpurl);
 	
 private:
 	CInstanceManager* m_AppInstance;

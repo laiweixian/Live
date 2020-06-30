@@ -126,6 +126,9 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\Util\RtmpUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -225,6 +228,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\Util\RtmpUtils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

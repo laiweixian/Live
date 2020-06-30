@@ -65,3 +65,13 @@ int CRtmpInstance::BroadcastMsg(CRtmpClient *pActor, CBaseMessage* pVideo)
 {
 	return -1;
 }
+
+int CRtmpInstance::ActorLeave()
+{
+	return -1;
+}
+
+int CRtmpInstance::AudienceLeave(CRtmpClient *pAudience)
+{
+	return -1;
+}

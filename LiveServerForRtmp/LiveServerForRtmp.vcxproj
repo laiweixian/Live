@@ -182,6 +182,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.h" />
+    <ClInclude Include="Rtmp\Util\RtmpUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -218,6 +219,7 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\UserControlMessages.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\VideoMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.cpp" />
+    <ClCompile Include="Rtmp\Util\RtmpUtils.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

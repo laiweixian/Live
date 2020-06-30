@@ -46,7 +46,7 @@ private:
 	int HandlePause(AMF0::CParse *parse);
 
 protected:
-	virtual int SetConnect() = 0;
+	virtual int SetConnect(const char* rtmpurl) = 0;
 	
 private:
 	int ConnectRespose();

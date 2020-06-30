@@ -151,6 +151,7 @@
     <ClInclude Include="AMF\AMF.h" />
     <ClInclude Include="AMF\AMF0.h" />
     <ClInclude Include="AMF\AMF3.h" />
+    <ClInclude Include="RtmpUrl.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

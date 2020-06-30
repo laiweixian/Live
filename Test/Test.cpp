@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+#include "RtmpUrl.h"
 
 #include "AMF/AMF.h"
 using namespace std;
@@ -65,14 +66,8 @@ void parse_valist_by_flag(t *pt, ...)
 
 int main()
 {
-	AMF0::CParse *pParse = NULL;
-	int length = 0;
-
-	uint8_t *connectamf0 = ReadConnect(&length);
-
-	pParse = AMF0::CParse::Create(connectamf0, length);
-
-	int count = pParse->m_Datas.size();
+	 char* url = RTMP_URL;
+	ParseRtmpUrl(url);
     return 0;
 }
 

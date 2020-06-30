@@ -11,6 +11,8 @@
 #include <tchar.h>
 #include <windows.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 static uint8_t* ReadConnect(int *outSize)
 {

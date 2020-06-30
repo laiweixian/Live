@@ -81,19 +81,22 @@ int CCommandMessage::HandleConnect(AMF0::CParse *parse)
 	AMF0::Data* pCommandObject = NULL;
 	AMF0::UTF8 *pKey = NULL;
 	AMF0::Data *pValue = NULL;
+	char url[2048] = {0};
 	int ret = 0;
 
 	pCommandObject = parse->m_Datas.at(2);
-	
 	pKey = AMF0::Convert(CONNECT_TCURL);
 	pValue = AMF0::DataAlloc();
 	ret = AMF0::CParse::MatchField(*pCommandObject,*pKey,*pValue);
 	if (ret != 0)
 		return ERR_VALID_OBJECT;
 
-	ret = SetConnect(pKey->b)
+	memcpy(url,pValue->buf,pValue->len);
+	AMF0::Utf8Free(&pKey);
+	AMF0::DataFree(&pValue);
 
-	return SetConnect();
+	ret = SetConnect(url);
+	return ret;
 }
 
 int CCommandMessage::HandleCall(AMF0::CParse *parse)

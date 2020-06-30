@@ -33,6 +33,9 @@
     <ClInclude Include="AMF\AMF3.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="RtmpUrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
