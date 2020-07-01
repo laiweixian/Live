@@ -186,12 +186,11 @@ void AMF0::Utf8Free(UTF8** ppUtf8)
 
 void AMF0::DataFree(Data** ppData)
 {
-	Data* p = *ppData;
-	if (p->buf) delete[] p->buf;
-	p->buf = NULL;
-	p->len = 0;
-	delete p;
-	p = NULL;
+	if ((*ppData)->buf) delete[] (*ppData)->buf;
+	(*ppData)->buf = NULL;
+	(*ppData)->len = 0;
+	delete (*ppData);
+	(*ppData) = NULL;
 }
 
 Data* AMF0::DataAlloc()
@@ -214,5 +213,5 @@ UTF8* AMF0::Convert(const char* c)
 	p->buf = new uint8_t[length];
 	p->len = length;
 	memcpy(p->buf,c,length);
-	
+	return p;
 }

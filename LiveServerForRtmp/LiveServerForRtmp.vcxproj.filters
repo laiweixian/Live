@@ -60,9 +60,6 @@
     <ClInclude Include="Rtmp\RtmpApp\Network\SockEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -117,9 +114,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -127,6 +121,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\Util\RtmpUtils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -159,9 +159,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.cpp">
@@ -218,9 +215,6 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -231,6 +225,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\Util\RtmpUtils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

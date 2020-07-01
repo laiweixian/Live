@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ReceChunk/ReceChunk.h"
-#include "Message/RtmpMessage.h"
+#include "ReceiveChunk.h"
+#include "ReceiveMessage.h"
 
 class CInstanceManager;
+class CRtmpInstance;
 
-class CChunks : public CRtmpMessage,
-				public CReceiveChunk
-				
+class CChunks : public CReceiveChunk,
+				public CReceiveMessage	
 {
 protected:
 	CChunks(uint32_t chunkSize,CInstanceManager* appInstance);
@@ -29,6 +29,7 @@ private:
 	int SetConnect(const char* rtmpurl);
 	
 private:
-	CInstanceManager* m_AppInstance;
+	CInstanceManager* m_InstanceManager;
 	uint32_t m_ChunkSize;
+	CRtmpInstance* m_Instance;
 };

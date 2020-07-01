@@ -20,6 +20,7 @@ int CRtmp::PreInitialize()
 	optional.name = DEFALUT_APP_NAME;
 	optional.ip = DEFALUT_IP;
 	optional.port = DEFALUT_PORT;
+	optional.chunkSize = 128;
 
 	m_App = new CRtmpApp(optional);
 	m_App->PreInitialize();

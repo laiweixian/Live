@@ -1,16 +1,16 @@
-#include "RtmpMessage.h"
+#include "ReceiveMessage.h"
 
-CRtmpMessage::CRtmpMessage()
+CReceiveMessage::CReceiveMessage()
 {
 
 }
 
-CRtmpMessage::~CRtmpMessage()
+CReceiveMessage::~CReceiveMessage()
 {
 
 }
 
-int CRtmpMessage::HandleMessage(CBaseMessage* pMsg)
+int CReceiveMessage::HandleMessage(CBaseMessage* pMsg)
 {
 	CChunkHeader::Head header;
 	int ret = 0;

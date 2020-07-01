@@ -1,5 +1,6 @@
 #include "Chunks.h"
 #include "Rtmp/Util/RtmpUtils.h"
+#include "Rtmp/RtmpApp/RtmpInstance/InstanceManager.h"
 
 int CChunks::SetAbortMessage(uint32_t csid)
 {
@@ -20,8 +21,6 @@ int CChunks::SetChunkSize(uint32_t chunkSize)
 	return 0;
 }
 
-
-
 int CChunks::SetAudioMessage(CBaseMessage* pMsg)
 {
 	return -1;
@@ -36,10 +35,15 @@ int CChunks::SetConnect(const char* rtmpurl)
 {
 	char url[2048] = {0};
 	RtmpUrl *pUrl = NULL;
+	CRtmpInstance* pInstance = NULL;
 
 	strcpy(url,rtmpurl);
 	pUrl = ParseRtmpUrl(url);
-	
-	
-	return -1;
+
+	//
+	pInstance = m_InstanceManager->Connect(pUrl->instance);
+	if (pInstance == NULL)
+		return -1;
+	m_Instance = pInstance;
+	return 0;
 }

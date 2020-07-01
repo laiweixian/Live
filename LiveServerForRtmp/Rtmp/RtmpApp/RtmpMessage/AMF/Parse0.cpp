@@ -337,10 +337,12 @@ int CParse::MatchField(Data& src,UTF8 key, Data& value)
 	while (ptr < end)
 	{
 		pTempUtf8 = new UTF8;
+		memset(pTempUtf8,0,sizeof(UTF8));
 		ParseUTF8(ptr, end - ptr, *pTempUtf8, &length);
 		ptr += length;
 
 		pTempData = new Data;
+		memset(pTempData,0,sizeof(Data));
 		ParseData(ptr,end-ptr,*pTempData,&length);
 		ptr += length;
 		

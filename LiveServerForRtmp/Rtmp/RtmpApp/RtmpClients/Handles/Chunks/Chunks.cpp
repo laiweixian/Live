@@ -1,9 +1,10 @@
 #include "Chunks.h"
 
+
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 	
 CChunks::CChunks(uint32_t chunkSize,CInstanceManager* appInstance) : \
-				 m_ChunkSize(chunkSize),m_AppInstance(appInstance)
+				 m_ChunkSize(chunkSize), m_InstanceManager(appInstance),m_Instance(NULL)
 {
 
 }
@@ -20,6 +21,6 @@ uint32_t CChunks::GetChunkSize()
 
 int CChunks::HandleMessage(CBaseMessage* pMsg)
 {
-	return CRtmpMessage::HandleMessage(pMsg);
+	return CReceiveMessage::HandleMessage(pMsg);
 }
 

@@ -11,7 +11,7 @@ protected:
 	virtual ~CInstanceManager();
 
 public:
-	CRtmpInstance* Connect(const char* appName,const char* instanceName);
+	CRtmpInstance* Connect(const char* instanceName);
 
 protected:
 	int PreInitialize();

@@ -162,14 +162,14 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\AudioMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\CommandMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\DataMessage.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\SetChunkSize.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\SetPeerBandwidth.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\SharedObjectMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\UserControlMessages.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\VideoMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h" />
@@ -192,8 +192,8 @@
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\RtmpMessage.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceChunk\ReceChunk.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.cpp" />

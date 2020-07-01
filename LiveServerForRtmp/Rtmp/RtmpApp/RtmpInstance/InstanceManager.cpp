@@ -36,14 +36,12 @@ int CInstanceManager::Stop()
 	return 0;
 }
 
-CRtmpInstance* CInstanceManager::Connect(const char* appName, const char* instanceName)
+CRtmpInstance* CInstanceManager::Connect(const char* instanceName)
 {
 	CRtmpInstance* pInst = NULL;
 	auto it = m_Intances.begin();
 	int ret = 0;
 
-	if (strcmp(m_AppName.data(),appName) != 0)
-		goto ERR_APP;
 
 	for (it = m_Intances.begin();it!= m_Intances.end(); it++)
 	{
@@ -53,8 +51,11 @@ CRtmpInstance* CInstanceManager::Connect(const char* appName, const char* instan
 	}
 
 	if (pInst == NULL)
+	{
 		pInst = new CRtmpInstance(instanceName);
-
+		m_Intances.push_back(pInst);
+	}
+		
 	return pInst;
 ERR_APP:
 	return NULL;

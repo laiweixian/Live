@@ -1,5 +1,6 @@
-#include "ReceChunk.h"
+
 #include "stdafx.h"
+#include "ReceiveChunk.h"
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 
 CReceiveChunk::CReceiveChunk() :m_Lastest(NULL)
