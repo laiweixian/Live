@@ -170,6 +170,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\VideoMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Message\WindowAcknowledgementSize.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\SendMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpMessage\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Chunks.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\ReceiveChunk.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\SendMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.cpp" />
