@@ -1,6 +1,6 @@
 #pragma once
 #include "../BaseMessage.h"
-
+#include "Rtmp/RtmpApp/Message/RtmpMessage.h"
 
 class CHandleAudioMessage 
 {
@@ -12,5 +12,5 @@ protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 
 protected:
-	virtual int SetAudioMessage(CBaseMessage* pMsg) = 0;
+	virtual int SetAudioMessage(CRtmpMessage* pMsg) = 0;
 };

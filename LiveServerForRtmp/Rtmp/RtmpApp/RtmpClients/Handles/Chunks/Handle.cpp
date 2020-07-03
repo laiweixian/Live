@@ -21,12 +21,12 @@ int CChunks::SetChunkSize(uint32_t chunkSize)
 	return 0;
 }
 
-int CChunks::SetAudioMessage(CBaseMessage* pMsg)
+int CChunks::SetAudioMessage(CRtmpMessage* pMsg)
 {
 	return -1;
 }
 
-int CChunks::SetVideoMessage(CBaseMessage* pMsg)
+int CChunks::SetVideoMessage(CRtmpMessage* pMsg)
 {
 	return -1;
 }

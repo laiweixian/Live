@@ -12,7 +12,7 @@
 #include "MessageHandle/HandleVideoMessage.h"
 #include "MessageHandle/HandleWindowAcknowledgementSize.h"
 
-class CReceiveMessage :public CHandleAbortMessage,\
+class CHandleMessage :public CHandleAbortMessage,\
 					public CHandleAcknowledgement,\
 					public CHandleAggregateMessage,\
 					public CHandleAudioMessage,\
@@ -26,8 +26,8 @@ class CReceiveMessage :public CHandleAbortMessage,\
 					public CHandleWindowAcknowledgementSize
 {
 protected:
-	CReceiveMessage();
-	virtual ~CReceiveMessage() ;
+	CHandleMessage();
+	virtual ~CHandleMessage() ;
 
 protected:
 	int HandleMessage(CBaseMessage* pMsg);

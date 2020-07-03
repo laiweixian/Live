@@ -12,5 +12,5 @@ CHandleVideoMessage::~CHandleVideoMessage()
 
 int CHandleVideoMessage::Handle(CBaseMessage* pMsg)
 {
-	return SetVideoMessage(pMsg);
+	return -1;
 }

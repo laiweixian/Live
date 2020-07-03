@@ -1,16 +1,16 @@
-#include "ReceiveMessage.h"
+#include "HandleMessage.h"
 
-CReceiveMessage::CReceiveMessage()
+CHandleMessage::CHandleMessage()
 {
 
 }
 
-CReceiveMessage::~CReceiveMessage()
+CHandleMessage::~CHandleMessage()
 {
 
 }
 
-int CReceiveMessage::HandleMessage(CBaseMessage* pMsg)
+int CHandleMessage::HandleMessage(CBaseMessage* pMsg)
 {
 	CChunkHeader::Head header;
 	int ret = 0;

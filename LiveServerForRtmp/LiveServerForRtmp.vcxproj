@@ -163,7 +163,7 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleCommandMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleDataMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\Message\RtmpMessage.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveMessage.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\HandleMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleSetChunkSize.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleSetPeerBandwidth.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleSharedObjectMessage.h" />
@@ -193,9 +193,9 @@
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketClient.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Handle.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Message\RtmpMessage.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\HandleMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Send\SendMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\AMF\Parse0.cpp" />

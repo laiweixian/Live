@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#include "Rtmp/RtmpApp/Message/RtmpMessage.h"
+
 class CSendMessage 
 {
 protected:

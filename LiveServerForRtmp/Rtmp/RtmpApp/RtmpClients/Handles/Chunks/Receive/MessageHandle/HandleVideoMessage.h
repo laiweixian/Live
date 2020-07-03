@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../BaseMessage.h"
+#include "Rtmp/RtmpApp/Message/RtmpMessage.h"
 
 
 class CHandleVideoMessage
@@ -12,5 +13,5 @@ protected:
 protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 protected:
-	virtual int SetVideoMessage(CBaseMessage* pMsg) = 0;
+	virtual int SetVideoMessage(CRtmpMessage* pMsg) = 0;
 };

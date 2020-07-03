@@ -21,6 +21,6 @@ uint32_t CChunks::GetChunkSize()
 
 int CChunks::HandleMessage(CBaseMessage* pMsg)
 {
-	return CReceiveMessage::HandleMessage(pMsg);
+	return CHandleMessage::HandleMessage(pMsg);
 }
 

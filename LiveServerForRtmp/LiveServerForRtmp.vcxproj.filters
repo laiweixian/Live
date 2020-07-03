@@ -81,9 +81,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveChunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\AMF\AMF.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -135,6 +132,9 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleWindowAcknowledgementSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\HandleMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -170,9 +170,6 @@
     <ClCompile Include="Buffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -189,9 +186,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveChunk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\ReceiveMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\AMF\AMF0.cpp">
@@ -243,6 +237,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleWindowAcknowledgementSize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\HandleMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Handle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Receive/ReceiveChunk.h"
-#include "Receive/ReceiveMessage.h"
+#include "Receive/HandleMessage.h"
+#include "Send/SendMessage.h"
 
 class CInstanceManager;
 class CRtmpInstance;
 
 class CChunks : public CReceiveChunk,
-				public CReceiveMessage	
+				public CHandleMessage
+		
 {
 protected:
 	CChunks(uint32_t chunkSize,CInstanceManager* appInstance);
@@ -22,8 +24,8 @@ private:
 	int SetSequenceNumber(uint32_t sequenceNumber);
 	int SetWinAckSize(uint32_t winAckSize);
 	int SetChunkSize(uint32_t chunkSize);
-	int SetAudioMessage(CBaseMessage* pMsg);
-	int SetVideoMessage(CBaseMessage* pMsg);
+	int SetAudioMessage(CRtmpMessage* pMsg);
+	int SetVideoMessage(CRtmpMessage* pMsg);
 
 	//command message
 	int SetConnect(const char* rtmpurl);
