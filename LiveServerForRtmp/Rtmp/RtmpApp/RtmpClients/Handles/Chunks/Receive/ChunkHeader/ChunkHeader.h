@@ -24,6 +24,7 @@ public:
 	static CChunkHeader* Parse(uint8_t* src,const int srcLength,int* outLength);
 	void CopyFrom(CChunkHeader* pSrc);
 	CChunkHeader::Head GetHead();
+
 protected:
 	CChunkHeader::Head m_Head;
 };

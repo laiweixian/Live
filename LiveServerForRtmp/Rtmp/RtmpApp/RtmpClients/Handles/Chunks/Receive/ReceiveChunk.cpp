@@ -51,7 +51,7 @@ int CReceiveChunk::ReceiveMessage(uint8_t* src, const int srcLen)
 		return chunkLen;
 }
 
-int CReceiveChunk::AbortMessage(uint32_t csid)
+int CReceiveChunk::Abort(uint32_t csid)
 {
-	return 0;
+	return -1;
 }

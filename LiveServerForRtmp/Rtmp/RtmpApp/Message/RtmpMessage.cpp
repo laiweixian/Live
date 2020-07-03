@@ -26,3 +26,20 @@ void CRtmpMessage::Destroy()
 	if (m_PayloadBuf) delete[] m_PayloadBuf;
 	m_PayloadBuf = NULL;
 }
+
+uint8_t CRtmpMessage::GetType()
+{
+	return m_MessageType;
+}
+uint32_t CRtmpMessage::GetPayloadLength()
+{
+	return m_PayloadLength;
+}
+uint32_t CRtmpMessage::GetTimestamp()
+{
+	return m_Timestamp;
+}
+uint32_t CRtmpMessage::GetStreamId()
+{
+	return m_StreamId;
+}

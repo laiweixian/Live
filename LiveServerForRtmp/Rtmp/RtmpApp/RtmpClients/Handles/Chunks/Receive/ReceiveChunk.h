@@ -16,7 +16,7 @@ protected:
 	virtual int HandleMessage(CBaseMessage* pMsg) = 0;
 
 protected:
-	int AbortMessage(uint32_t csid);
+	int Abort(uint32_t csid);
 private:
 	CBaseMessage *m_Lastest;
 };

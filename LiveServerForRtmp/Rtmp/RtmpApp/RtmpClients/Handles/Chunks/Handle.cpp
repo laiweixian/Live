@@ -4,7 +4,7 @@
 
 int CChunks::SetAbortMessage(uint32_t csid)
 {
-	return CReceiveChunk::AbortMessage(csid);
+	return CReceiveChunk::Abort(csid);
 }
 int CChunks::SetSequenceNumber(uint32_t sequenceNumber)
 {
