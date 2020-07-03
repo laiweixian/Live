@@ -45,5 +45,8 @@ int CChunks::SetConnect(const char* rtmpurl)
 	if (pInstance == NULL)
 		return -1;
 	m_Instance = pInstance;
+
+	//send 
+
 	return 0;
 }

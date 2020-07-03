@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "RtmpUrl.h"
+#include "BitStream.h"
 
 #include "AMF/AMF.h"
 using namespace std;
@@ -66,8 +67,16 @@ void parse_valist_by_flag(t *pt, ...)
 
 int main()
 {
+	/*
 	 char* url = RTMP_URL;
 	ParseRtmpUrl(url);
+	*/
+
+	unsigned char* a = NULL;
+	int aSize = 0;
+
+	a = hex2BigInteger(GMT_SM2_P,&aSize);
+
     return 0;
 }
 

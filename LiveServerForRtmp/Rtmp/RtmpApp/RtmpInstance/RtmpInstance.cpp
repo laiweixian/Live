@@ -48,7 +48,7 @@ int CRtmpInstance::Leave(CRtmpClient *pClient)
 	return ret;
 }
 
-int CRtmpInstance::BroadcastVideo(CRtmpClient *pActor, CBaseMessage* pVideo)
+int CRtmpInstance::BroadcastVideo(CRtmpClient *pActor, CRtmpMessage* pVideo)
 {
 	if (pActor != m_Actor)
 		return ERR_ACTOR_NO_MATCH;
@@ -56,12 +56,12 @@ int CRtmpInstance::BroadcastVideo(CRtmpClient *pActor, CBaseMessage* pVideo)
 	
 }
 
-int CRtmpInstance::BroadcastAudio(CRtmpClient *pActor, CBaseMessage* pVideo)
+int CRtmpInstance::BroadcastAudio(CRtmpClient *pActor, CRtmpMessage* pVideo)
 {
 	return -1;
 }
 
-int CRtmpInstance::BroadcastMsg(CRtmpClient *pActor, CBaseMessage* pVideo)
+int CRtmpInstance::BroadcastMsg(CRtmpClient *pActor, CRtmpMessage* pVideo)
 {
 	return -1;
 }

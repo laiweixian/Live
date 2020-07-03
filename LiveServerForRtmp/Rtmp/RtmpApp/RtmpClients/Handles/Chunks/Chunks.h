@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ReceiveChunk.h"
-#include "ReceiveMessage.h"
+#include "Receive/ReceiveChunk.h"
+#include "Receive/ReceiveMessage.h"
 
 class CInstanceManager;
 class CRtmpInstance;
