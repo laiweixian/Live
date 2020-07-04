@@ -17,9 +17,7 @@
 #include <string.h>
 #include <WinSock2.h>
 #include <stdint.h>
-#include "Global/Codes.h"
-#include "Global/Funcs.h"
-#include "Global/Stru.h"
+#include "Rtmp/Util/RtmpUtils.h"
 using namespace std;
 #pragma comment(lib, "wininet.lib")
 

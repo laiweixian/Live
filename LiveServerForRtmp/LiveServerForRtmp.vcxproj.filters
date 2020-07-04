@@ -27,19 +27,10 @@
     <ClInclude Include="Rtmp\Rtmp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Global\Codes.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Global\Funcs.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Global\Stru.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketClient.h">

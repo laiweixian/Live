@@ -1,6 +1,7 @@
 #pragma once
 #include "../BaseMessage.h"
 #include "AMF/AMF.h"
+#include "Rtmp/RtmpApp/Message/RtmpMessage.h"
 
 
 #define ERR_NO_AMF3	-1
@@ -22,6 +23,8 @@ static const char	*CONNECT_COMMAND = "connect",	\
 					*PUBLISH_COMMAND		=  "publish",\
 					*SEEK_COMMAND			= "seek",\
 					*PAUSE_COMMAND			= "pause";
+
+static const char *_result = "_result",*_error = "_error";
 
 class CHandleCommandMessage 
 {
@@ -46,24 +49,11 @@ private:
 	int HandlePublish(AMF0::CParse *parse);
 	int HandleSeek(AMF0::CParse *parse);
 	int HandlePause(AMF0::CParse *parse);
-
+	 
 protected:
-	virtual int SetConnect(const char* rtmpurl) = 0;
+	virtual int SetConnect(const char* rtmpurl,CRtmpMessage* response) = 0;
 	
-private:
-	int ConnectRespose();
-	int CallRespose();
-	int CloseRespose();
-	int CreateStreamRespose();
-	int PlayRespose();
-	int Play2Respose();
-	int DeleteStreamRespose();
-	int CloseStreamRespose();
-	int ReceiveAudioRespose();
-	int ReceiveVideoRespose();
-	int PublishRespose();
-	int SeekRespose();
-	int PauseRespose();
+
 };
 
 enum AudioCodes

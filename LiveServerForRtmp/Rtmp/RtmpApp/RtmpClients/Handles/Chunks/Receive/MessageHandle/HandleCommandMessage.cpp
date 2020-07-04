@@ -81,6 +81,7 @@ int CHandleCommandMessage::HandleConnect(AMF0::CParse *parse)
 	AMF0::Data* pCommandObject = NULL;
 	AMF0::UTF8 *pKey = NULL;
 	AMF0::Data *pValue = NULL;
+	CRtmpMessage *pRespose = NULL;
 	char url[2048] = {0};
 	int ret = 0;
 
@@ -95,7 +96,7 @@ int CHandleCommandMessage::HandleConnect(AMF0::CParse *parse)
 	AMF0::Utf8Free(&pKey);
 	AMF0::DataFree(&pValue);
 
-	ret = SetConnect(url);
+	ret = SetConnect(url,pRespose);
 	return ret;
 }
 
@@ -159,67 +160,3 @@ int CHandleCommandMessage::HandlePause(AMF0::CParse *parse)
 	return -1;
 }
 
-int CHandleCommandMessage::ConnectRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::CallRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::CloseRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::CreateStreamRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::PlayRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::Play2Respose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::DeleteStreamRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::CloseStreamRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::ReceiveAudioRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::ReceiveVideoRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::PublishRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::SeekRespose()
-{
-	return -1;
-}
-
-int CHandleCommandMessage::PauseRespose()
-{
-	return -1;
-}

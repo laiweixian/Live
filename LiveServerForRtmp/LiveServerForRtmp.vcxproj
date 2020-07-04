@@ -149,9 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Global\Codes.h" />
-    <ClInclude Include="Global\Funcs.h" />
-    <ClInclude Include="Global\Stru.h" />
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketClient.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SockEvent.h" />

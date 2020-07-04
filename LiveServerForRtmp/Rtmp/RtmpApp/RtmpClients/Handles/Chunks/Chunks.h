@@ -8,7 +8,8 @@ class CInstanceManager;
 class CRtmpInstance;
 
 class CChunks : public CReceiveChunk,
-				public CHandleMessage
+				public CHandleMessage,
+				public CSendMessage
 		
 {
 protected:
@@ -28,7 +29,7 @@ private:
 	int SetVideoMessage(CRtmpMessage* pMsg);
 
 	//command message
-	int SetConnect(const char* rtmpurl);
+	int SetConnect(const char* rtmpurl, CRtmpMessage* response);
 	
 private:
 	CInstanceManager* m_InstanceManager;

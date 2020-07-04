@@ -31,7 +31,7 @@ int CChunks::SetVideoMessage(CRtmpMessage* pMsg)
 	return -1;
 }
 
-int CChunks::SetConnect(const char* rtmpurl)
+int CChunks::SetConnect(const char* rtmpurl,CRtmpMessage* response)
 {
 	char url[2048] = {0};
 	RtmpUrl *pUrl = NULL;
@@ -47,6 +47,7 @@ int CChunks::SetConnect(const char* rtmpurl)
 	m_Instance = pInstance;
 
 	//send 
+	Send(response);
 
 	return 0;
 }

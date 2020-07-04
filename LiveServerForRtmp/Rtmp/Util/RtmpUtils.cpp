@@ -59,3 +59,100 @@ fail:
 	url = NULL;
 	return NULL;
 }
+
+uint32_t GetTimestamp()
+{
+	timeb rawTime;
+	ftime(&rawTime);
+	return rawTime.time * 1000 + rawTime.millitm;
+}
+
+void GenRamdomByte(char* buff, const int buffLen)
+{
+	int i;
+	int s;
+	char c;
+
+	for (i = 0; i < buffLen; i++)
+	{
+		srand((unsigned)time(NULL));
+		s = rand() % 256;
+		c = 0x00 + s;
+
+		memcpy(buff + i, &c, 1);
+	}
+}
+
+uint16_t BigToHost16(uint8_t* src)
+{
+	uint16_t number = 0;
+	char *dst = (char*)&number;
+	char *nSrc = (char*)src;
+
+	memcpy(dst, nSrc + 1, 1);	dst += 1;
+	memcpy(dst, nSrc + 0, 1);	dst += 1;
+	
+	return number;
+}
+
+uint32_t BigToHost24(uint8_t* src)
+{
+	uint32_t number = 0;
+	char* dst = (char*)&number;
+	char a = 0x00;
+	
+	memcpy(dst, &a, 1);			dst += 1;
+	memcpy(dst, src + 2, 1);	dst += 1;
+	memcpy(dst, src + 1, 1);	dst += 1;
+	memcpy(dst, src + 0, 1);		dst += 1;
+	return number;
+}
+
+uint32_t BigToHost32(uint8_t* src)
+{
+	uint32_t number = 0;
+	char* dst = (char*)&number;
+
+	memcpy(dst, src + 3, 1); dst += 1;
+	memcpy(dst, src + 2, 1); dst += 1;
+	memcpy(dst, src + 1, 1); dst += 1;
+	memcpy(dst, src + 0, 1); dst += 1;
+	return number;
+}
+
+uint16_t HostToBig16(uint16_t src)
+{
+	uint16_t number = 0;
+	char* dst = (char*)&number;
+	char* cSrc = (char*)&src;
+
+	memcpy(dst, cSrc + 1, 1); dst += 1;
+	memcpy(dst, cSrc + 0, 1); dst += 1;
+	return number;
+}
+
+uint32_t HostToBig24(uint32_t src)
+{
+	uint32_t number = 0;
+	char* dst = (char*)&number;
+	char* cSrc = (char*)&src;
+
+	memcpy(dst, cSrc + 3, 1); dst += 1;
+	memcpy(dst, cSrc + 2, 1); dst += 1;
+	memcpy(dst, cSrc + 1, 1); dst += 1;
+	memcpy(dst, cSrc + 0, 1); dst += 1;
+	return number;
+}
+
+uint32_t HostToBig32(uint32_t src)
+{
+	uint32_t number = 0;
+	char* dst = (char*)&number;
+	char* cSrc = (char*)&src;
+
+	memcpy(dst, cSrc + 3, 1); dst += 1;
+	memcpy(dst, cSrc + 2, 1); dst += 1;
+	memcpy(dst, cSrc + 1, 1); dst += 1;
+	memcpy(dst, cSrc + 0, 1); dst += 1;
+	return number;
+}
