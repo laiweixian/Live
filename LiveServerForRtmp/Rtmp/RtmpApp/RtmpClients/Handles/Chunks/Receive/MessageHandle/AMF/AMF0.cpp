@@ -215,3 +215,95 @@ UTF8* AMF0::Convert(const char* c)
 	memcpy(p->buf,c,length);
 	return p;
 }
+
+char* AMF0::CreateNumber(double data, int* outSize)
+{
+	char *buf = NULL, *ptr = NULL;
+	int bufSize = 0;
+	char marker = MARKER_NUMBER;
+	double number;
+
+	number = BigToHostDouble(data);
+	
+	bufSize = 1 + 8;
+	buf = new char[bufSize];
+	ptr = buf;
+
+	memcpy(ptr, &marker, 1);	ptr += 1;
+	memcpy(buf,&number, 8);
+
+	*outSize = bufSize;
+	return buf;
+}
+
+char* AMF0::CreateBoolean(bool data, int* outSize)
+{
+	char *buf = NULL, *ptr = NULL;
+	int bufSize = 0;
+	char marker = MARKER_BOOLEAN;
+
+	bufSize = 1 + 1;
+	buf = new char[bufSize];
+
+	ptr = buf;
+	memcpy(ptr, &marker, 1);	ptr += 1;
+	memcpy(ptr, &data, 1);	ptr += 1;
+	
+	*outSize = bufSize;
+	return buf;
+}
+
+char* AMF0::CreateString(char* str, int strSize,uint16_t utf8CharCount, int* outSize)
+{
+	char *buf = NULL, *ptr = NULL;
+	int bufSize = 0;
+	char marker = MARKER_STRING;
+	uint16_t count = 0;
+
+	count = HostToBig16(utf8CharCount);
+
+	bufSize = 1 + 2 + strSize;
+	buf = new char[bufSize];
+
+	ptr = buf;
+
+	memcpy(ptr, &marker, 1);	ptr += 1;
+	memcpy(ptr, &count, 2);		ptr += 2;
+	memcpy(ptr, str, strSize); ptr += strSize;
+
+	*outSize = bufSize;
+	return buf;
+}
+
+char* AMF0::CreateObjectChild(UTF8 name, Data value, int* outSize)
+{
+
+}
+
+char* AMF0::CreateObject(char** childs, int* childSize, int count, int* outSize)
+{
+	char *buf = NULL, *ptr = NULL;
+	int bufSize = 0;
+	char marker = MARKER_OBJECT;
+	char end[3] = { 0x00,0x00,MARKER_OBJECT_END };
+	int i = 0;
+
+	bufSize += 1;
+	for (i = 0; i < count; i++)
+		bufSize += childSize[i];
+	bufSize += 3;
+	buf = new char[bufSize];
+
+	ptr = buf;
+	memcpy(ptr, &marker, 1);	ptr += 1;
+	for (i = 0; i < count; i++)
+	{
+		memcpy(ptr,childs[i],childSize[i]);
+		ptr += childSize[i];
+	}
+	memcpy(ptr,end,3);
+
+	*outSize = bufSize;
+	return buf;
+		
+}

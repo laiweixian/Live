@@ -138,8 +138,6 @@ int CParse::ParseBoolean(uint8_t *src, const int srcLen, Boolean& boolData, int*
 	uint8_t *ptr = src;
 
 	CHECK_OFFSET(start, end, ptr, 1);
-
-	
 	AllocDataBuff(boolData, ptr, 1);
 	*outLen = 1;
 	return AMF0_OK;

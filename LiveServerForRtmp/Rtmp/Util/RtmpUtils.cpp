@@ -156,3 +156,39 @@ uint32_t HostToBig32(uint32_t src)
 	memcpy(dst, cSrc + 0, 1); dst += 1;
 	return number;
 }
+
+double   HostToBigDouble(double src)
+{
+	double dst = 0;
+	char* pDst = (char*)&dst;
+	char* pSrc = (char*)&src;
+
+	memcpy(pDst, pSrc + 7, 1); pDst += 1;
+	memcpy(pDst, pSrc + 6, 1); pDst += 1;
+	memcpy(pDst, pSrc + 5, 1); pDst += 1;
+	memcpy(pDst, pSrc + 4, 1); pDst += 1;
+	memcpy(pDst, pSrc + 3, 1); pDst += 1;
+	memcpy(pDst, pSrc + 2, 1); pDst += 1;
+	memcpy(pDst, pSrc + 1, 1); pDst += 1;
+	memcpy(pDst, pSrc + 0, 1); pDst += 1;
+
+	return dst;
+}
+
+double   BigToHostDouble(double src)
+{
+	double dst = 0;
+	char* pDst = (char*)&dst;
+	char* pSrc = (char*)&src;
+
+	memcpy(pDst, pSrc + 7, 1); pDst += 1;
+	memcpy(pDst, pSrc + 6, 1); pDst += 1;
+	memcpy(pDst, pSrc + 5, 1); pDst += 1;
+	memcpy(pDst, pSrc + 4, 1); pDst += 1;
+	memcpy(pDst, pSrc + 3, 1); pDst += 1;
+	memcpy(pDst, pSrc + 2, 1); pDst += 1;
+	memcpy(pDst, pSrc + 1, 1); pDst += 1;
+	memcpy(pDst, pSrc + 0, 1); pDst += 1;
+
+	return dst;
+}

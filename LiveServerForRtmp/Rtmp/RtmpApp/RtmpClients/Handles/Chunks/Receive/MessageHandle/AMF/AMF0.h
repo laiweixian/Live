@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Rtmp/Util/RtmpUtils.h"
 
 #define AMF0_OK				0
 #define AMF0_FAILURE		1
@@ -67,6 +68,13 @@ namespace AMF0
 	void DataFree(Data** ppData);
 
 	UTF8* Convert(const char* c);
+
+	char* CreateNumber(double data,int* outSize);
+	char* CreateBoolean(bool data,int* outSize);
+	char* CreateString(char* str,int strSize, uint16_t utf8CharCount,int* outSize);
+	char* CreateObjectChild(UTF8 name ,Data value,int* outSize);
+	char* CreateObject(char** childs,int* childSize,int count,int* outSize );	//child,size...
+
 	class CParse;
 };
 

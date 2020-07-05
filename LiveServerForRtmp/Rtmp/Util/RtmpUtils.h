@@ -22,4 +22,6 @@ uint32_t BigToHost32(uint8_t* src);
 uint16_t HostToBig16(uint16_t src);
 uint32_t HostToBig24(uint32_t src);
 uint32_t HostToBig32(uint32_t src);
+double   HostToBigDouble(double src);
+double   BigToHostDouble(double src);
 void GenRamdomByte(char* buff, const int buffLen);
