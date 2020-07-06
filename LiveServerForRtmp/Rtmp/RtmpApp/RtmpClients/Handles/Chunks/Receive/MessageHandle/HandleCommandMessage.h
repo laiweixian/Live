@@ -1,7 +1,20 @@
 #pragma once
 #include "../BaseMessage.h"
-#include "AMF/AMF.h"
-#include "Rtmp/RtmpApp/Message/RtmpMessage.h"
+
+#include "Command/HandleCall.h"
+#include "Command/HandleClose.h"
+#include "Command/HandleCloseStream.h"
+#include "Command/HandleCreateStream.h"
+#include "Command/HandleConnect.h"
+#include "Command/HandleDeleteStream.h"
+#include "Command/HandlePlay.h"
+#include "Command/HandlePlay2.h"
+#include "Command/HandlePause.h"
+#include "Command/HandlePublish.h"
+#include "Command/HandleReceiveAudio.h"
+#include "Command/HandleReceiveVideo.h"
+#include "Command/HandleSeek.h"
+
 
 
 #define ERR_NO_AMF3	-1
@@ -24,9 +37,19 @@ static const char	*CONNECT_COMMAND = "connect",	\
 					*SEEK_COMMAND			= "seek",\
 					*PAUSE_COMMAND			= "pause";
 
-static const char *_result = "_result",*_error = "_error";
-
-class CHandleCommandMessage 
+class CHandleCommandMessage  :  public CHandleConnect,\
+								public CHandleCall,\
+								public CHandlePause,\
+								public CHandlePublish,\
+								public CHandleSeek,\
+								public CHandleClose,\
+								public CHandleCloseStream,\
+								public CHandleCreateStream,\
+								public CHandlePlay,\
+								public CHandlePlay2,\
+								public CHandleReceiveAudio,\
+								public CHandleReceiveVideo,\
+								public CHandleDeleteStream
 {
 protected:
 	CHandleCommandMessage();
@@ -35,63 +58,5 @@ protected:
 protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 
-private:
-	int HandleConnect(AMF0::CParse *parse);
-	int HandleCall(AMF0::CParse *parse);
-	int HandleClose(AMF0::CParse *parse);
-	int HandleCreateStream(AMF0::CParse *parse);
-	int HandlePlay(AMF0::CParse *parse);
-	int HandlePlay2(AMF0::CParse *parse);
-	int HandleDeleteStream(AMF0::CParse *parse);
-	int HandleCloseStream(AMF0::CParse *parse);
-	int HandleReceiveAudio(AMF0::CParse *parse);
-	int HandleReceiveVideo(AMF0::CParse *parse);
-	int HandlePublish(AMF0::CParse *parse);
-	int HandleSeek(AMF0::CParse *parse);
-	int HandlePause(AMF0::CParse *parse);
-	 
-protected:
-	virtual int SetConnect(const char* rtmpurl,CRtmpMessage* response) = 0;
-	
-
 };
 
-enum AudioCodes
-{
-	SUPPORT_SND_NONE = 0x0001,
-	SUPPORT_SND_ADPCM = 0x0002,
-	SUPPORT_SND_MP3 = 0x0004,
-	SUPPORT_SND_INTEL = 0x0008,
-	SUPPORT_SND_UNUSED = 0x0010,
-	SUPPORT_SND,NELLY8 = 0x0020,
-	SUPPORT_SND_NELLY = 0x0040,
-	SUPPORT_SND_G711A = 0x0080,
-	SUPPORT_SND_G711U = 0x0100,
-	SUPPORT_SND_NELLY16 = 0x0200,
-	SUPPORT_SND_AAC = 0x0400,
-	SUPPORT_SND_SPEEX = 0x0800,
-	SUPPORT_SND_ALL = 0x0fff,
-};
-
-enum VideoCodes
-{
-	SUPPORT_VID_UNUSED = 0x0001,
-	SUPPORT_VID_JPEG = 0x0002,
-	SUPPORT_VID_SORENSON = 0x0004,
-	SUPPORT_VID_HOMEBREW = 0x0008,
-	SUPPORT_VID_VP6 = 0x0010,
-	SUPPORT_VID_VP6ALPHA = 0x0020,
-	SUPPORT_VID_HOMEBREWV = 0x0040,
-	SUPPORT_VID_H264 = 0x0080,
-	SUPPORT_VID_ALL = 0x00ff
-};
-
-enum VideoFunction
-{
-	SUPPORT_VID_CLIENT_SEEK	= 1
-};
-
-enum ObjectEncode
-{
-	OE_AMF0 = 0,OE_AMF3 = 3	
-};

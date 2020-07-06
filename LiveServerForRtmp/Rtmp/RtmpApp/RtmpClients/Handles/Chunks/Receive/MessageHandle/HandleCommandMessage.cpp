@@ -1,15 +1,6 @@
 #include "HandleCommandMessage.h"
 
-#define CONNECT_APP						"app"
-#define CONNECT_FLASHVER				"flashver"
-#define CONNECT_SWFURL					"swfUrl"
-#define CONNECT_TCURL					"tcUrl"
-#define CONNECT_FPAD					"fpad"
-#define CONNECT_AUDIOCODECS				"audioCodecs"
-#define CONNECT_VIDEOCODECS				"videoCodecs"
-#define CONNECT_VIDEOFUNCTION			"videoFunction"
-#define CONNECT_PAGEURL					"pageUrl"
-#define CONNECT_OBJECTFUNCTION			"objectEncoding"
+
 
 
 CHandleCommandMessage::CHandleCommandMessage()
@@ -72,91 +63,3 @@ int CHandleCommandMessage::Handle(CBaseMessage* pMsg)
 	parse->Destroy();
 	return ret; 
 }
-
-
-
-int CHandleCommandMessage::HandleConnect(AMF0::CParse *parse)
-{
-	//the command obejct of connnect
-	AMF0::Data* pCommandObject = NULL;
-	AMF0::UTF8 *pKey = NULL;
-	AMF0::Data *pValue = NULL;
-	CRtmpMessage *pRespose = NULL;
-	char url[2048] = {0};
-	int ret = 0;
-
-	pCommandObject = parse->m_Datas.at(2);
-	pKey = AMF0::Convert(CONNECT_TCURL);
-	pValue = AMF0::DataAlloc();
-	ret = AMF0::CParse::MatchField(*pCommandObject,*pKey,*pValue);
-	if (ret != 0)
-		return ERR_VALID_OBJECT;
-
-	memcpy(url,pValue->buf,pValue->len);
-	AMF0::Utf8Free(&pKey);
-	AMF0::DataFree(&pValue);
-
-	ret = SetConnect(url,pRespose);
-	return ret;
-}
-
-int CHandleCommandMessage::HandleCall(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleClose(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleCreateStream(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandlePlay(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandlePlay2(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleDeleteStream(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleCloseStream(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleReceiveAudio(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleReceiveVideo(AMF0::CParse *parse)
-{	
-	return -1;
-}
-
-int CHandleCommandMessage::HandlePublish(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandleSeek(AMF0::CParse *parse)
-{
-	return -1;
-}
-
-int CHandleCommandMessage::HandlePause(AMF0::CParse *parse)
-{
-	return -1;
-}
-

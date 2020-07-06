@@ -253,31 +253,64 @@ char* AMF0::CreateBoolean(bool data, int* outSize)
 	return buf;
 }
 
-char* AMF0::CreateString(char* str, int strSize,uint16_t utf8CharCount, int* outSize)
+char* AMF0::CreateString(char* str, int strSize, int* outSize)
 {
-	char *buf = NULL, *ptr = NULL;
-	int bufSize = 0;
+	char *buf = NULL, *ptr = NULL,*utf8Buf = NULL;
+	int bufSize = 0 , utf8BufSize = 0;
 	char marker = MARKER_STRING;
-	uint16_t count = 0;
+	
+	utf8Buf = CreateUtf8(str,strSize,&utf8BufSize);
 
-	count = HostToBig16(utf8CharCount);
-
-	bufSize = 1 + 2 + strSize;
+	bufSize = 1 + utf8BufSize;
 	buf = new char[bufSize];
 
 	ptr = buf;
+	memcpy(ptr,&marker,1);	ptr+=1;
+	memcpy(ptr,utf8Buf,utf8BufSize); ptr += utf8BufSize;
 
-	memcpy(ptr, &marker, 1);	ptr += 1;
-	memcpy(ptr, &count, 2);		ptr += 2;
-	memcpy(ptr, str, strSize); ptr += strSize;
+	delete[] utf8Buf;	utf8Buf = NULL;
 
 	*outSize = bufSize;
 	return buf;
 }
 
-char* AMF0::CreateObjectChild(UTF8 name, Data value, int* outSize)
+char* AMF0::CreateUtf8(char* str, int strSize, int *outSize)
 {
+	char *buf = NULL, *ptr = NULL;
+	int bufSize = 0;
+	uint16_t count = strSize , bigCount ;
 
+	bigCount = HostToBig16(count);
+
+	bufSize = 2 + strSize;
+	buf = new char[bufSize];
+
+	ptr = buf;
+	memcpy(ptr,&bigCount,2);	ptr += 2;
+	memcpy(ptr,str,strSize);	ptr += strSize;
+
+	*outSize = bufSize;
+	return buf;
+}
+
+char* AMF0::CreateObjectChild(char* utf8Name, int utf8NameSize, char* value, int valueSize, int* outSize)
+{
+	char *buf = NULL, *ptr = NULL, *utf8Buf = NULL;
+	int bufSize = 0 , utf8BufSize = 0;
+
+	utf8Buf = CreateUtf8(utf8Name,utf8NameSize,&utf8BufSize);
+	
+	bufSize = utf8BufSize + valueSize;
+	buf = new char[bufSize];
+
+	ptr = buf;
+	memcpy(ptr,utf8Buf,utf8BufSize);	ptr += utf8BufSize;
+	memcpy(ptr,value,valueSize);		ptr += valueSize;
+	
+	delete[] utf8Buf;
+
+	*outSize = bufSize;
+	return buf;
 }
 
 char* AMF0::CreateObject(char** childs, int* childSize, int count, int* outSize)
@@ -304,6 +337,5 @@ char* AMF0::CreateObject(char** childs, int* childSize, int count, int* outSize)
 	memcpy(ptr,end,3);
 
 	*outSize = bufSize;
-	return buf;
-		
+	return buf;	
 }
