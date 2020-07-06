@@ -15,12 +15,10 @@
 #include "Command/HandleReceiveVideo.h"
 #include "Command/HandleSeek.h"
 
-
-
-#define ERR_NO_AMF3	-1
-#define ERR_AMF0_PARSE	-2
-#define ERR_NO_COMMAND_NAME -3
-#define ERR_VALID_OBJECT	-4
+#define ERR_NO_AMF3				-1
+#define ERR_AMF0_PARSE			-2
+#define ERR_NO_COMMAND_NAME		-3
+#define ERR_VALID_OBJECT		-4
 
 static const char	*CONNECT_COMMAND = "connect",	\
 					*CALL_COMMAND = "call",\
