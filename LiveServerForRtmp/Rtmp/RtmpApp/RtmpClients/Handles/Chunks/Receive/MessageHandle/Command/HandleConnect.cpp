@@ -42,16 +42,23 @@ int CHandleConnect::HandleConnect(AMF0::CParse *parse)
 	AMF0::Utf8Free(&pKey);
 	AMF0::DataFree(&pValue);
 
+	pRespose = CreateResponse();
+
 	ret = SetConnect(url, pRespose);
 	return ret;
 }
 
-CRtmpMessage* CHandleConnect::CreateConnectResponse()
+CRtmpMessage* CHandleConnect::CreateResponse()
 {
+	CRtmpMessage* pResponse = NULL;
+
+
+
+
 	return NULL;
 }
 
-char* CHandleConnect::CreateConnectCommand(int *outSize)
+char* CHandleConnect::CreateCommandName(int *outSize)
 {
 	char* buf = NULL;
 	int bufSize = 0;
@@ -62,7 +69,7 @@ char* CHandleConnect::CreateConnectCommand(int *outSize)
 	return buf;
 }
 
-char* CHandleConnect::CreateConnectTransaction(int *outSize)
+char* CHandleConnect::CreateTransactionID(int *outSize)
 {
 	char* buf = NULL;
 	int bufSize = 0;
@@ -73,17 +80,15 @@ char* CHandleConnect::CreateConnectTransaction(int *outSize)
 	return buf;
 }
 
-char* CHandleConnect::CreateConnectProperties(int *outSize)
+char* CHandleConnect::CreateProperties(int *outSize)
 {
 	char* buf = NULL;
 	int bufSize = 0;
 
-
-	char *name0 = "fmsver";
 	return NULL;
 }
 
-char* CHandleConnect::CreateConnectInformation(int *outSize)
+char* CHandleConnect::CreateInformation(int *outSize)
 {
 	return NULL;
 }

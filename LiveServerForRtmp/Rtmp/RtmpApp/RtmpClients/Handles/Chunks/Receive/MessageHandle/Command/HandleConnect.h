@@ -17,11 +17,11 @@ protected:
 protected:
 	virtual int SetConnect(const char* rtmpurl, CRtmpMessage* response) = 0;
 private:
-	CRtmpMessage* CreateConnectResponse();
-	char* CreateConnectCommand(int *outSize);
-	char* CreateConnectTransaction(int *outSize);
-	char* CreateConnectProperties(int *outSize);
-	char* CreateConnectInformation(int *outSize);
+	CRtmpMessage* CreateResponse();
+	char* CreateCommandName(int *outSize);
+	char* CreateTransactionID(int *outSize);
+	char* CreateProperties(int *outSize);
+	char* CreateInformation(int *outSize);
 };
 
 enum AudioCodes
