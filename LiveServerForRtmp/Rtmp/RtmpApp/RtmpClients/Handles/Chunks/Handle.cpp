@@ -31,23 +31,27 @@ int CChunks::SetVideoMessage(CRtmpMessage* pMsg)
 	return -1;
 }
 
-int CChunks::SetConnect(const char* rtmpurl,CRtmpMessage* response)
+int CChunks::SetConnectCommand(const char* rtmpurl)
 {
 	char url[2048] = {0};
 	RtmpUrl *pUrl = NULL;
 	CRtmpInstance* pInstance = NULL;
 
+	//search rtmp instance
 	strcpy(url,rtmpurl);
 	pUrl = ParseRtmpUrl(url);
-
-	//
 	pInstance = m_InstanceManager->Connect(pUrl->instance);
 	if (pInstance == NULL)
 		return -1;
 	m_Instance = pInstance;
 
-	//send 
-	Send(response);
+	//
+	//PS:S is send,R is receive 
+	//S:Window Acknowledgement Size
+	//S:Set Peer Bandwidth
+	//R:Window Acknowledgement Size
+	//S:Command Message (_result ,connect response)
+
 
 	return 0;
 }

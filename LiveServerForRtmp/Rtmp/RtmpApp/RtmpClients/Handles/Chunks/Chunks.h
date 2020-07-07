@@ -29,7 +29,7 @@ private:
 	int SetVideoMessage(CRtmpMessage* pMsg);
 
 	//command message
-	int SetConnect(const char* rtmpurl, CRtmpMessage* response);
+	int SetConnectCommand(const char* rtmpurl);
 	
 private:
 	CInstanceManager* m_InstanceManager;

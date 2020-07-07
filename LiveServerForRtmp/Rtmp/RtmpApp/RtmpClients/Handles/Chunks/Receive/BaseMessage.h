@@ -40,7 +40,7 @@ public:
 	int   GetDataLength();
 	CChunkHeader* GetHead();
 	bool Full();
-	CBaseMessage* Clone();
+
 private:
 	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
 protected:

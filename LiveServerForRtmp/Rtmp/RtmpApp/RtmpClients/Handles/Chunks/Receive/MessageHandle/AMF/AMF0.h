@@ -70,12 +70,12 @@ namespace AMF0
 	UTF8* Convert(const char* c);
 
 	//amf sequence
-	char* CreateNumber(double data,int* outSize);
-	char* CreateBoolean(bool data,int* outSize);
-	char* CreateUtf8(char* str,int strSize,int *outSize);
-	char* CreateString(char* str,int strSize,int* outSize);
-	char* CreateObjectChild(char* utf8Name,int utf8NameSize,char* value,int valueSize,int* outSize);
-	char* CreateObject(char** childs,int* childSize,int count,int* outSize );	//child,size...
+	uint8_t* CreateNumber(double data,int* outSize);
+	uint8_t* CreateBoolean(bool data,int* outSize);
+	uint8_t* CreateUtf8(uint8_t* str,int strSize,int *outSize);
+	uint8_t* CreateString(uint8_t* str,int strSize,int* outSize);
+	uint8_t* CreateObject(uint8_t** child,int *childSize,int count,int *outSize);
+	uint8_t* CreateObjectMember(uint8_t* key,int keySize,uint8_t* value,int valueSize,int *outSize);
 
 	class CParse;
 };

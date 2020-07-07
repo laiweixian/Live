@@ -7,18 +7,13 @@
 class CRtmpMessage
 {
 protected:
-	CRtmpMessage(uint8_t msgType,uint32_t payloadLength,uint32_t ts,uint32_t streamId,uint8_t* payloadBuf,uint32_t payloadBufSize);
+	CRtmpMessage();
 	~CRtmpMessage();
 public:
-	static CRtmpMessage* Create(uint8_t msgType, uint32_t payloadLength, uint32_t ts, uint32_t streamId, uint8_t* payloadBuf, uint32_t payloadBufSize);
+	static CRtmpMessage* Create(uint8_t msgType,uint8_t *payloadBuf,uint32_t payloadSize);
 	void Destroy();
-
-	uint8_t GetType();
-	uint32_t GetPayloadLength();
-	uint32_t GetTimestamp();
-	uint32_t GetStreamId();
-
-
+	void SetTimestamp(uint32_t ts);
+	void SetStreamId(uint32_t id);
 protected:
 	uint8_t m_MessageType;
 	uint32_t m_PayloadLength;

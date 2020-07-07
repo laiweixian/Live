@@ -23,72 +23,32 @@ CHandleConnect::~CHandleConnect()
 
 int CHandleConnect::HandleConnect(AMF0::CParse *parse)
 {
-	//the command obejct of connnect
+	char* rtmpUrl = NULL;
+	int ret = 0;
+	
+	rtmpUrl = Analyze(parse);
+	ret = SetConnectCommand(rtmpUrl);
+	delete[] rtmpUrl; rtmpUrl = NULL;
+	return ret;
+}
+
+char* CHandleConnect::Analyze(AMF0::CParse *parse)
+{
+	int ret = 0;
 	AMF0::Data* pCommandObject = NULL;
 	AMF0::UTF8 *pKey = NULL;
 	AMF0::Data *pValue = NULL;
-	CRtmpMessage *pRespose = NULL;
-	char url[2048] = { 0 };
-	int ret = 0;
+	char *url = NULL;
 
 	pCommandObject = parse->m_Datas.at(2);
 	pKey = AMF0::Convert(CONNECT_TCURL);
 	pValue = AMF0::DataAlloc();
 	ret = AMF0::CParse::MatchField(*pCommandObject, *pKey, *pValue);
-	if (ret != 0)
-		return ERR_NOT_TC_URL;
-
+	
+	url = new char[pValue->len+1];	memset(url,0, pValue->len + 1);
 	memcpy(url, pValue->buf, pValue->len);
 	AMF0::Utf8Free(&pKey);
 	AMF0::DataFree(&pValue);
 
-	pRespose = CreateResponse();
-
-	ret = SetConnect(url, pRespose);
-	return ret;
-}
-
-CRtmpMessage* CHandleConnect::CreateResponse()
-{
-	CRtmpMessage* pResponse = NULL;
-
-
-
-
-	return NULL;
-}
-
-char* CHandleConnect::CreateCommandName(int *outSize)
-{
-	char* buf = NULL;
-	int bufSize = 0;
-	char *_result = "_result", *_error = "_error";
-
-	buf = AMF0::CreateString(_result, strlen(_result), &bufSize);
-	*outSize = bufSize;
-	return buf;
-}
-
-char* CHandleConnect::CreateTransactionID(int *outSize)
-{
-	char* buf = NULL;
-	int bufSize = 0;
-	double tid = 1;
-
-	buf = AMF0::CreateNumber(tid, &bufSize);
-	*outSize = bufSize;
-	return buf;
-}
-
-char* CHandleConnect::CreateProperties(int *outSize)
-{
-	char* buf = NULL;
-	int bufSize = 0;
-
-	return NULL;
-}
-
-char* CHandleConnect::CreateInformation(int *outSize)
-{
-	return NULL;
+	return url;
 }

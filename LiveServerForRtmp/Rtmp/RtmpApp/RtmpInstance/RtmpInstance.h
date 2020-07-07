@@ -22,9 +22,9 @@ public:
 	int Enter(CRtmpClient *pAudience);
 	int Leave(CRtmpClient *pClient);
 
-	int BroadcastVideo(CRtmpClient *pActor , CRtmpMessage* pVideo);
-	int BroadcastAudio(CRtmpClient *pActor, CRtmpMessage* pVideo);
-	int BroadcastMsg(CRtmpClient *pActor, CRtmpMessage* pVideo);
+	int BroadcastVideo(CRtmpClient *pActor ,CRtmpMessage* pVideo);
+	int BroadcastAudio(CRtmpClient *pActor,CRtmpMessage* pVideo);
+	int BroadcastMsg(CRtmpClient *pActor,CRtmpMessage* pVideo);
 
 private:
 	int ActorLeave();

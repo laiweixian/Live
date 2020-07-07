@@ -2,6 +2,7 @@
 
 #include "../AMF/AMF.h"
 #include "Rtmp/RtmpApp/Message/RtmpMessage.h"
+#include "Rtmp/RtmpApp/RtmpClients/Handles/Chunks/Receive/BaseMessage.h"
 
 #define ERR_NOT_TC_URL	-1
 
@@ -15,13 +16,10 @@ protected:
 	int HandleConnect(AMF0::CParse *parse);
 
 protected:
-	virtual int SetConnect(const char* rtmpurl, CRtmpMessage* response) = 0;
+	virtual int SetConnectCommand(const char* rtmpurl) = 0;
 private:
-	CRtmpMessage* CreateResponse();
-	char* CreateCommandName(int *outSize);
-	char* CreateTransactionID(int *outSize);
-	char* CreateProperties(int *outSize);
-	char* CreateInformation(int *outSize);
+	char* Analyze(AMF0::CParse *parse);
+	
 };
 
 enum AudioCodes
@@ -63,4 +61,3 @@ enum ObjectEncode
 {
 	OE_AMF0 = 0, OE_AMF3 = 3
 };
-

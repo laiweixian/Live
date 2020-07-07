@@ -1,12 +1,10 @@
 #include "RtmpMessage.h"
 
-CRtmpMessage::CRtmpMessage(uint8_t msgType, uint32_t payloadLength, uint32_t ts, uint32_t streamId, uint8_t* payloadBuf, uint32_t payloadBufSize):\
-	m_MessageType(msgType),m_PayloadLength(payloadLength),\
-	m_Timestamp(ts),m_StreamId(streamId)
+CRtmpMessage::CRtmpMessage():m_MessageType(0),m_PayloadLength(0),\
+							m_Timestamp(0),m_StreamId(0),\
+							m_PayloadBuf(NULL),m_PayloadBufSize(0)
 {
-	m_PayloadBufSize = payloadBufSize;
-	m_PayloadBuf = new uint8_t[m_PayloadBufSize];
-	memcpy(m_PayloadBuf,payloadBuf,m_PayloadBufSize);
+	
 }
 
 CRtmpMessage::~CRtmpMessage()
@@ -14,11 +12,16 @@ CRtmpMessage::~CRtmpMessage()
 
 }
 
-CRtmpMessage* CRtmpMessage::Create(uint8_t msgType, uint32_t payloadLength, uint32_t ts, uint32_t streamId, uint8_t* payloadBuf, uint32_t payloadBufSize)
+CRtmpMessage* CRtmpMessage::Create(uint8_t msgType, uint8_t *payloadBuf, uint32_t payloadSize)
 {
-	if (payloadLength != payloadBufSize)
-		return NULL;
-	return new CRtmpMessage(msgType,payloadLength,ts,streamId,payloadBuf,payloadBufSize);
+	CRtmpMessage* pMsg = new CRtmpMessage;
+	pMsg->m_MessageType = msgType;
+	pMsg->m_PayloadLength = payloadSize;
+	pMsg->m_PayloadBufSize = payloadSize;
+	pMsg->m_PayloadBuf = new uint8_t[payloadSize];
+	
+	memcpy(pMsg->m_PayloadBuf,payloadBuf,payloadSize);
+	return pMsg;
 }
 
 void CRtmpMessage::Destroy()
@@ -27,19 +30,12 @@ void CRtmpMessage::Destroy()
 	m_PayloadBuf = NULL;
 }
 
-uint8_t CRtmpMessage::GetType()
+void CRtmpMessage::SetTimestamp(uint32_t ts)
 {
-	return m_MessageType;
+	m_Timestamp = ts;
 }
-uint32_t CRtmpMessage::GetPayloadLength()
+
+void CRtmpMessage::SetStreamId(uint32_t id)
 {
-	return m_PayloadLength;
-}
-uint32_t CRtmpMessage::GetTimestamp()
-{
-	return m_Timestamp;
-}
-uint32_t CRtmpMessage::GetStreamId()
-{
-	return m_StreamId;
+	m_StreamId = id;
 }
