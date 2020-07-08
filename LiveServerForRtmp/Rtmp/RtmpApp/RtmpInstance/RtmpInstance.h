@@ -32,7 +32,7 @@ private:
 private:
 	string m_Name;
 
-	CRtmpClient* m_Actor;
+	CRtmpClient *m_Actor;
 	vector<CRtmpClient*> m_Audiences;
 };
 
