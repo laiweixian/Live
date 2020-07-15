@@ -1,14 +1,22 @@
 #include "RtmpInstance.h"
 #include "Rtmp/RtmpApp/RtmpClients/RtmpClient.h"
 
-CRtmpInstance::CRtmpInstance(string name):m_Name(name)
+CRtmpInstance::CRtmpInstance(string name):
+				m_Name(name)
 {
-
+	
 }
 
 CRtmpInstance::~CRtmpInstance()
 {
 
+}
+
+int CRtmpInstance::Init()
+{
+	int ret = 0;
+
+;
 }
 
 string CRtmpInstance::GetName()
@@ -75,3 +83,6 @@ int CRtmpInstance::AudienceLeave(CRtmpClient *pAudience)
 {
 	return -1;
 }
+
+
+

@@ -102,12 +102,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)LiveServerForRtmp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)LiveServerForRtmp;$(SolutionDir)ffmpeg\headers\ffmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)LiveServerForRtmp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -191,9 +192,11 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\BaseMessage.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\ClientManager.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h" />
     <ClInclude Include="Rtmp\RtmpApp\Network\SocketIO.h" />
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.h" />
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.h" />
     <ClInclude Include="Rtmp\Util\RtmpUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -224,6 +227,7 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\RtmpClient.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\InstanceManager.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\Network\SocketIO.cpp" />
@@ -246,6 +250,7 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleUserControlMessages.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleVideoMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\HandleWindowAcknowledgementSize.cpp" />
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp" />
     <ClCompile Include="Rtmp\Util\RtmpUtils.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

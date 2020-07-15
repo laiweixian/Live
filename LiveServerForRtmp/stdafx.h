@@ -18,6 +18,19 @@
 #include <WinSock2.h>
 #include <stdint.h>
 #include "Rtmp/Util/RtmpUtils.h"
+
+#define OK	0
+#define FAILURE -1
+
+
+extern "C"
+{
+	#include "libavcodec/avcodec.h"
+	#include "libswresample/swresample.h"
+	#include "libswscale/swscale.h"
+	#include "libavutil/avutil.h"
+}
+
 using namespace std;
 #pragma comment(lib, "wininet.lib")
 

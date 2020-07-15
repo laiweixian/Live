@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 #include "Rtmp/RtmpApp/Message/RtmpMessage.h"
+#include "VideoCodec.h"
+#include "AudioCodec.h"
 
 
 #define ERR_ACTOR_EXIST			-1
@@ -29,11 +31,16 @@ public:
 private:
 	int ActorLeave();
 	int AudienceLeave(CRtmpClient *pAudience);
+
+	int Init();
+	
 private:
 	string m_Name;
 
 	CRtmpClient *m_Actor;
 	vector<CRtmpClient*> m_Audiences;
+	
+	CVideoCodec* m_Video;
 };
 
 

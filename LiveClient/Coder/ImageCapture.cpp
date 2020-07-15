@@ -277,7 +277,6 @@ HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
 	PIN_DIRECTION dir;
 	vector<PIN_DIRECTION> dirs;
 
-
 	hr = pFilter->EnumPins(&enumPins);
 	if (!SUCCEEDED(hr))
 		goto fail;
@@ -298,7 +297,6 @@ HRESULT CImageCapture::QueryPins(IBaseFilter *pFilter)
 		pPin = NULL;
 	}
 
-	
 	return hr;
 fail:
 	return hr;

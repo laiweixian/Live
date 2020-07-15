@@ -165,6 +165,12 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\Command\HandlePause.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -312,6 +318,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Receive\MessageHandle\Command\HandlePause.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
