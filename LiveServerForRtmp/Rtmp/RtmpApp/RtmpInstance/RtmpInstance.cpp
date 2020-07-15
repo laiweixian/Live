@@ -16,7 +16,7 @@ int CRtmpInstance::Init()
 {
 	int ret = 0;
 
-;
+	return 0;
 }
 
 string CRtmpInstance::GetName()
