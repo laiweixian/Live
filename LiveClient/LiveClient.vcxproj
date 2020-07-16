@@ -121,7 +121,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)ffmpeg\libs\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)ffmpeg\libs\ffmpeg;$(SolutionDir)ffmpeg\dlls\ffmpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -196,6 +196,7 @@
     <ClInclude Include="Coder\Hardware.h" />
     <ClInclude Include="Coder\ImageCapture.h" />
     <ClInclude Include="Coder\SoundCapture.h" />
+    <ClInclude Include="Coder\VideoDecode.h" />
     <ClInclude Include="LiveClient.h" />
     <ClInclude Include="Wins\EditDialog\InputDialog.h" />
     <ClInclude Include="Wins\MainDialog\MainDialog.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Coder\Media.cpp" />
     <ClCompile Include="Coder\Hardware.cpp" />
     <ClCompile Include="Coder\ImageCapture.cpp" />
+    <ClCompile Include="Coder\VideoDecode.cpp" />
     <ClCompile Include="LiveClient.cpp" />
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />
     <ClCompile Include="Wins\MainDialog\MainDialog.cpp" />

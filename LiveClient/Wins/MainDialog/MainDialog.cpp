@@ -11,6 +11,7 @@
 #include "Coder/Hardware.h"
 #include "Coder/Media.h"
 #include "Coder/ImageCapture.h"
+#include "Coder/VideoDecode.h"
 
 
 // CMainDialog ¶Ô»°¿ò
@@ -84,12 +85,13 @@ BOOL CMainDialog::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	const WORD height = HIWORD(wParam) , low = LOWORD(wParam);
 	CInputDialog input;
+	
 	wstring url ; 
 
 	switch (low)
 	{
 	case ID_OPEN_RTMP:
-		input.ShowInput(&url);
+		
 		break;
 	case ID_OPEN_FILE:
 		CaptureScreen();
