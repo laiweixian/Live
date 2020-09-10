@@ -1,35 +1,22 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Network/SocketIO.h"
-#include "Rtmp/RtmpApp/RtmpClients/ClientManager.h"
-#include "Rtmp/RtmpApp/RtmpInstance/InstanceManager.h"
+#include "RtmpInstance/RtmpInstance.h"
 
-#define DECLARE_RTMP_APP struct Optional{string name;string ip;int port;uint32_t chunkSize;};
-	
+struct RtmpAppOptional{string name;string ip;int port;};
 
-class CRtmpApp : public CSocketIO,
-				 public CClientManager,
-				 public CInstanceManager
+class CRtmpApp 
 {
-public:
-	DECLARE_RTMP_APP
-	CRtmpApp(Optional appOpt);
-	~CRtmpApp();
-public:
-	int PreInitialize();
-	int Initialize();
-	int Run();
-	int Pause();
-	int Stop();
-
 protected:
+	CRtmpApp(RtmpAppOptional appOpt);
+	virtual ~CRtmpApp();
 
-	uint32_t GetChunkSize();
-
-	CClientManager*   GetClientManager() ;
-	CInstanceManager* GetInstanceManager();
-	CSocketIO*		  GetSocketIO();
+	
+protected:
+	//rtmp url :rtmp://localhost:1935/testapp/instance1
+	CRtmpInstance* Selete(const char* rtmpurl,void* searcher);
+	
 private:
-	Optional m_Option;
+	RtmpAppOptional m_Option;
+	list<CRtmpInstance*> m_Instances;
 };

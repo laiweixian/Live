@@ -1,5 +1,5 @@
 #include "RtmpClient.h"
-#include "Rtmp/RtmpApp/Network/SocketIO.h"
+#include "Rtmp/Network/SocketIO.h"
 
 CRtmpClient::CRtmpClient(uint32_t chunkSize, CSocketClient *io, CInstanceManager* appInstance):\
 		m_IO(io), CChunks(chunkSize,appInstance)
@@ -36,10 +36,8 @@ void CRtmpClient::OnReceive()
 
 	if (HandshakeEnd() == false)
 	{
-		
 		useLength = OnHandshake(buf, length);
 		m_Read.WriteIn(buf+useLength,length-useLength);
-
 		if (HandshakeEnd() == true)
 			return OnReceive();
 	}
@@ -47,6 +45,8 @@ void CRtmpClient::OnReceive()
 	{
 		useLength = OnChunks(buf, length);
 		m_Read.WriteIn(buf + useLength, length - useLength);
+
+		write2file("OnChunk", buf, useLength);
 	}
 
 	

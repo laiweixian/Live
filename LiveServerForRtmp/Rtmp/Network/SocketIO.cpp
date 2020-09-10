@@ -1,5 +1,5 @@
 #include "SocketIO.h"
-#include "Rtmp/RtmpApp/RtmpClients/ClientManager.h"
+#include "Rtmp/RtmpClients/ClientManager.h"
 #include "stdafx.h"
 
 #define DEFAULT_BUFF_LENGTH	1024

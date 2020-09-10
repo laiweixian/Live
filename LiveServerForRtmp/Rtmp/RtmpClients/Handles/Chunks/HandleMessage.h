@@ -12,6 +12,8 @@
 #include "RtmpMessage/VideoMessage.h"
 #include "RtmpMessage/WindowAcknowledgementSize.h"
 
+class CInstanceManager;
+
 class CHandleMessage :public CAbortMessage,\
 					public CAcknowledgement,\
 					public CAggregateMessage,\
@@ -58,6 +60,7 @@ private:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
-public:
+protected:
+	virtual CInstanceManager* GetManager() = 0;
 	
 };

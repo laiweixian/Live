@@ -1,5 +1,6 @@
 #include "HandleMessage.h"
 
+
 CHandleMessage::CHandleMessage()
 {
 
@@ -69,8 +70,6 @@ int CHandleMessage::HandleMessage(CBaseMessage* pMsg)
 
 	return ret;
 }
-
-
 
 
 int CHandleMessage::AcknowledgementHandle(uint32_t sequenceNumber)

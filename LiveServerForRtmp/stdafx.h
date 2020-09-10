@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <vector>
+#include <list>
 #include <iterator>
 #include <stdio.h>
 #include <stdlib.h>

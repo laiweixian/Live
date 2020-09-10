@@ -1,5 +1,5 @@
 #include "RtmpInstance.h"
-#include "Rtmp/RtmpApp/RtmpClients/RtmpClient.h"
+
 
 CRtmpInstance::CRtmpInstance(string name):
 				m_Name(name)

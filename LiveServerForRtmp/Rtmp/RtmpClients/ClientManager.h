@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RtmpClient.h"
-#include "Rtmp/RtmpApp/Network/SockEvent.h"
+#include "Rtmp/Network/SockEvent.h"
 
 class CSocketIO;
 
