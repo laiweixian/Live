@@ -8,15 +8,12 @@ protected:
 	virtual ~CReceiveChunk();
 
 protected:
-	virtual int OnChunks(uint8_t* src, const int srcLength) final;
-private:
-	int ReceiveMessage(uint8_t* src,const int srcLen);
-protected:
-	virtual uint32_t GetChunkSize() = 0;
-	virtual int HandleMessage(CBaseMessage* pMsg) = 0;
+	CBaseMessage* Receive(uint8_t* src, const int srcLength,int *outChunkLength);
+	int Abort(uint32_t csid);
 
 protected:
-	int Abort(uint32_t csid);
+	virtual uint32_t GetChunkSize() = 0;
+	
 private:
 	CBaseMessage *m_Lastest;
 };

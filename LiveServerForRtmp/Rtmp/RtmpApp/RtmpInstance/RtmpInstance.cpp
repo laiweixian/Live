@@ -56,23 +56,7 @@ int CRtmpInstance::Leave(CRtmpClient *pClient)
 	return ret;
 }
 
-int CRtmpInstance::BroadcastVideo(CRtmpClient *pActor, CRtmpMessage* pVideo)
-{
-	if (pActor != m_Actor)
-		return ERR_ACTOR_NO_MATCH;
 
-	
-}
-
-int CRtmpInstance::BroadcastAudio(CRtmpClient *pActor, CRtmpMessage* pVideo)
-{
-	return -1;
-}
-
-int CRtmpInstance::BroadcastMsg(CRtmpClient *pActor, CRtmpMessage* pVideo)
-{
-	return -1;
-}
 
 int CRtmpInstance::ActorLeave()
 {

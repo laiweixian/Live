@@ -50,7 +50,7 @@ void CRtmpClient::OnReceive()
 	}
 
 	if (buf) delete[] buf;
-	TRACE("Handle Dta:%d\n", length);
+	TRACE("Handle Data:%d\n", length);
 
 	return;
 }

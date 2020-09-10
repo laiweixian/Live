@@ -10,7 +10,7 @@ CSendMessage::~CSendMessage()
 
 }
 
-int CSendMessage::Send(CRtmpMessage* pSend)
+int CSendMessage::Send(CBaseMessage* pSend)
 {
 	
 	return -1;

@@ -20,7 +20,6 @@
 #define AGGREGATE_MESSAGE_TYPE_ID			((uint8_t)22)
 
 #define DECLARE_BASE_MESSAGE struct Payload{uint8_t* buf;uint32_t bufSize;uint8_t *ptr;};	
-	
 
 /*-----------------------------------------------------------------------------------------*/
 class CBaseMessage

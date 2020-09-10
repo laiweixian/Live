@@ -41,7 +41,7 @@ static int write2file(LPCSTR name,uint8_t *src, const int srcLen)
 	if (src == NULL || srcLen == 0)
 		return 0;
 
-	const char* path = "C:\\Users\\Administrator\\source\\repos\\laiweixian\\Live\\Debug\\";
+	const char* path = "E:\\log\\";
 	string file;
 
 	file.append(path);

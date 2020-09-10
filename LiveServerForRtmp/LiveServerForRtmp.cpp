@@ -5,8 +5,6 @@
 #include "Rtmp/Rtmp.h"
 
 
-
-
 int main()
 {
 	CRtmp rtmp;
@@ -15,4 +13,3 @@ int main()
 	rtmp.Run();
     return 0;
 }
-
