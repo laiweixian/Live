@@ -91,15 +91,15 @@ int CHandleMessage::AudioMessageHandle()
 	return -1;
 }
 
-int CHandleMessage::CommandMessageHandle(CommandMessageObject *pObj)
+int CHandleMessage::CommandMessageHandle(CommandEnum cType, void *pCls)
 {
-	TRACE("Handle CommandMessage,Type:%d\n", pObj->cType);
+	TRACE("Handle CommandMessage,Type:%d\n", cType);
 	int ret = 0;
 
-	switch (pObj->cType)
+	switch (cType)
 	{
 	case CONNECT:
-		ret = CMConnectHandle(static_cast<ConnectObject*>(pObj->pObj));
+		ret = CMConnectHandle(static_cast<CCommandConnect*>(pCls));
 		break;
 	case CALL:
 		ret = 1;
@@ -153,7 +153,6 @@ int CHandleMessage::DataMessageHandle()
 	return -1;
 }
 
-
 int CHandleMessage::SetPeerBandwidthHandle()
 {
 	TRACE("Handle SetPeerBandwidth\n");
@@ -185,9 +184,9 @@ int CHandleMessage::WindowAcknowledgementSizeHandle(uint32_t winAckSize)
 }
 
 
-int CHandleMessage::CMConnectHandle(ConnectObject* pObj)
+int CHandleMessage::CMConnectHandle(CCommandConnect *pCmd)
 {
-
+	ConnectObject* obj = pCmd->GetObject();
 	return -1;
 }
 

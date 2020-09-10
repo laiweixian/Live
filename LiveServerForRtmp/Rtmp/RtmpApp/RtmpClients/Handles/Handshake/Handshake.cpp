@@ -32,7 +32,6 @@ int CHandshake::OnHandshake(uint8_t* src, const int srcLength)
 	ret = RecePacket(src,srcLength,&length);
 	ret = SendPacket();
 
-	write2file(TEXT("RTMP"), src, length);
 	return length;
 }
 

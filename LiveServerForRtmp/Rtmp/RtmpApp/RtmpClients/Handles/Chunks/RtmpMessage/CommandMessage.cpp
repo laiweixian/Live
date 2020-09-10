@@ -2,9 +2,7 @@
 
 CCommandMessage::CCommandMessage()
 {
-	m_Obj = new CommandMessageObject;
-	m_Obj->cType = CommandEnum::NONE;
-	m_Obj->pObj = NULL;
+
 }
 
 CCommandMessage::~CCommandMessage()
@@ -15,17 +13,18 @@ CCommandMessage::~CCommandMessage()
 int CCommandMessage::Handle(CBaseMessage* pMsg)
 {
 	CChunkHeader::Head header = pMsg->GetHead()->GetHead();
+	CBaseMessage::Payload* payload = pMsg->GetPayload();
 	AMF0::CParse* parse = NULL;
 	AMF0::Data *pData = NULL;
 	char commandName[1024] = {0};
 	int ret = 0;
-	void *cmdObj = NULL;
-	CommandEnum cType = CommandEnum::NONE;
+	CommandEnum cType;
+	void *pCls = NULL;
 
 	if (header.messageTypeID == COMMAND_MESSAGE_TYPE_ID_AMF3)
 		return ERR_NO_AMF3;
 
-	parse = AMF0::CParse::Create(pMsg->GetData(),pMsg->GetDataLength());
+	parse = AMF0::CParse::Create(payload->buf, payload->bufSize);
 	if (parse == NULL)
 		return ERR_AMF0_PARSE;
 
@@ -35,7 +34,9 @@ int CCommandMessage::Handle(CBaseMessage* pMsg)
 	if (strcmp(commandName, CONNECT_COMMAND) == 0)
 	{
 		cType = CommandEnum::CONNECT;
-		cmdObj = HandleConnect(parse);
+		CCommandConnect *pCmd = new CCommandConnect;
+		ret = pCmd->SetConnect(parse);
+		pCls = pCmd;
 	}
 	else if (strcmp(commandName, CALL_COMMAND) == 0)
 	{
@@ -88,9 +89,8 @@ int CCommandMessage::Handle(CBaseMessage* pMsg)
 	else
 		return -1;
 
-	m_Obj->cType = cType;
-	m_Obj->pObj = cmdObj;
+
 	parse->Destroy();
-	return CommandMessageHandle(m_Obj);
+	return CommandMessageHandle(cType,pCls);
 }
 

@@ -36,22 +36,21 @@ void CRtmpClient::OnReceive()
 
 	if (HandshakeEnd() == false)
 	{
+		
 		useLength = OnHandshake(buf, length);
-		if (useLength < length)
-			m_Read.WriteIn(buf+useLength,length-useLength);
+		m_Read.WriteIn(buf+useLength,length-useLength);
+
 		if (HandshakeEnd() == true)
 			return OnReceive();
 	}
 	else
 	{
 		useLength = OnChunks(buf, length);
-		if (useLength < length)
-			m_Read.WriteIn(buf + useLength, length - useLength);
+		m_Read.WriteIn(buf + useLength, length - useLength);
 	}
 
+	
 	if (buf) delete[] buf;
-	TRACE("Handle Data:%d\n", length);
-
 	return;
 }
 

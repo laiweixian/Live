@@ -37,7 +37,7 @@ private:
 	int AcknowledgementHandle(uint32_t sequenceNumber);
 	int AggregateMessageHandle(uint32_t sequenceNumber);
 	int AudioMessageHandle();
-	int CommandMessageHandle(CommandMessageObject *pObj);
+	int CommandMessageHandle(CommandEnum cType, void *pCls);
 	int DataMessageHandle();
 	int SetPeerBandwidthHandle();
 	int SharedObjectMessageHandle();
@@ -45,7 +45,7 @@ private:
 	int VideoMessageHandle();
 	int WindowAcknowledgementSizeHandle(uint32_t winAckSize);
 
-	int CMConnectHandle(ConnectObject* pObj);
+	int CMConnectHandle(CCommandConnect *pCmd);
 	int CMCallHandle();
 	int CMCloseHandle();
 	int CMCloseStreamHandle();
@@ -58,4 +58,6 @@ private:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
+public:
+	
 };

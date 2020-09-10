@@ -85,39 +85,32 @@ void GenRamdomByte(char* buff, const int buffLen)
 
 uint16_t BigToHost16(uint8_t* src)
 {
-	uint16_t number = 0;
-	char *dst = (char*)&number;
-	char *nSrc = (char*)src;
+	uint16_t num = 0;
 
-	memcpy(dst, nSrc + 1, 1);	dst += 1;
-	memcpy(dst, nSrc + 0, 1);	dst += 1;
-	
-	return number;
+	num += (*src) * 256;
+	num += (*(src + 1)) ;
+	return num;
 }
 
 uint32_t BigToHost24(uint8_t* src)
 {
-	uint32_t number = 0;
-	char* dst = (char*)&number;
-	char a = 0x00;
+	uint32_t num = 0;
 	
-	memcpy(dst, &a, 1);			dst += 1;
-	memcpy(dst, src + 2, 1);	dst += 1;
-	memcpy(dst, src + 1, 1);	dst += 1;
-	memcpy(dst, src + 0, 1);		dst += 1;
-	return number;
+	num += (*src) * 256 * 256;
+	num += (*(src + 1)) * 256;
+	num += (*(src + 2));
+	return num;
 }
 
 uint32_t BigToHost32(uint8_t* src)
 {
-	uint32_t number = 0;
-	char* dst = (char*)&number;
+	uint32_t num = 0;
 
-	memcpy(dst, src + 3, 1); dst += 1;
-	memcpy(dst, src + 2, 1); dst += 1;
-	memcpy(dst, src + 1, 1); dst += 1;
-	memcpy(dst, src + 0, 1); dst += 1;
-	return number;
+	num += (*src) * 256 * 256 * 256;
+	num += (*(src + 1)) * 256 * 256;
+	num += (*(src + 2)) * 256;
+	num += (*(src + 3)) ;
+	return num;
 }
 
 uint16_t HostToBig16(uint16_t src)

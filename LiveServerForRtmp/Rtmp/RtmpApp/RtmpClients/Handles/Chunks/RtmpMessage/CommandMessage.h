@@ -42,25 +42,9 @@ enum CommandEnum
 	CONNECT, CALL,CLOSE,CLOSE_STREAM,CREATE_STREAM,
 	PLAY, PLAY2, DELETE_STREAM, RECEIVE_AUDIO,RECEIVE_VIDEO, PUBLISH,SEEK, PAUSE
 };
-struct CommandMessageObject
-{
-	CommandEnum cType;
-	void *pObj;
-};
 
-class CCommandMessage : public CCommandCall,
-	public CCommandClose,
-	public CCommandCloseStream,
-	public CCommandConnect,
-	public CCommandCreateStream,
-	public CCommandDeleteStream,
-	public CCommandPause,
-	public CCommandPlay,
-	public CCommandPlay2,
-	public CCommandPublish,
-	public CCommandReceiveAudio,
-	public CCommandSeek,
-	public CCommandReceiveVideo
+
+class CCommandMessage
 {
 protected:
 	CCommandMessage();
@@ -69,8 +53,7 @@ protected:
 protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 protected:
-	virtual int CommandMessageHandle(CommandMessageObject* obj) = 0;
-private:
-	CommandMessageObject *m_Obj;
+	virtual int CommandMessageHandle(CommandEnum cType,void *pCls) = 0;
+
 };
 

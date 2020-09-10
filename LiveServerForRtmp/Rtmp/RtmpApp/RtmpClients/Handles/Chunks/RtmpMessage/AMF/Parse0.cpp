@@ -352,6 +352,14 @@ int CParse::MatchField(Data& src,UTF8 key, Data& value)
 			return 0;
 		}
 
+		//½áÊø
+		if (pTempData->marker == MARKER_OBJECT_END)
+		{
+			Utf8Free(&pTempUtf8);
+			DataFree(&pTempData);
+			break;
+		}
+
 		Utf8Free(&pTempUtf8);
 		DataFree(&pTempData);
 	}

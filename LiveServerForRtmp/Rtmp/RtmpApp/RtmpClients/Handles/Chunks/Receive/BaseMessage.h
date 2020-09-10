@@ -35,9 +35,9 @@ public:
 	void Destroy();
 
 	int AppendChunk(uint8_t* src, const uint32_t srcLen);
-	uint8_t* GetData();
-	int   GetDataLength();
+	
 	CChunkHeader* GetHead();
+	Payload* GetPayload();
 	bool Full();
 
 private:

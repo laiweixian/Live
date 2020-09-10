@@ -94,25 +94,16 @@ void CBaseMessage::SetFirstChunk(CChunkHeader* pHead, uint8_t *data, int dataLen
 	//alloc payload 
 	m_Payload.bufSize = head.messageLength;
 	m_Payload.buf = new uint8_t[m_Payload.bufSize];
-	memset(m_Payload.buf,0, m_Payload.bufSize);
 	m_Payload.ptr = m_Payload.buf;
 
+	memset(m_Payload.buf,0, m_Payload.bufSize);
 	memcpy(m_Payload.ptr,data,dataLen);
 	m_Payload.ptr += dataLen;
 }
 
-uint8_t* CBaseMessage::GetData()
+CBaseMessage::Payload* CBaseMessage::GetPayload()
 {
-	if (Full() == false)
-		return NULL;
-	return m_Payload.buf;
-}
-
-int   CBaseMessage::GetDataLength()
-{
-	if (Full() == false)
-		return 0;
-	return m_Payload.bufSize;
+	return (&m_Payload);
 }
 
 CChunkHeader* CBaseMessage::GetHead()

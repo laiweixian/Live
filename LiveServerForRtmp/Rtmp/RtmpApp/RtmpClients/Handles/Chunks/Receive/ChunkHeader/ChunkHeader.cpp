@@ -46,8 +46,8 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	//Basic Header
 	const uint8_t first = *ptr;
 	
-	csidBits = ((*ptr) << 2) >> 2 ; 
-	head.fmt = ((*ptr)>>6);  
+	csidBits = (first & 0x3f) ;
+	head.fmt = (first & 0xc0);
 	switch (csidBits)
 	{
 	case max6Bits:	//3 bytes

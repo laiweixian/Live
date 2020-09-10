@@ -35,11 +35,11 @@ class CCommandConnect
 public:
 	CCommandConnect();
 	virtual ~CCommandConnect();
-protected:
-	ConnectObject* HandleConnect(AMF0::CParse *parse);
+public:
+	int SetConnect(AMF0::CParse *parse);
+	ConnectObject* GetObject();
 private:
 	int SetObject(AMF0::Data* pData, const char* key, ConnectObject *pObj, SetValue sVal);
-public:
 	static void SetApp(ConnectObject* pObj, AMF0::Data* pValue);
 	static void SetFlashver(ConnectObject* pObj, AMF0::Data* pValue);
 	static void SetSwfUrl(ConnectObject* pObj, AMF0::Data* pValue);

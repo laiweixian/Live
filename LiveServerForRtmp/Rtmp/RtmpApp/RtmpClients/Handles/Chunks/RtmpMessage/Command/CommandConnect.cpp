@@ -11,9 +11,8 @@ CCommandConnect::~CCommandConnect()
 {
 }
 
-ConnectObject* CCommandConnect::HandleConnect(AMF0::CParse *parse)
+int CCommandConnect::SetConnect(AMF0::CParse *parse)
 {
-	
 	AMF0::Data* pCommandObject = NULL;
 	ConnectObject *pObj = NULL;
 
@@ -34,7 +33,7 @@ ConnectObject* CCommandConnect::HandleConnect(AMF0::CParse *parse)
 	SetObject(pCommandObject, CONNECT_OBJECTFUNCTION, pObj, CCommandConnect::SetObjectEncoding);
 
 	m_Obj = pObj;
-	return pObj;
+	return 0;
 }
 
 int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject *pObj,SetValue sVal)
@@ -58,7 +57,6 @@ int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject
 
 	return ret;
 }
-
 
 void CCommandConnect::SetApp(ConnectObject* pObj, AMF0::Data* pValue)
 {
@@ -124,4 +122,9 @@ void CCommandConnect::SetObjectEncoding(ConnectObject* pObj, AMF0::Data* pValue)
 
 	memcpy(&src, pValue->buf, pValue->len);
 	pObj->objectEncoding = BigToHostDouble(src);
+}
+
+ConnectObject* CCommandConnect::GetObject()
+{
+	return m_Obj;
 }

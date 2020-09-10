@@ -21,8 +21,6 @@ CBaseMessage* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChun
 	int result = 0;
 	
 	pMsg = CBaseMessage::Create(m_Lastest, chunkSize,src,srcLen,&chunkLen);
-	if (pMsg == NULL && chunkLen == -1)
-		goto NoEnough;
 		
 	if (pMsg)
 	{
@@ -32,18 +30,10 @@ CBaseMessage* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChun
 	else
 	{
 		chunkLen = m_Lastest->AppendChunk(src,srcLen);
-		if (chunkLen == 0)
-			goto NoEnough;
 	}
 
 	*outChunkLength = chunkLen;
-	if (m_Lastest->Full())
-		return m_Lastest;
-	return NULL;
-
-NoEnough:
-	*outChunkLength = 0;
-	return NULL;
+	return m_Lastest;
 }
 
 int CReceiveChunk::Abort(uint32_t csid)
