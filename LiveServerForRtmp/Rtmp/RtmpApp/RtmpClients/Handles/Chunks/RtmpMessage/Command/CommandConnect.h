@@ -16,16 +16,16 @@
 
 struct ConnectObject
 {
-	char* app;
-	char* flashver;
-	char* swfUrl;
-	char* tcUrl;
-	char* fpad;
-	char* audioCodecs;
-	char* videoCodecs;
-	char* videoFunction;
-	char* pageUrl;
-	char* objectEncoding;
+	char app[1024];
+	char flashver[1024];
+	char swfUrl[1024];
+	char tcUrl[1024];
+	bool fpad;
+	double audioCodecs;
+	double videoCodecs;
+	double videoFunction;
+	char pageUrl[1024];
+	double objectEncoding;
 };
 
 typedef void(*SetValue)(ConnectObject* pObj,AMF0::Data* pValue);
@@ -50,6 +50,7 @@ public:
 	static void SetVideoFunction(ConnectObject* pObj, AMF0::Data* pValue);
 	static void SetPageUrl(ConnectObject* pObj, AMF0::Data* pValue);
 	static void SetObjectEncoding(ConnectObject* pObj, AMF0::Data* pValue);
-
+protected:
+	ConnectObject* m_Obj;
 };
 

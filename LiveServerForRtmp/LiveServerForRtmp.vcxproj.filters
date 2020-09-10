@@ -108,9 +108,6 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\DataMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\RtmpMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\SetChunkSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -165,7 +162,10 @@
     <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandSeek.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandVideo.h">
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveVideo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -224,9 +224,6 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Send\SendMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\Handle.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -258,9 +255,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\DataMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\RtmpMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\SetChunkSize.cpp">
@@ -317,7 +311,10 @@
     <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandSeek.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandVideo.cpp">
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveVideo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpApp\RtmpClients\Handles\Chunks\HandleMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

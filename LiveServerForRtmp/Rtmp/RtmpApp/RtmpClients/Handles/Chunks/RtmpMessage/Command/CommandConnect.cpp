@@ -2,7 +2,7 @@
 #include "CommandConnect.h"
 
 
-CCommandConnect::CCommandConnect()
+CCommandConnect::CCommandConnect():m_Obj(NULL)
 {
 }
 
@@ -33,6 +33,7 @@ ConnectObject* CCommandConnect::HandleConnect(AMF0::CParse *parse)
 	SetObject(pCommandObject, CONNECT_PAGEURL, pObj, CCommandConnect::SetPageUrl);
 	SetObject(pCommandObject, CONNECT_OBJECTFUNCTION, pObj, CCommandConnect::SetObjectEncoding);
 
+	m_Obj = pObj;
 	return pObj;
 }
 
@@ -47,7 +48,7 @@ int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject
 	pValue = AMF0::DataAlloc();
 
 	ret = AMF0::CParse::MatchField(*pData, *pKey, *pValue);
-	if (ret == 0)
+	if (ret == 0 && (pValue->len > 0) && (pValue->buf != NULL))
 	{
 		sVal(pObj,pValue);
 	}
@@ -61,50 +62,66 @@ int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject
 
 void CCommandConnect::SetApp(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	memcpy(pObj->app,pValue->buf,pValue->len);
 }
 
 void CCommandConnect::SetFlashver(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	memcpy(pObj->flashver, pValue->buf, pValue->len);
 }
 
 void CCommandConnect::SetSwfUrl(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	memcpy(pObj->swfUrl, pValue->buf, pValue->len);
 }
 
 void CCommandConnect::SetTcUrl(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	memcpy(pObj->tcUrl, pValue->buf, pValue->len);
 }
 
 void CCommandConnect::SetFpad(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	if (*(pValue->buf) == 0)
+		pObj->fpad = false;
+	else
+		pObj->fpad = true;
 }
 
 void CCommandConnect::SetAudioCodecs(ConnectObject* pObj, AMF0::Data* pValue)
 {
+	//8个字节的大端模式
+	double src = 0;
 
+	memcpy(&src,pValue->buf,pValue->len);
+	pObj->audioCodecs = BigToHostDouble(src);
 }
 
 void CCommandConnect::SetVideoCodecs(ConnectObject* pObj, AMF0::Data* pValue)
 {
+	double src = 0;
 
+	memcpy(&src, pValue->buf, pValue->len);
+	pObj->videoCodecs = BigToHostDouble(src);
 }
 
 void CCommandConnect::SetVideoFunction(ConnectObject* pObj, AMF0::Data* pValue)
 {
+	double src = 0;
 
+	memcpy(&src, pValue->buf, pValue->len);
+	pObj->videoFunction = BigToHostDouble(src);
 }
 
 void CCommandConnect::SetPageUrl(ConnectObject* pObj, AMF0::Data* pValue)
 {
-
+	memcpy(pObj->pageUrl, pValue->buf, pValue->len);
 }
 
 void CCommandConnect::SetObjectEncoding(ConnectObject* pObj, AMF0::Data* pValue)
 {
+	double src = 0;
 
+	memcpy(&src, pValue->buf, pValue->len);
+	pObj->objectEncoding = BigToHostDouble(src);
 }

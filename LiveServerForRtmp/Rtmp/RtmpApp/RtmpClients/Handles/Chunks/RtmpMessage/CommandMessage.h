@@ -13,7 +13,7 @@
 #include "Command/CommandPublish.h"
 #include "Command/CommandReceiveAudio.h"
 #include "Command/CommandSeek.h"
-#include "Command/CommandVideo.h"
+#include "Command/CommandReceiveVideo.h"
 
 
 #define ERR_NO_AMF3				-1
@@ -36,6 +36,18 @@ static const char	*CONNECT_COMMAND = "connect",	\
 					*SEEK_COMMAND			= "seek",\
 					*PAUSE_COMMAND			= "pause";
 
+enum CommandEnum
+{
+	NONE, 
+	CONNECT, CALL,CLOSE,CLOSE_STREAM,CREATE_STREAM,
+	PLAY, PLAY2, DELETE_STREAM, RECEIVE_AUDIO,RECEIVE_VIDEO, PUBLISH,SEEK, PAUSE
+};
+struct CommandMessageObject
+{
+	CommandEnum cType;
+	void *pObj;
+};
+
 class CCommandMessage : public CCommandCall,
 	public CCommandClose,
 	public CCommandCloseStream,
@@ -48,7 +60,7 @@ class CCommandMessage : public CCommandCall,
 	public CCommandPublish,
 	public CCommandReceiveAudio,
 	public CCommandSeek,
-	public CCommandVideo
+	public CCommandReceiveVideo
 {
 protected:
 	CCommandMessage();
@@ -57,20 +69,8 @@ protected:
 protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 protected:
-	virtual int CommandMessageHandle() = 0;
+	virtual int CommandMessageHandle(CommandMessageObject* obj) = 0;
 private:
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	CommandMessageObject *m_Obj;
 };
 
