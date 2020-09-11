@@ -8,7 +8,6 @@
 int main()
 {
 	CRtmp rtmp;
-	rtmp.PreInitialize();
 	rtmp.Initialize();
 	rtmp.Run();
     return 0;

@@ -2,20 +2,18 @@
 
 #include "stdafx.h"
 #include "RtmpApp/RtmpApp.h"
+#include "Network/SocketIO.h"
+#include "RtmpClients/ClientManager.h"
 
-class CRtmp 
+class CRtmp : public CRtmpApp,
+			  public CClientManager
 {
 public:
 	CRtmp();
 	~CRtmp();
 public:
-
-	int PreInitialize();
 	int Initialize();
 	int Run();
-	int Pause();
-	int Stop();
-	 
 private:
-	CRtmpApp *m_App;
+	CSocketIO *pSocket
 };

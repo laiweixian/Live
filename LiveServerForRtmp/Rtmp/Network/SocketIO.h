@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "SocketClient.h"
+
 #include "SockEvent.h"
 
 #define SOCKET_OK	0	
@@ -21,43 +21,38 @@
 			int timeout;		\
 			int maxConnect;};
 
-
-
-
-
 class CSocketIO 
 {
 protected:
 	DECLARE_SOCKET_OPT
 	CSocketIO(const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
 	virtual ~CSocketIO();
-
 public:
-	void RegisterEvent(ISocketEvent* event);
+	void RegisterEvent(IEvent *pEvent);
+
 protected:
-	int PreInitialize();
 	int Initialize();
 	int Run();
-	int Pause();
-	int Stop();
-	
+public:
+	static int ReadS(void *SockHandle, uint8_t* buf, uint32_t bufSize);
+	static int WriteS(void *SockHandle, uint8_t* buf, uint32_t bufSize);
+	static int CloseS(void *SockHandle);
 private:
-	int SocketInit();
+	int InitListenSocket();
 	int CheckEvent();
 	void CloseServer();
 
 	static int SetSocketNonblock(SOCKET sock);
-	int InitListenSocket();
+	
 	
 	int CheckConnect();
 	int CheckReceive();
 
 private:
-	SOCKET m_ListSock;
+	
 	Optional m_Optional;
+	SOCKET m_ListSock;
 
-	ISocketEvent* m_Event;
-	vector<CSocketClient*> m_Clients; 
-
-
+	IEvent *m_Event;
+	vector<void*> m_Users;
 };

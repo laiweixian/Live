@@ -12,11 +12,6 @@ CRtmpClient::~CRtmpClient()
 
 }
 
-CSocketClient* CRtmpClient::GetClietnIo()
-{
-	return m_IO;
-}
-
 void CRtmpClient::OnReceive()
 {
 	uint8_t *buf = NULL;
@@ -63,9 +58,4 @@ void CRtmpClient::OnDisConnct()
 void CRtmpClient::OnSockErr()
 {
 
-}
-
-int CRtmpClient::Send2Peer( uint8_t* src, const int srcLength)
-{
-	return m_IO->Write(src,srcLength);
 }

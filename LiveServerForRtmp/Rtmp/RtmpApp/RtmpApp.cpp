@@ -10,9 +10,6 @@ CRtmpApp::~CRtmpApp()
 
 }
 
-CRtmpInstance* CRtmpApp::Selete(const char* rtmpurl, void* searcher)
-{
-	return NULL;
-}
+
 
 

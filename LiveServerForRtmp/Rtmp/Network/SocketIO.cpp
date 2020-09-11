@@ -1,11 +1,16 @@
 #include "SocketIO.h"
-#include "Rtmp/RtmpClients/ClientManager.h"
+#include "SocketClient.h"
 #include "stdafx.h"
 
 #define DEFAULT_BUFF_LENGTH	1024
 
-CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):
-		m_Event(NULL)
+struct SocketUser
+{
+	CSocketIO *pSock;
+	CSocketClient *pClient;
+};
+
+CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):m_Event(NULL)
 {
 	strcpy_s(m_Optional.ip,ip);
 	m_Optional.port = port;
@@ -18,21 +23,26 @@ CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const i
 
 CSocketIO::~CSocketIO()
 {	
-	auto it = m_Clients.begin();
-	for (it = m_Clients.begin(); it != m_Clients.end(); it++)
+	auto it = m_Users.begin();
+	SocketUser *pUser = NULL;
+
+	for (it = m_Users.begin(); it != m_Users.end(); it++)
 	{
+		pUser = (SocketUser *)(*it);
+		delete (pUser->pClient);
+		pUser->pClient = NULL;
+		pUser->pSock = NULL;
+
 		delete (*it);
-		(*it) = NULL;
+		*it = NULL;
 	}
+
+	m_Users.clear();
 
 	closesocket(m_ListSock);
 }
 
-int CSocketIO::SocketInit()
-{
-	InitListenSocket();
-	return 0;
-}
+
 
 int CSocketIO::SetSocketNonblock(SOCKET sock)
 {
@@ -109,17 +119,23 @@ int CSocketIO::CheckEvent()
 
 int CSocketIO::CheckReceive()
 {
-	auto it = m_Clients.begin();
-	CSocketClient *client = NULL;
+	auto it = m_Users.begin();
+	SocketUser *pUser = NULL;
 	int length = 0;
+	SocketOperation call;
 
-	for (it= m_Clients.begin(); it != m_Clients.end();it++)
+	call.close = CSocketIO::CloseS;
+	call.read = CSocketIO::ReadS;
+	call.write = CSocketIO::WriteS;
+
+	for (it= m_Users.begin(); it != m_Users.end();it++)
 	{
-		client = *it;
-		length = client->CheckRead();
+		pUser = (SocketUser*)*it;
+		length = pUser->pClient->CheckRead();
 		if (length > 0)
 		{
-			m_Event->Receive(client);
+			call.handle = *it;
+			m_Event->ReadBuffEvent(&call);
 		}
 	}
 
@@ -133,7 +149,9 @@ int CSocketIO::CheckConnect()
 	sockaddr_in addr;
 	int len = sizeof(sockaddr_in);
 	int errorCode;
-	CSocketClient *client = NULL;
+	
+	SocketOperation call;
+	SocketUser *pUser = NULL;
 
 	connSock = accept(m_ListSock, (sockaddr*)&addr, &len);
 	if (connSock == INVALID_SOCKET)
@@ -148,9 +166,20 @@ int CSocketIO::CheckConnect()
 	else
 	{
 		SetSocketNonblock(connSock);
-		client = new CSocketClient(connSock,addr);
-		m_Clients.push_back(client);
-		m_Event->Connect(client);
+
+		pUser = new SocketUser;
+		pUser->pSock = this;
+		pUser->pClient = new CSocketClient(connSock, addr);
+		m_Users.push_back(pUser);
+
+		call.handle = pUser;
+		call.close = CSocketIO::CloseS;
+		call.read = CSocketIO::ReadS;
+		call.write = CSocketIO::WriteS;
+
+		//通知用户
+		if (m_Event)
+			m_Event->ConnectEvent(&call);
 	}
 
 	return 0;
@@ -163,18 +192,14 @@ void CSocketIO::CloseServer()
 
 }
 
-void CSocketIO::RegisterEvent(ISocketEvent* event)
+void CSocketIO::RegisterEvent(IEvent* event)
 {
 	m_Event = event;
 }
 
-int CSocketIO::PreInitialize()
-{
-	return SocketInit();
-}
-
 int CSocketIO::Initialize()
 {
+	InitListenSocket();
 	return 0;
 }
 
@@ -183,13 +208,24 @@ int CSocketIO::Run()
 	return CheckEvent();
 }
 
-int CSocketIO::Pause()
+int CSocketIO::ReadS(void *SockHandle, uint8_t* buf, uint32_t bufSize)
 {
-	return 0;
+	SocketUser *pUser = (SocketUser*)SockHandle;
+
+	return pUser->pClient->Read(buf, bufSize);
 }
 
-int CSocketIO::Stop()
+int CSocketIO::WriteS(void *SockHandle, uint8_t* buf, uint32_t bufSize)
 {
-	return 0;
+	SocketUser *pUser = (SocketUser*)SockHandle;
+
+	return pUser->pClient->Write(buf, bufSize);
 }
+
+int CSocketIO::CloseS(void *SockHandle)
+{
+	SocketUser *pUser = (SocketUser*)SockHandle;
+	return pUser->pClient->Close();
+}
+
 

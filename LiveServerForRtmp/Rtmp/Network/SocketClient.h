@@ -7,7 +7,6 @@
 class CSocketClient
 {
 public:
-	
 	CSocketClient(SOCKET so, sockaddr_in addr);
 	~CSocketClient();
 
@@ -19,7 +18,5 @@ public:
 private:
 	SOCKET m_Socket;
 	sockaddr_in m_Addr;
-
 	CBuffer  m_Reader;
-	
 };

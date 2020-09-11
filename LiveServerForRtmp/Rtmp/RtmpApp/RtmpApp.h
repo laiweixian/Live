@@ -14,7 +14,10 @@ protected:
 	
 protected:
 	//rtmp url :rtmp://localhost:1935/testapp/instance1
-	CRtmpInstance* Selete(const char* rtmpurl,void* searcher);
+	int Connect(const char* rtmpurl,void* searcher);
+	int DisConnect(const char* rtmpurl, void* searcher);
+	int PublishMedia(const char* rtmpurl, void* searcher);
+	int PlayMedia(const char* rtmpurl, void* searcher);
 	
 private:
 	RtmpAppOptional m_Option;

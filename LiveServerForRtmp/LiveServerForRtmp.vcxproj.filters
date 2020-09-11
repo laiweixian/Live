@@ -42,111 +42,6 @@
     <ClInclude Include="Rtmp\Network\SockEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\Receive\ChunkHeader\ChunkHeader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\Receive\BaseMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\Receive\ReceiveChunk.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\AMF.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\AMF0.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\AMF3.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCall.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandClose.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCloseStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandConnect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCreateStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandDeleteStream.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPause.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPlay.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPlay2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPublish.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveAudio.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveVideo.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandSeek.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AbortMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Acknowledgement.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AggregateMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AudioMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\CommandMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\DataMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SetChunkSize.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SetPeerBandwidth.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SharedObjectMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\UserControlMessages.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\VideoMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\WindowAcknowledgementSize.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\Send\SendMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\Chunks.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Chunks\HandleMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Handles\Handshake\Handshake.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\ClientManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -163,6 +58,111 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\ReceiveChunk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF0.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCloseStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandConnect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCreateStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandDeleteStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPause.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPlay.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPlay2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPublish.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandReceiveAudio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandReceiveVideo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandSeek.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AbortMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Acknowledgement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AggregateMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AudioMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\CommandMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\DataMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetChunkSize.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetPeerBandwidth.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SharedObjectMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\UserControlMessages.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\VideoMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Chunks.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\HandleMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Handshake\Handshake.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,111 +188,6 @@
     <ClCompile Include="Rtmp\Network\SocketIO.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\Receive\ChunkHeader\ChunkHeader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\Receive\BaseMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\Receive\ReceiveChunk.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\AMF0.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\AMF3.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AMF\Parse0.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCall.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandClose.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCloseStream.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandConnect.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandCreateStream.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandDeleteStream.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPause.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPlay.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPlay2.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandPublish.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveAudio.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandReceiveVideo.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Command\CommandSeek.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AbortMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\Acknowledgement.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AggregateMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\AudioMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\CommandMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\DataMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SetChunkSize.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SetPeerBandwidth.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\SharedObjectMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\UserControlMessages.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\VideoMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\RtmpMessage\WindowAcknowledgementSize.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\Send\SendMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\Chunks.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Chunks\HandleMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Handles\Handshake\Handshake.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\ClientManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -309,6 +204,111 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ReceiveChunk.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF0.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\Parse0.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCloseStream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandConnect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCreateStream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandDeleteStream.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPause.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPlay.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPlay2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandPublish.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandReceiveAudio.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandReceiveVideo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandSeek.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AbortMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Acknowledgement.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AggregateMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AudioMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\CommandMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\DataMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetChunkSize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetPeerBandwidth.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SharedObjectMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\UserControlMessages.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\VideoMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Chunks.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\HandleMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Handshake\Handshake.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
