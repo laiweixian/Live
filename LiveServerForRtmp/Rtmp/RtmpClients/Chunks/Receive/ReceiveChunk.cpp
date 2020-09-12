@@ -20,7 +20,7 @@ CBaseMessage* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChun
 	int chunkLen = 0;
 	int result = 0;
 	
-	pMsg = CBaseMessage::Create(m_Lastest, chunkSize,src,srcLen,&chunkLen);
+	pMsg = CBaseMessage::CreateForChunk(m_Lastest, chunkSize,src,srcLen,&chunkLen);
 		
 	if (pMsg)
 	{

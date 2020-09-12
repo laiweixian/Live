@@ -129,7 +129,7 @@ ConnectObject* CCommandConnect::GetObject()
 	return m_Obj;
 }
 
-uint8_t* CCommandConnect::TranslatePayload(ConnectObject* pObj, int *outLenght)
+uint8_t* CCommandConnect::TranslatePayload(ConnectObject* pObj, uint32_t *outLenght)
 {
 	return NULL;
 }

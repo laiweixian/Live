@@ -12,7 +12,7 @@ CBaseMessage::~CBaseMessage()
 	
 }
 
-CBaseMessage* CBaseMessage::Create(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int *outChunkLen)
+CBaseMessage* CBaseMessage::CreateForChunk(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int *outChunkLen)
 {
 	CBaseMessage* pMsg = NULL;
 	CChunkHeader *pHead = NULL;

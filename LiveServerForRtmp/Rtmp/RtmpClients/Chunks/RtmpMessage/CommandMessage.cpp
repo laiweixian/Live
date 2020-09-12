@@ -97,13 +97,14 @@ int CCommandMessage::Handle(CBaseMessage* pMsg)
 uint8_t* CCommandMessage::TranslatePayload(CommandEnum cType, void *pCls, int *outLength)
 {
 	uint8_t *buf = NULL;
-	
+	uint32_t length = 0;
+
 	switch (cType)
 	{
 	case NONE:
 		break;
 	case CONNECT:
-		buf = CCommandConnect::TranslatePayload(static_cast<ConnectObject*>(pCls), outLength);
+		buf = CCommandConnect::TranslatePayload(static_cast<ConnectObject*>(pCls), &length);
 		break;
 	case CALL:
 		break;
@@ -133,6 +134,7 @@ uint8_t* CCommandMessage::TranslatePayload(CommandEnum cType, void *pCls, int *o
 		break;
 	}
 
+	*outLength = length;
 	return buf;
 }
 

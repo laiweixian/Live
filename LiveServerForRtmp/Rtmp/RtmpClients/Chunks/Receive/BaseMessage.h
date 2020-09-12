@@ -31,12 +31,15 @@ protected:
 public:
 	DECLARE_BASE_MESSAGE
 
-	static CBaseMessage* Create(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
+	static CBaseMessage* CreateForChunk(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
+	
+	
 	void Destroy();
 	int AppendChunk(uint8_t* src, const uint32_t srcLen);
 	CChunkHeader* GetHead();
 	Payload* GetPayload();
 	bool Full();
+
 
 private:
 	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
