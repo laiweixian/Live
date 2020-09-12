@@ -182,7 +182,7 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\VideoMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\ReceiveChunk.h" />
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Send\SendChunk.h" />
     <ClInclude Include="Rtmp\RtmpClients\Handshake\Handshake.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Chunks.h" />
@@ -220,7 +220,7 @@
     <ClCompile Include="Rtmp\Network\SocketClient.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\HandleMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ReceiveChunk.cpp" />
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\RtmpClient.cpp" />

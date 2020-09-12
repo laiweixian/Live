@@ -12,9 +12,10 @@
 #include "RtmpMessage/VideoMessage.h"
 #include "RtmpMessage/WindowAcknowledgementSize.h"
 
-class CInstanceManager;
+#include "Send/SendChunk.h"
 
-class CHandleMessage :public CAbortMessage,\
+class CHandleMessage :public CSendChunk,
+					public CAbortMessage,\
 					public CAcknowledgement,\
 					public CAggregateMessage,\
 					public CAudioMessage,\
@@ -61,6 +62,4 @@ private:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
-
-	
 };

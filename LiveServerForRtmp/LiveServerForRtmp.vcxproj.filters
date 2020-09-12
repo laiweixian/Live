@@ -141,9 +141,6 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Chunks.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -163,6 +160,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Send\SendChunk.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -287,9 +287,6 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Chunks.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -309,6 +306,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendChunk.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

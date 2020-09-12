@@ -1,24 +1,41 @@
 #include "ClientManager.h"
 #include "Rtmp/Network/SocketIO.h"
 
+#define APP_NAME	"live"
+
 CClientManager::CClientManager(uint32_t chunkSize, IIOOperation* oPera):\
 					m_DefaultChunkSize(chunkSize),m_Operation(oPera)
 {
-
+	string name(APP_NAME);
+	m_App = new CRtmpApp(name);
 }
 
 CClientManager::~CClientManager()
 {
+	auto it = m_Clients.begin();
+	Client cli;
+	for (it = m_Clients.begin(); it != m_Clients.end(); it++)
+	{
+		cli = *it;
+		cli.handle = NULL;
+		delete cli.pClient;
+		cli.pClient = NULL;
+	}
+	m_Clients.clear();
 
+	delete m_App;
+	m_App = NULL;
 }
 
 int CClientManager::Initialize()
 {
+	m_App->Initialize();
 	return 0;
 }
 
 int CClientManager::Run()
 {
+	m_App->Run();
 	return 0;
 }
 

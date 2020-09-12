@@ -17,6 +17,9 @@ class CRtmpInstance
 public:
 	CRtmpInstance(string name);
 	~CRtmpInstance();
+
+	void Publish();
+	void Play();
 public:
 	string m_Name;
 };

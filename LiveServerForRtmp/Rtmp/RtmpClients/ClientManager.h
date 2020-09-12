@@ -37,8 +37,6 @@ public:
 
 	int WriteToUser(CRtmpClient* pClient, uint8_t* buf, const uint32_t length);
 	int CloseUser(CRtmpClient* pClient);
-
-
 private:
 	const uint32_t m_DefaultChunkSize;
 	IIOOperation *m_Operation;

@@ -1,15 +1,10 @@
 #pragma once
 
 #include "Receive/ReceiveChunk.h"
-#include "Send/SendMessage.h"
 #include "HandleMessage.h"
 
-
-
-class CChunks : public CSendMessage,
-				public CHandleMessage,
-				public CReceiveChunk
-		
+class CChunks : public CReceiveChunk,
+				public CHandleMessage
 {
 protected:
 	CChunks(uint32_t chunkSize);

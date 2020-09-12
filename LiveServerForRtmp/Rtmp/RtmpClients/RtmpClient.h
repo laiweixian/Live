@@ -5,9 +5,7 @@
 #include "Buffer.h"
 
 class CRtmpClient;
-
 class CClientManager;
-
 
 class CRtmpClient : public CHandshake,\
 					public CChunks
