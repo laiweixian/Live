@@ -44,5 +44,5 @@ void CRtmpClient::Processing()
 
 int CRtmpClient::Send2Peer(uint8_t* src, const int srcLength)
 {
-	return -1;
+	return m_Manager->WriteToUer(this, src, srcLength);
 }

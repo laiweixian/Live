@@ -35,6 +35,6 @@ protected:
 private:
 	CSocketIO *m_File;
 	CClientManager *m_Client;
+	vector<SockUser*> m_Users;
 
-	vector<SockUser*> m_SocketUsers;
 };
