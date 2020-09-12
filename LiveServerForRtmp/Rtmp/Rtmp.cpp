@@ -5,6 +5,8 @@
 #define  DEFALUT_PORT		1937
 #define  DEFALUT_CHUNK_SIZE 128
 
+
+
 CRtmp::CRtmp() 
 {
 	m_File = new CSocketIO(this,DEFALUT_IP,DEFALUT_PORT);
@@ -18,48 +20,51 @@ CRtmp::~CRtmp()
 
 int CRtmp::Initialize()
 {
-	return -1;
+	int ret = 0;
+	m_File->Initialize();
+	m_Client->Initialize();
+	return 0;
 }	
 
 int CRtmp::Run()
 {
-	return -1;
+	m_File->Run();
+	m_Client->Run();
+	return 0;
 }
 
-int CRtmp::OnConnect(void* handle, ISocketOperation* iop)
+int CRtmp::OnConnect(SOCKET_HANDLE handle, ISocketOperation* iop)
 {
 	return -1;
 }
 
-int CRtmp::OnDisConnect(void* handle, ISocketOperation* iop)
+int CRtmp::OnDisConnect(SOCKET_HANDLE handle, ISocketOperation* iop)
 {
 	return -1;
 }
 
-int CRtmp::OnReceive(void* handle, ISocketOperation* iop)
+int CRtmp::OnReceive(SOCKET_HANDLE handle, ISocketOperation* iop)
 {
 	return -1;
 }
 
-int CRtmp::OnSend(void* handle, ISocketOperation* iop)
+int CRtmp::OnSend(SOCKET_HANDLE handle, ISocketOperation* iop)
 {
 	return -1;
 }
 
-int CRtmp::OnError(void* handle, ISocketOperation* iop)
+int CRtmp::OnError(SOCKET_HANDLE handle, ISocketOperation* iop)
 {
 	return -1;
 }
 
-int CRtmp::WriteOperation(const void *pUser, uint8_t* buf, uint32_t length)
+int CRtmp::WriteForHandle(const IO_HANDLE handle, uint8_t* buf, uint32_t length)
 {
 	return -1;
 }
-
-int CRtmp::CloseOperation(const void *pUser, uint8_t* buf, uint32_t length)
+int CRtmp::CloseForHandle(const IO_HANDLE handle)
 {
 	return -1;
 }
-
 
 

@@ -2,36 +2,44 @@
 
 #include "RtmpClient.h"
 
-class IClientOperation
+typedef void* IO_HANDLE;
+
+class IIOOperation
 {
 protected:
-	IClientOperation() = default;
-	virtual ~IClientOperation() = default;
+	IIOOperation() = default;
+	virtual ~IIOOperation() = default;
 
 public:
-	virtual int WriteOperation(const void *pUser,uint8_t* buf,uint32_t length) = 0;
-	virtual int CloseOperation(const void *pUser, uint8_t* buf, uint32_t length) = 0;
+	virtual int WriteForHandle(const IO_HANDLE handle,uint8_t* buf,uint32_t length) = 0;
+	virtual int CloseForHandle(const IO_HANDLE handle) = 0;
 };
 
 struct Client
 {
-	const void* pUser;
+	IO_HANDLE    handle;
 	CRtmpClient *pClient;
 };
 
 class CClientManager 
 {
 public:
-	CClientManager(uint32_t chunkSize, IClientOperation* oPera);
+	CClientManager(uint32_t chunkSize, IIOOperation* oPera);
 	~CClientManager();
 public:
-	void Enter(const void* pUser);
-	void Processing(const void* pUser,uint8_t* buf,const uint32_t length);
-	void Leave(const void* pUser);
+	int Initialize();
+	int Run();
+
+	void Enter(const IO_HANDLE handle);
+	void Processing(const IO_HANDLE handle,uint8_t* buf,const uint32_t length);
+	void Leave(const IO_HANDLE handle);
+
+	int WriteToUer(CRtmpClient* pClient, uint8_t* buf, const uint32_t length);
+	int CloseUser(CRtmpClient* pClient);
 
 
 private:
 	const uint32_t m_DefaultChunkSize;
-	IClientOperation *m_Operation;
+	IIOOperation *m_Operation;
 	vector<Client> m_Clients;
 };

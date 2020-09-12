@@ -4,7 +4,7 @@
 
 #define DEFAULT_BUFF_LENGTH	1024
 
-
+//SOCKET_HANDLE = CSocketClient*
 
 CSocketIO::CSocketIO(ISocketEvent *pEvent,const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):m_Event(NULL)
 {
@@ -161,9 +161,6 @@ int CSocketIO::CheckConnect()
 }
 
 
-
-
-
 int CSocketIO::Initialize()
 {
 	InitListenSocket();
@@ -175,19 +172,19 @@ int CSocketIO::Run()
 	return CheckEvent();
 }
 
-int CSocketIO::Read(void* handle, uint8_t* buf, uint32_t length)
+int CSocketIO::Read(SOCKET_HANDLE handle, uint8_t* buf, uint32_t length)
 {
 	CSocketClient *pUser = (CSocketClient*)handle;
 	return pUser->Read(buf, length);
 }
 
-int CSocketIO::Write(void* handle, uint8_t* buf, uint32_t length)
+int CSocketIO::Write(SOCKET_HANDLE handle, uint8_t* buf, uint32_t length)
 {
 	CSocketClient *pUser = (CSocketClient*)handle;
 	return pUser->Write(buf, length);
 }
 
-int CSocketIO::Close(void* handle)
+int CSocketIO::Close(SOCKET_HANDLE handle)
 {
 	CSocketClient *pUser = (CSocketClient*)handle;
 	return pUser->Close();
