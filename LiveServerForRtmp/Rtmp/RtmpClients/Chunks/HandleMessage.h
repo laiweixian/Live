@@ -60,7 +60,6 @@ private:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
-protected:
-	virtual CInstanceManager* GetManager() = 0;
+
 	
 };

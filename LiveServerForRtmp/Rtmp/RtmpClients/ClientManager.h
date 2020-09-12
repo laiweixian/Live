@@ -2,30 +2,36 @@
 
 #include "RtmpClient.h"
 
-class IOperation
+class IClientOperation
 {
 protected:
-	IOperation() = default;
-	virtual ~IOperation() = default;
+	IClientOperation() = default;
+	virtual ~IClientOperation() = default;
 
 public:
-	virtual int WriteOperation() = 0;
-	virtual int ReadOperation() = 0;
-	virtual int CloseOperation() = 0;
+	virtual int WriteOperation(const void *pUser,uint8_t* buf,uint32_t length) = 0;
+	virtual int CloseOperation(const void *pUser, uint8_t* buf, uint32_t length) = 0;
+};
+
+struct Client
+{
+	const void* pUser;
+	CRtmpClient *pClient;
 };
 
 class CClientManager 
 {
 public:
-	CClientManager(uint32_t chunkSize);
+	CClientManager(uint32_t chunkSize, IClientOperation* oPera);
 	~CClientManager();
 public:
-	int Enter(void *pUser);
-	int Processing(void* pUser,uint8_t* buf,uint32_t bufLength);
-	int Leave(void *pUser);
+	void Enter(const void* pUser);
+	void Processing(const void* pUser,uint8_t* buf,const uint32_t length);
+	void Leave(const void* pUser);
 
 
 private:
-	uint32_t m_ChunkSize;
-	vector<CRtmpClient*> m_Clients;
+	const uint32_t m_DefaultChunkSize;
+	IClientOperation *m_Operation;
+	vector<Client> m_Clients;
 };

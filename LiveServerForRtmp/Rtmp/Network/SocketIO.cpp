@@ -142,7 +142,7 @@ int CSocketIO::CheckConnect()
 		errorCode = WSAGetLastError();
 		if (errorCode != WSAEWOULDBLOCK)
 		{
-			CloseServer();
+			//CloseServer();
 			return -1;
 		}
 	}
