@@ -1,12 +1,11 @@
 #pragma once
 
 #include "stdafx.h"
-#include "RtmpApp/RtmpApp.h"
+
 #include "Network/SocketIO.h"
 #include "RtmpClients/ClientManager.h"
 
-class CRtmp : public CRtmpApp,
-			  public CClientManager
+class CRtmp : public ISocketEvent  
 {
 public:
 	CRtmp();
@@ -14,6 +13,16 @@ public:
 public:
 	int Initialize();
 	int Run();
+
+protected:
+	//ISocketEvent
+	int OnConnect(void* handle, ISocketOperation* iop);
+	int OnDisConnect(void* handle, ISocketOperation* iop) ;
+	int OnReceive(void* handle, ISocketOperation* iop);
+	int OnSend(void* handle, ISocketOperation* iop);
+	int OnErr(void* handle, ISocketOperation* iop);
+	
 private:
-	CSocketIO *pSocket
+	CSocketIO *m_File;
+	CClientManager *m_Client;
 };

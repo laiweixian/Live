@@ -1,8 +1,9 @@
 #include "RtmpClient.h"
 #include "Rtmp/Network/SocketIO.h"
+#include "ClientManager.h"
 
-CRtmpClient::CRtmpClient(uint32_t chunkSize, CSocketClient *io, CInstanceManager* appInstance):\
-		m_IO(io), CChunks(chunkSize,appInstance)
+CRtmpClient::CRtmpClient(uint32_t chunkSize, CClientManager* pManager):\
+		m_Manager(pManager), CChunks(chunkSize)
 {
 
 }
@@ -12,50 +13,36 @@ CRtmpClient::~CRtmpClient()
 
 }
 
-void CRtmpClient::OnReceive()
+void CRtmpClient::Processing(uint8_t *buf, int bufLen)
+{
+	m_Read.WriteIn(buf, bufLen);
+	return Processing();
+}
+
+void CRtmpClient::Processing()
 {
 	uint8_t *buf = NULL;
-	size_t length = 0,newLength = 0,prevLength = 0,useLength = 0;
-	int ret ;
+	size_t bufLength = 0 ,length = 0;
+	int ret;
 
-	prevLength = m_Read.GetLength();
-	newLength = m_IO->Read(NULL,0);
-	length = prevLength + newLength;
-
-	if (length < 0 )
-		return ;
-
-	buf = new uint8_t[length];
-	m_Read.ReadOut(buf,prevLength);
-	m_IO->Read(buf+prevLength,newLength);
-
+	buf = m_Read.GetData();
+	bufLength = m_Read.GetLength();
 	if (HandshakeEnd() == false)
 	{
-		useLength = OnHandshake(buf, length);
-		m_Read.WriteIn(buf+useLength,length-useLength);
+		length = OnHandshake(buf, bufLength);
+		m_Read.MoveReaderPtr(length);
 		if (HandshakeEnd() == true)
-			return OnReceive();
+			return Processing();
 	}
 	else
 	{
-		useLength = OnChunks(buf, length);
-		m_Read.WriteIn(buf + useLength, length - useLength);
-
-		write2file("OnChunk", buf, useLength);
+		length = OnChunks(buf, length);
+		m_Read.MoveReaderPtr(length);
 	}
-
-	
-	if (buf) delete[] buf;
 	return;
 }
 
-
-void CRtmpClient::OnDisConnct()
+int CRtmpClient::Send2Peer(uint8_t* src, const int srcLength)
 {
-
-}
-
-void CRtmpClient::OnSockErr()
-{
-
+	return -1;
 }

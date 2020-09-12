@@ -1,31 +1,30 @@
 #pragma once
 
 #include "RtmpClient.h"
-#include "Rtmp/Network/SockEvent.h"
 
-class CSocketIO;
+class IOperation
+{
+protected:
+	IOperation() = default;
+	virtual ~IOperation() = default;
 
-class CClientManager : private ISocketEvent
+public:
+	virtual int WriteOperation() = 0;
+	virtual int ReadOperation() = 0;
+	virtual int CloseOperation() = 0;
+};
+
+class CClientManager 
 {
 public:
 	CClientManager(uint32_t chunkSize);
 	~CClientManager();
-
-protected:
-	int PreInitialize();
-	int Initialize();
-	int Run();
-	int Pause();
-	int Stop();
-
 public:
-	virtual int Connect(CSocketClient *pClient) final;
-	virtual int DisConnect(CSocketClient *pClient)final;
-	virtual int Receive(CSocketClient *pClient) final;
-	virtual int SocketErr(CSocketClient *pClient) final;
-protected:
-	virtual CSocketIO*			GetSocketIO() = 0;
-	virtual CInstanceManager*	GetInstanceManager() = 0;
+	int Enter(void *pUser);
+	int Processing(void* pUser,uint8_t* buf,uint32_t bufLength);
+	int Leave(void *pUser);
+
+
 private:
 	uint32_t m_ChunkSize;
 	vector<CRtmpClient*> m_Clients;

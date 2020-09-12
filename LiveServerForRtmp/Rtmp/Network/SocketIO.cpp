@@ -4,13 +4,9 @@
 
 #define DEFAULT_BUFF_LENGTH	1024
 
-struct SocketUser
-{
-	CSocketIO *pSock;
-	CSocketClient *pClient;
-};
 
-CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):m_Event(NULL)
+
+CSocketIO::CSocketIO(ISocketEvent *pEvent,const char* ip, const int port, const int backlog , const int timeout , const int maxConnect):m_Event(NULL)
 {
 	strcpy_s(m_Optional.ip,ip);
 	m_Optional.port = port;
@@ -19,24 +15,21 @@ CSocketIO::CSocketIO(const char* ip, const int port, const int backlog , const i
 	m_Optional.timeout = 0;
 	
 	m_ListSock = INVALID_SOCKET;
+
+	m_Event = pEvent;
 }
 
 CSocketIO::~CSocketIO()
 {	
 	auto it = m_Users.begin();
-	SocketUser *pUser = NULL;
+	CSocketClient *pUser = NULL;
 
 	for (it = m_Users.begin(); it != m_Users.end(); it++)
 	{
-		pUser = (SocketUser *)(*it);
-		delete (pUser->pClient);
-		pUser->pClient = NULL;
-		pUser->pSock = NULL;
-
-		delete (*it);
+		pUser = (CSocketClient *)(*it);
+		delete (pUser);
 		*it = NULL;
 	}
-
 	m_Users.clear();
 
 	closesocket(m_ListSock);
@@ -120,25 +113,17 @@ int CSocketIO::CheckEvent()
 int CSocketIO::CheckReceive()
 {
 	auto it = m_Users.begin();
-	SocketUser *pUser = NULL;
+	CSocketClient *pUser = NULL;
 	int length = 0;
-	SocketOperation call;
-
-	call.close = CSocketIO::CloseS;
-	call.read = CSocketIO::ReadS;
-	call.write = CSocketIO::WriteS;
+	
 
 	for (it= m_Users.begin(); it != m_Users.end();it++)
 	{
-		pUser = (SocketUser*)*it;
-		length = pUser->pClient->CheckRead();
+		pUser = (CSocketClient*)*it;
+		length = pUser->CheckRead();
 		if (length > 0)
-		{
-			call.handle = *it;
-			m_Event->ReadBuffEvent(&call);
-		}
+			m_Event->OnReceive(pUser, this);
 	}
-
 	return 0;
 }
 
@@ -149,9 +134,7 @@ int CSocketIO::CheckConnect()
 	sockaddr_in addr;
 	int len = sizeof(sockaddr_in);
 	int errorCode;
-	
-	SocketOperation call;
-	SocketUser *pUser = NULL;
+	CSocketClient *pUser = NULL;
 
 	connSock = accept(m_ListSock, (sockaddr*)&addr, &len);
 	if (connSock == INVALID_SOCKET)
@@ -166,20 +149,12 @@ int CSocketIO::CheckConnect()
 	else
 	{
 		SetSocketNonblock(connSock);
-
-		pUser = new SocketUser;
-		pUser->pSock = this;
-		pUser->pClient = new CSocketClient(connSock, addr);
+		pUser = new CSocketClient(connSock, addr);
 		m_Users.push_back(pUser);
-
-		call.handle = pUser;
-		call.close = CSocketIO::CloseS;
-		call.read = CSocketIO::ReadS;
-		call.write = CSocketIO::WriteS;
 
 		//通知用户
 		if (m_Event)
-			m_Event->ConnectEvent(&call);
+			m_Event->OnConnect(pUser,this);
 	}
 
 	return 0;
@@ -187,15 +162,7 @@ int CSocketIO::CheckConnect()
 
 
 
-void CSocketIO::CloseServer()
-{
 
-}
-
-void CSocketIO::RegisterEvent(IEvent* event)
-{
-	m_Event = event;
-}
 
 int CSocketIO::Initialize()
 {
@@ -208,24 +175,22 @@ int CSocketIO::Run()
 	return CheckEvent();
 }
 
-int CSocketIO::ReadS(void *SockHandle, uint8_t* buf, uint32_t bufSize)
+int CSocketIO::Read(void* handle, uint8_t* buf, uint32_t length)
 {
-	SocketUser *pUser = (SocketUser*)SockHandle;
-
-	return pUser->pClient->Read(buf, bufSize);
+	CSocketClient *pUser = (CSocketClient*)handle;
+	return pUser->Read(buf, length);
 }
 
-int CSocketIO::WriteS(void *SockHandle, uint8_t* buf, uint32_t bufSize)
+int CSocketIO::Write(void* handle, uint8_t* buf, uint32_t length)
 {
-	SocketUser *pUser = (SocketUser*)SockHandle;
-
-	return pUser->pClient->Write(buf, bufSize);
+	CSocketClient *pUser = (CSocketClient*)handle;
+	return pUser->Write(buf, length);
 }
 
-int CSocketIO::CloseS(void *SockHandle)
+int CSocketIO::Close(void* handle)
 {
-	SocketUser *pUser = (SocketUser*)SockHandle;
-	return pUser->pClient->Close();
+	CSocketClient *pUser = (CSocketClient*)handle;
+	return pUser->Close();
 }
 
 

@@ -3,8 +3,8 @@
 
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 	
-CChunks::CChunks(uint32_t chunkSize,CInstanceManager* appInstance) : \
-				 m_ChunkSize(chunkSize), m_InstanceManager(appInstance)
+CChunks::CChunks(uint32_t chunkSize) : \
+				 m_ChunkSize(chunkSize)
 {
 
 }

@@ -13,7 +13,6 @@ public:
 	int WriteIn(uint8_t *src,uint32_t length);
 	int ReadOut(uint8_t *dst,uint32_t length);
 	
-
 	uint8_t* GetData();
 	int GetLength(); 
 	int MoveReaderPtr(int length);

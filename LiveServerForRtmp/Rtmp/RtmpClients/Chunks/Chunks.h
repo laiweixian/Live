@@ -4,7 +4,7 @@
 #include "Send/SendMessage.h"
 #include "HandleMessage.h"
 
-class CInstanceManager;
+
 
 class CChunks : public CSendMessage,
 				public CHandleMessage,
@@ -12,7 +12,7 @@ class CChunks : public CSendMessage,
 		
 {
 protected:
-	CChunks(uint32_t chunkSize,CInstanceManager* appInstance);
+	CChunks(uint32_t chunkSize);
 	virtual ~CChunks();
 
 protected:
@@ -24,7 +24,5 @@ private:
 private:
 	int AbortMessageHandle(uint32_t csid);
 	int SetChunkSizeHandle(uint32_t chunkSize);
-private:
-	CInstanceManager* m_InstanceManager;
 	uint32_t m_ChunkSize;
 };

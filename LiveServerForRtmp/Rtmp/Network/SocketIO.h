@@ -21,38 +21,33 @@
 			int timeout;		\
 			int maxConnect;};
 
-class CSocketIO 
+class CSocketIO : public ISocketOperation
 {
-protected:
-	DECLARE_SOCKET_OPT
-	CSocketIO(const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
-	virtual ~CSocketIO();
 public:
-	void RegisterEvent(IEvent *pEvent);
+	DECLARE_SOCKET_OPT
+	CSocketIO(ISocketEvent *pEvent,const char* ip,const int port,const int backlog = 0,const int timeout = 0,const int maxConnect = 0);
+	~CSocketIO();
+
+	
 
 protected:
 	int Initialize();
 	int Run();
 public:
-	static int ReadS(void *SockHandle, uint8_t* buf, uint32_t bufSize);
-	static int WriteS(void *SockHandle, uint8_t* buf, uint32_t bufSize);
-	static int CloseS(void *SockHandle);
+	int Read(void* handle,uint8_t* buf, uint32_t length) ;
+	int Write(void* handle,uint8_t* buf, uint32_t length) ;
+	int Close(void* handle);
 private:
 	int InitListenSocket();
 	int CheckEvent();
-	void CloseServer();
+
 
 	static int SetSocketNonblock(SOCKET sock);
-	
-	
 	int CheckConnect();
 	int CheckReceive();
-
 private:
-	
 	Optional m_Optional;
 	SOCKET m_ListSock;
-
-	IEvent *m_Event;
+	ISocketEvent *m_Event;
 	vector<void*> m_Users;
 };
