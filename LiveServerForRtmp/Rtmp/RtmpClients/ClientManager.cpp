@@ -73,7 +73,7 @@ void CClientManager::Leave(const IO_HANDLE handle)
 }
 
 
-int CClientManager::WriteToUer(CRtmpClient* pClient, uint8_t* buf, const uint32_t length)
+int CClientManager::WriteToUser(CRtmpClient* pClient, uint8_t* buf, const uint32_t length)
 {
 	auto it = m_Clients.begin();
 	Client cl;

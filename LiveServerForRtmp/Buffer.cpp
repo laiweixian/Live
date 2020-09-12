@@ -64,7 +64,7 @@ int CBuffer::GetLength()
 	return GetReadLength();
 }
 
-int CBuffer::MoveReaderPtr(int length)
+int CBuffer::Seek(int length)
 {
 	const int readLen = GetReadLength();
 	if (length > readLen)

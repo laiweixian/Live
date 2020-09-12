@@ -15,7 +15,7 @@ public:
 	
 	uint8_t* GetData();
 	int GetLength(); 
-	int MoveReaderPtr(int length);
+	int Seek(int length);
 private:
 	void ExtendBuff();
 	int  GetWritableLen();

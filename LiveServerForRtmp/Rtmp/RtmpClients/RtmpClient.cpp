@@ -27,22 +27,24 @@ void CRtmpClient::Processing()
 
 	buf = m_Read.GetData();
 	bufLength = m_Read.GetLength();
+
+	if (buf == NULL || bufLength == 0)
+		return;
+
 	if (HandshakeEnd() == false)
 	{
 		length = OnHandshake(buf, bufLength);
-		m_Read.MoveReaderPtr(length);
-		if (HandshakeEnd() == true)
-			return Processing();
+		if (HandshakeEnd() == true && bufLength > length)
+			length += OnChunks(buf + length, bufLength-length);
 	}
 	else
-	{
 		length = OnChunks(buf, length);
-		m_Read.MoveReaderPtr(length);
-	}
+	
+	m_Read.Seek(length);
 	return;
 }
 
 int CRtmpClient::Send2Peer(uint8_t* src, const int srcLength)
 {
-	return m_Manager->WriteToUer(this, src, srcLength);
+	return m_Manager->WriteToUser(this, src, srcLength);
 }

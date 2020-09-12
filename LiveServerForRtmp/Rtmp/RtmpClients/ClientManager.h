@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RtmpClient.h"
+#include "RtmpApp/RtmpApp.h"
 
 typedef void* IO_HANDLE;
 
@@ -34,7 +35,7 @@ public:
 	void Processing(const IO_HANDLE handle,uint8_t* buf,const uint32_t length);
 	void Leave(const IO_HANDLE handle);
 
-	int WriteToUer(CRtmpClient* pClient, uint8_t* buf, const uint32_t length);
+	int WriteToUser(CRtmpClient* pClient, uint8_t* buf, const uint32_t length);
 	int CloseUser(CRtmpClient* pClient);
 
 
@@ -42,4 +43,6 @@ private:
 	const uint32_t m_DefaultChunkSize;
 	IIOOperation *m_Operation;
 	vector<Client> m_Clients;
+	CRtmpApp *m_App;
 };
+

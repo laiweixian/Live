@@ -47,6 +47,7 @@ private:
 	int VideoMessageHandle();
 	int WindowAcknowledgementSizeHandle(uint32_t winAckSize);
 
+	//CommandMessageHandle µÄchildren
 	int CMConnectHandle(CCommandConnect *pCmd);
 	int CMCallHandle();
 	int CMCloseHandle();

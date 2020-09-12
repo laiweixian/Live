@@ -167,7 +167,7 @@
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\Network\SocketClient.h" />
     <ClInclude Include="Rtmp\Network\SockEvent.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h" />
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AbortMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Acknowledgement.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AggregateMessage.h" />
@@ -192,10 +192,10 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\RtmpClient.h" />
     <ClInclude Include="Rtmp\RtmpClients\ClientManager.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h" />
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.h" />
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\RtmpInstance.h" />
     <ClInclude Include="Rtmp\Network\SocketIO.h" />
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.h" />
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\VideoCodec.h" />
     <ClInclude Include="Rtmp\Util\RtmpUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -224,10 +224,10 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\ClientManager.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\RtmpClient.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\RtmpInstance.cpp" />
     <ClCompile Include="Rtmp\Network\SocketIO.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Handshake\Handshake.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Chunks.cpp" />
@@ -246,7 +246,7 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\UserControlMessages.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\VideoMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\WindowAcknowledgementSize.cpp" />
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\VideoCodec.cpp" />
     <ClCompile Include="Rtmp\Util\RtmpUtils.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

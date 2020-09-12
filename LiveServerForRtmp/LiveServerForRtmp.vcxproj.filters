@@ -48,18 +48,6 @@
     <ClInclude Include="Rtmp\RtmpClients\RtmpClient.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpApp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -165,6 +153,18 @@
     <ClInclude Include="Rtmp\RtmpClients\Handshake\Handshake.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\RtmpInstance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\VideoCodec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,18 +192,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\RtmpClient.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpApp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\AudioCodec.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\RtmpInstance.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rtmp\RtmpApp\RtmpInstance\VideoCodec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ChunkHeader\ChunkHeader.cpp">
@@ -309,6 +297,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Handshake\Handshake.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\RtmpInstance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\VideoCodec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
