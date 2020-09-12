@@ -128,3 +128,8 @@ ConnectObject* CCommandConnect::GetObject()
 {
 	return m_Obj;
 }
+
+uint8_t* CCommandConnect::TranslatePayload(ConnectObject* pObj, int *outLenght)
+{
+	return NULL;
+}

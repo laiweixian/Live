@@ -119,8 +119,8 @@ uint16_t HostToBig16(uint16_t src)
 	char* dst = (char*)&number;
 	char* cSrc = (char*)&src;
 
-	memcpy(dst, cSrc + 1, 1); dst += 1;
-	memcpy(dst, cSrc + 0, 1); dst += 1;
+	memcpy(dst, cSrc + 1, 1); 
+	memcpy(dst+1,cSrc,1); 
 	return number;
 }
 
@@ -130,10 +130,10 @@ uint32_t HostToBig24(uint32_t src)
 	char* dst = (char*)&number;
 	char* cSrc = (char*)&src;
 
-	memcpy(dst, cSrc + 3, 1); dst += 1;
-	memcpy(dst, cSrc + 2, 1); dst += 1;
-	memcpy(dst, cSrc + 1, 1); dst += 1;
-	memcpy(dst, cSrc + 0, 1); dst += 1;
+	memcpy(dst, cSrc + 3, 1); 
+	memcpy(dst+1, cSrc + 2, 1); 
+	memcpy(dst+2, cSrc + 1, 1);
+	memcpy(dst+3, cSrc + 0, 1); 
 	return number;
 }
 
@@ -143,10 +143,10 @@ uint32_t HostToBig32(uint32_t src)
 	char* dst = (char*)&number;
 	char* cSrc = (char*)&src;
 
-	memcpy(dst, cSrc + 3, 1); dst += 1;
-	memcpy(dst, cSrc + 2, 1); dst += 1;
-	memcpy(dst, cSrc + 1, 1); dst += 1;
-	memcpy(dst, cSrc + 0, 1); dst += 1;
+	memcpy(dst,cSrc+3,1);
+	memcpy(dst+1,cSrc+2,1);
+	memcpy(dst+2, cSrc + 1, 1);
+	memcpy(dst+3, cSrc , 1);
 	return number;
 }
 

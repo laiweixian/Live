@@ -94,3 +94,45 @@ int CCommandMessage::Handle(CBaseMessage* pMsg)
 	return CommandMessageHandle(cType,pCls);
 }
 
+uint8_t* CCommandMessage::TranslatePayload(CommandEnum cType, void *pCls, int *outLength)
+{
+	uint8_t *buf = NULL;
+	
+	switch (cType)
+	{
+	case NONE:
+		break;
+	case CONNECT:
+		buf = CCommandConnect::TranslatePayload(static_cast<ConnectObject*>(pCls), outLength);
+		break;
+	case CALL:
+		break;
+	case CLOSE:
+		break;
+	case CLOSE_STREAM:
+		break;
+	case CREATE_STREAM:
+		break;
+	case PLAY:
+		break;
+	case PLAY2:
+		break;
+	case DELETE_STREAM:
+		break;
+	case RECEIVE_AUDIO:
+		break;
+	case RECEIVE_VIDEO:
+		break;
+	case PUBLISH:
+		break;
+	case SEEK:
+		break;
+	case PAUSE:
+		break;
+	default:
+		break;
+	}
+
+	return buf;
+}
+

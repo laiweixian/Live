@@ -33,9 +33,7 @@ public:
 
 	static CBaseMessage* Create(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
 	void Destroy();
-
 	int AppendChunk(uint8_t* src, const uint32_t srcLen);
-	
 	CChunkHeader* GetHead();
 	Payload* GetPayload();
 	bool Full();

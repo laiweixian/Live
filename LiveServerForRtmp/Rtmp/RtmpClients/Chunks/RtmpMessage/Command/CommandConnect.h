@@ -38,6 +38,7 @@ public:
 public:
 	int SetConnect(AMF0::CParse *parse);
 	ConnectObject* GetObject();
+	static uint8_t* TranslatePayload(ConnectObject* pObj, int *outLenght);
 private:
 	int SetObject(AMF0::Data* pData, const char* key, ConnectObject *pObj, SetValue sVal);
 	static void SetApp(ConnectObject* pObj, AMF0::Data* pValue);

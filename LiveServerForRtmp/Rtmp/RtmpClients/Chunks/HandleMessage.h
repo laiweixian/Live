@@ -39,7 +39,7 @@ private:
 	//处理RTMP协议的消息
 	int AcknowledgementHandle(uint32_t sequenceNumber);
 	int AggregateMessageHandle(uint32_t sequenceNumber);
-	int AudioMessageHandle();
+	int AudioMessageHandle(CBaseMessage* pMsg);
 	int CommandMessageHandle(CommandEnum cType, void *pCls);
 	int DataMessageHandle();
 	int SetPeerBandwidthHandle();

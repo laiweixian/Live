@@ -12,5 +12,5 @@ protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
 
 protected:
-	virtual int AudioMessageHandle() = 0;
+	virtual int AudioMessageHandle(CBaseMessage* pMsg) = 0;
 };

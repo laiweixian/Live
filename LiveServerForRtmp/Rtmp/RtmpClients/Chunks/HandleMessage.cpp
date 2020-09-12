@@ -84,7 +84,7 @@ int CHandleMessage::AggregateMessageHandle(uint32_t sequenceNumber)
 	return -1;
 }
 
-int CHandleMessage::AudioMessageHandle()
+int CHandleMessage::AudioMessageHandle(CBaseMessage* pMsg)
 {
 	TRACE("Handle AudioMessage\n");
 	return -1;

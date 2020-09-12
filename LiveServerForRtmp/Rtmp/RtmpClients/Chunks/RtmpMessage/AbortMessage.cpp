@@ -20,3 +20,20 @@ int CAbortMessage::Handle(CBaseMessage* pMsg)
 	csid = BigToHost32(buf);
 	return AbortMessageHandle(csid);
 }
+
+uint8_t* CAbortMessage::TranslatePayload(uint32_t csid, uint32_t* outLength)
+{
+	uint8_t *buf = NULL;
+	uint32_t bufLength = 0;
+	uint32_t bNum = 0; 
+
+	bufLength = 4;
+	buf = new uint8_t[bufLength];
+	memset(buf,0,bufLength);
+
+	bNum = HostToBig32(csid);
+	memcpy(buf,&bNum,4);
+
+	*outLength = bufLength;
+	return buf;
+}

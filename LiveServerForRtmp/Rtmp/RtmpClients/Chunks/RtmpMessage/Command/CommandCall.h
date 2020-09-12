@@ -10,5 +10,7 @@ public:
 	virtual ~CCommandCall();
 
 	int HandleCall(AMF0::CParse *parse);
+
+	
 };
 

@@ -1,6 +1,6 @@
 #include "SendChunk.h"
 
-CSendChunk::CSendChunk()
+CSendChunk::CSendChunk(): m_Prev(NULL)
 {
 
 }

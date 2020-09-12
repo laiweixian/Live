@@ -52,6 +52,8 @@ protected:
 
 protected:
 	virtual int Handle(CBaseMessage* pMsg) final;
+public:
+	static uint8_t* TranslatePayload(CommandEnum cType, void *pCls,int *outLenght);
 protected:
 	virtual int CommandMessageHandle(CommandEnum cType,void *pCls) = 0;
 
