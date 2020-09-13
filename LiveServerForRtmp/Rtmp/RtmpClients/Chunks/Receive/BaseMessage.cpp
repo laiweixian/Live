@@ -63,7 +63,6 @@ CBaseMessage* CBaseMessage::CreateForChunk(CBaseMessage* prev, uint32_t chunkSiz
 
 	pMsg = new CBaseMessage(chunkSize);
 	pMsg->SetFirstChunk(pHead,src+headerLen,dataLen);
-
 	*outChunkLen = headerLen + dataLen;
 	return pMsg;
 
@@ -154,3 +153,5 @@ full:
 err:
 	return -1;
 }
+
+

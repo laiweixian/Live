@@ -150,7 +150,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.h" />
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\Chunking.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCloseStream.h" />
@@ -201,7 +204,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\Chunking.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCloseStream.cpp" />

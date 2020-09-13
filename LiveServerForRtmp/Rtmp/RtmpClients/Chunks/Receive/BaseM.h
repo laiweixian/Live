@@ -1,7 +1,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include "ChunkHeader/ChunkHeader.h"
 
 #define SET_CHUNK_SIZE_TYPE_ID				((uint8_t)1)
 #define ABORT_MESSAGE_TYPE_ID				((uint8_t)2)
@@ -20,36 +19,22 @@
 #define AGGREGATE_MESSAGE_TYPE_ID			((uint8_t)22)
 
 #define DECLARE_BASE_MESSAGE \
-	struct Payload{uint8_t* buf;uint32_t bufSize;uint8_t *ptr;};\
-	struct Header{uint8_t msgType;uint32_t payloadLength;uint32_t timestamp;uint32_t msid;};
-							 
-
-/*-----------------------------------------------------------------------------------------*/
-class CBaseMessage
+	struct Header{uint8_t msgType;uint32_t payloadLength;uint32_t timestamp;uint32_t msid;};\
+	struct Payload{uint8_t* buf;uint32_t bufSize;uint8_t *ptr;};
+	
+class CBaseM
 {
-protected:
-	CBaseMessage(uint32_t chunkSize);
-	virtual ~CBaseMessage();
-
 public:
 	DECLARE_BASE_MESSAGE
-
-	static CBaseMessage* CreateForChunk(CBaseMessage* prev, uint32_t chunkSize,uint8_t* src,const uint32_t srcLen,int *outChunkLen);
-	
-	void Destroy();
-	int AppendChunk(uint8_t* src, const uint32_t srcLen);
-	CChunkHeader* GetHead();
-	Payload* GetPayload();
-	bool Full();
-
-private:
-	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
+protected:
+	CBaseM();
+	virtual ~CBaseM();
 
 protected:
-	CChunkHeader* m_Header;
-	uint32_t m_ChunkSize;
+	void SetHeader(uint8_t msgType, uint32_t payloadLength, uint32_t timestamp, uint32_t msid);
+	void SetPayload(uint8_t* buf, uint32_t bufLength);
+	void AppendPayload(uint8_t* buf, uint32_t bufLength);
+protected:
+	Header m_Header;
 	Payload m_Payload;
 };
-
-
-
