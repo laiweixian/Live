@@ -42,3 +42,13 @@ void CBaseM::AppendPayload(uint8_t* buf, uint32_t bufLength)
 	memcpy(m_Payload.ptr,buf,bufLength);
 	m_Payload.ptr += bufLength;
 }
+
+CBaseM::Header CBaseM::GetHeader()
+{
+	return m_Header;
+}
+
+CBaseM::Payload CBaseM::GetPayload()
+{
+	return m_Payload;
+}

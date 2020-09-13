@@ -29,6 +29,9 @@ public:
 protected:
 	CBaseM();
 	virtual ~CBaseM();
+public:
+	Header GetHeader();
+	Payload GetPayload();
 
 protected:
 	void SetHeader(uint8_t msgType, uint32_t payloadLength, uint32_t timestamp, uint32_t msid);

@@ -43,7 +43,7 @@ public:
 	bool Full();
 
 private:
-	void SetFirstChunk(CChunkHeader* pHead,uint8_t *data,int dataLen);
+	void SetFirstChunk(CChunkHeader* pHead, uint8_t *chunkPayloadBuf, int chunkPayloadBufLen);
 
 protected:
 	CChunkHeader* m_Header;
