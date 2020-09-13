@@ -13,14 +13,14 @@ CReceiveChunk::~CReceiveChunk()
 
 }
 
-CBaseMessage* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChunkLength)
+CAntiChunking* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChunkLength)
 {
 	const uint32_t chunkSize = GetChunkSize();
-	CBaseMessage *pMsg = NULL;
+	CAntiChunking *pMsg = NULL;
 	int chunkLen = 0;
 	int result = 0;
 	
-	pMsg = CBaseMessage::CreateForChunk(m_Lastest, chunkSize,src,srcLen,&chunkLen);
+	pMsg = CAntiChunking::Create(m_Lastest, chunkSize,src,srcLen,&chunkLen);
 		
 	if (pMsg)
 	{

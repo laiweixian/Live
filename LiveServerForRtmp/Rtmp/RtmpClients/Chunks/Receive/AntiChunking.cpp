@@ -131,6 +131,6 @@ void CAntiChunking::SetFirstChunk(CChunkHeader* pHead, uint8_t *chunkPayloadBuf,
 	m_Header = pHead;
 	head = m_Header->GetHead();
 
-	CBaseM::SetHeader(head.messageTypeID, head.messageLength, head.timestamp + head.timestampDelta, head.messageStreamID);
-	CBaseM::AppendPayload(chunkPayloadBuf, chunkPayloadBufLen);
+	CBaseMessage::SetHeader(head.messageTypeID, head.messageLength, head.timestamp + head.timestampDelta, head.messageStreamID);
+	CBaseMessage::AppendPayload(chunkPayloadBuf, chunkPayloadBufLen);
 }

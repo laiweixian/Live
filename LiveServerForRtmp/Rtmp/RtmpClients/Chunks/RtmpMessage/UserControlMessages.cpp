@@ -12,19 +12,19 @@ CUserControlMessages::~CUserControlMessages()
 
 int CUserControlMessages::Handle(CBaseMessage* pMsg)
 {
-	CBaseMessage::Payload* payload = pMsg->GetPayload();
-	const int length = payload->bufSize;
+	CBaseMessage::Payload payload = pMsg->GetPayload();
+	const int length = payload.bufSize;
 	const int dataFieldLen = length - 2;
 	uint16_t eventType = 0;
 	uint8_t *eventData = NULL;
 	int ret = 0;
 	
-	eventType = BigToHost16(payload->buf);
+	eventType = BigToHost16(payload.buf);
 
 	if (dataFieldLen > 0)
 	{
 		eventData = new uint8_t[dataFieldLen];
-		memcpy(&eventType, payload->buf +2, dataFieldLen);
+		memcpy(&eventType, payload.buf +2, dataFieldLen);
 	}
 		
 	switch (eventType)

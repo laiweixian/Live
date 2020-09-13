@@ -1,9 +1,9 @@
 #pragma once
 
 #include "ChunkHeader/ChunkHeader.h"
-#include "BaseM.h"
+#include "BaseMessage.h"
 
-class CAntiChunking : public CBaseM
+class CAntiChunking : public CBaseMessage
 {
 private:
 	CAntiChunking(uint32_t chunkSize);

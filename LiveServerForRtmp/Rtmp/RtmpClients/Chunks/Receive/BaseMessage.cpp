@@ -1,157 +1,63 @@
 #include "BaseMessage.h"
 
-
-CBaseMessage::CBaseMessage(uint32_t chunkSize) :\
-						 m_Header(NULL),m_ChunkSize(chunkSize), m_Payload({NULL,0})
+CBaseMessage::CBaseMessage()
 {
-	
+	memset(&m_Header, 0, sizeof(Header));
+	memset(&m_Payload, 0, sizeof(Payload));
+}
+
+CBaseMessage::CBaseMessage(uint8_t msgType, uint32_t payloadLength, uint32_t timestamp, uint32_t msid, uint8_t* payloadBuf, uint32_t payloadBufLen)
+{
+	memset(&m_Header, 0, sizeof(Header));
+	memset(&m_Payload, 0, sizeof(Payload));
+
+	SetHeader(msgType, payloadLength, timestamp, msid);
+	SetPayload(payloadBuf, payloadBufLen);
 }
 
 CBaseMessage::~CBaseMessage()
 {
-	
+
 }
 
-CBaseMessage* CBaseMessage::CreateForChunk(CBaseMessage* prev, uint32_t chunkSize, uint8_t* src, const uint32_t srcLen, int *outChunkLen)
+void CBaseMessage::SetHeader(uint8_t msgType, uint32_t payloadLength, uint32_t timestamp, uint32_t msid)
 {
-	CBaseMessage* pMsg = NULL;
-	CChunkHeader *pHead = NULL;
-	CChunkHeader::Head head;
-	int headerLen = 0, dataLen = 0;
-	bool newMsg = false;
-	int msgLength = 0;
+	m_Header.msgType = msgType;
+	m_Header.payloadLength = payloadLength;
+	m_Header.timestamp = timestamp;
+	m_Header.msid = msid;
 
-	pHead = CChunkHeader::Parse(src, srcLen, &headerLen);
-	if (pHead == NULL)
-		goto shortData;
-
-	head = pHead->GetHead();
-	switch (head.fmt)
-	{
-	case 0x00:
-		newMsg = true;
-		break;
-	case 0x01:	
-		newMsg = true;
-		pHead->CopyFrom(prev->GetHead());
-		break;
-	case 0x02:		
-		newMsg = true;
-		pHead->CopyFrom(prev->GetHead());
-		break;
-	case 0x03:		
-		if (prev->Full())
-		{
-			newMsg = true;
-			pHead->CopyFrom(prev->GetHead());
-		}
-		else
-		{
-			newMsg = false;
-		}
-		break;
-	}
-
-	if (newMsg == false)
-		goto noNew;
-
-	msgLength = pHead->GetHead().messageLength;
-	dataLen = chunkSize > msgLength ? msgLength : chunkSize;
-
-	if ((dataLen+headerLen) > srcLen)
-		goto shortData;
-
-	pMsg = new CBaseMessage(chunkSize);
-	pMsg->SetFirstChunk(pHead,src+headerLen,dataLen);
-	*outChunkLen = headerLen + dataLen;
-	return pMsg;
-
-noNew:
-	if (pHead) delete pHead;
-	*outChunkLen = 0;
-	return NULL;
-
-shortData:
-	if (pHead) delete pHead;
-	*outChunkLen = -1;
-	return NULL;
-}
-
-void CBaseMessage::Destroy()
-{
-	delete this;
-}
-
-
-void CBaseMessage::SetFirstChunk(CChunkHeader* pHead, uint8_t *data, int dataLen)
-{
-	CChunkHeader::Head head;
-
-	m_Header = pHead;
-	head = m_Header->GetHead();
-
-	//alloc payload 
-	m_Payload.bufSize = head.messageLength;
-	m_Payload.buf = new uint8_t[m_Payload.bufSize];
+	m_Payload.bufSize = payloadLength;
+	m_Payload.buf = new uint8_t[payloadLength];
+	memset(m_Payload.buf, 0, payloadLength);
 	m_Payload.ptr = m_Payload.buf;
-
-	memset(m_Payload.buf,0, m_Payload.bufSize);
-	memcpy(m_Payload.ptr,data,dataLen);
-	m_Payload.ptr += dataLen;
 }
 
-CBaseMessage::Payload* CBaseMessage::GetPayload()
+void CBaseMessage::SetPayload(uint8_t* buf, uint32_t bufLength)
 {
-	return (&m_Payload);
+	if (m_Payload.buf != NULL && m_Payload.bufSize == bufLength)
+	{
+		memcpy(m_Payload.buf, buf, bufLength);
+		m_Payload.ptr += bufLength;
+	}
 }
 
-CChunkHeader* CBaseMessage::GetHead()
+void CBaseMessage::AppendPayload(uint8_t* buf, uint32_t bufLength) 
+{
+	const uint32_t remain = m_Payload.buf + m_Payload.bufSize - m_Payload.ptr;
+	if (bufLength > remain)
+		return;
+	
+	memcpy(m_Payload.ptr,buf,bufLength);
+	m_Payload.ptr += bufLength;
+}
+
+CBaseMessage::Header CBaseMessage::GetHeader()
 {
 	return m_Header;
 }
 
-bool CBaseMessage::Full()
+CBaseMessage::Payload CBaseMessage::GetPayload()
 {
-	return (m_Payload.buf + m_Payload.bufSize == m_Payload.ptr);
+	return m_Payload;
 }
-
-
-int CBaseMessage::AppendChunk(uint8_t* src, const uint32_t srcLen)
-{
-	CChunkHeader *pHead = NULL;
-	int headerLen = 0, dataLen = 0;
-	CChunkHeader::Head head;
-	int leftLength = 0;
-
-	if (Full() == true)
-		goto full;
-
-	pHead = CChunkHeader::Parse(src, srcLen, &headerLen);
-	if (pHead == NULL)
-		goto shortData;
-	
-	head = pHead->GetHead();
-	if (head.fmt != 0x03)
-		goto err;
-
-	//chunk data len
-	leftLength = (m_Payload.buf + m_Payload.bufSize - m_Payload.ptr);
-	dataLen = leftLength > m_ChunkSize ? m_ChunkSize : leftLength;
-
-	if ((headerLen + dataLen) > srcLen)
-		goto shortData;
-
-	memcpy(m_Payload.ptr,src+headerLen,dataLen);
-	m_Payload.ptr += dataLen;
-
-	return (dataLen + headerLen);
-
-shortData:
-	return 0;
-full:
-	return 0;
-err:
-	return -1;
-}
-
-

@@ -13,11 +13,11 @@ CHandleMessage::~CHandleMessage()
 
 int CHandleMessage::HandleMessage(CBaseMessage* pMsg)
 {
-	CChunkHeader::Head header;
+	CBaseMessage::Header header;
 	int ret = 0;
 
-	header = pMsg->GetHead()->GetHead();
-	switch (header.messageTypeID)
+	header = pMsg->GetHeader();
+	switch (header.msgType)
 	{
 	case SET_CHUNK_SIZE_TYPE_ID:
 		ret = CSetChunkSize::Handle(pMsg);

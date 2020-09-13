@@ -152,7 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.h" />
     <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\Chunking.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.h" />
@@ -192,7 +192,7 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF0.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF3.h" />
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\RtmpClient.h" />
     <ClInclude Include="Rtmp\RtmpClients\ClientManager.h" />
     <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.h" />
@@ -206,7 +206,7 @@
   <ItemGroup>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.cpp" />
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\Chunking.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandCall.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Command\CommandClose.cpp" />
@@ -243,7 +243,7 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF0.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\AMF3.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AudioMessage.cpp" />
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\CommandMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\DataMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetChunkSize.cpp" />

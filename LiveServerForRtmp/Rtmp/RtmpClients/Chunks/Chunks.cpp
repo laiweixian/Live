@@ -16,7 +16,7 @@ CChunks::~CChunks()
 
 int CChunks::OnChunks(uint8_t* src, const int srcLength)
 {
-	CBaseMessage* msg = NULL;
+	CAntiChunking* pMsg = NULL;
 	int totalLen = 0, chunkLen = 0;
 	int result = 0;
 
@@ -24,19 +24,19 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 	while (totalLen < srcLength)
 	{
 		chunkLen = 0;
-		msg = Receive(src + totalLen, srcLength - totalLen, &chunkLen);
-		if (msg == NULL)
+		pMsg = Receive(src + totalLen, srcLength - totalLen, &chunkLen);
+		if (pMsg == NULL)
 		{
 			TRACE("Receive Chunk is Null\n");
 			break;
 		}
 			
 		totalLen += chunkLen;
-		if (msg->Full())
+		if (pMsg->Legal())
 		{
-			result = HandleMessage(msg);
+			result = HandleMessage(pMsg);
 			if (result != 0)
-				TRACE("RtmpMessage Handle Failure,result:%d,id:%d\n", result, msg->GetHead()->GetHead().messageTypeID);
+				TRACE("RtmpMessage Handle Failure,result:%d,id:%d\n", result, pMsg->GetHeader().msgType);
 		}
 		
 	}

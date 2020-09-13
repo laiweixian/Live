@@ -12,8 +12,8 @@ CCommandMessage::~CCommandMessage()
 
 int CCommandMessage::Handle(CBaseMessage* pMsg)
 {
-	CChunkHeader::Head header = pMsg->GetHead()->GetHead();
-	CBaseMessage::Payload* payload = pMsg->GetPayload();
+	CBaseMessage::Header head = pMsg->GetHeader();
+	CBaseMessage::Payload payload = pMsg->GetPayload();
 	AMF0::CParse* parse = NULL;
 	AMF0::Data *pData = NULL;
 	char commandName[1024] = {0};
@@ -21,10 +21,10 @@ int CCommandMessage::Handle(CBaseMessage* pMsg)
 	CommandEnum cType;
 	void *pCls = NULL;
 
-	if (header.messageTypeID == COMMAND_MESSAGE_TYPE_ID_AMF3)
+	if (head.msgType == COMMAND_MESSAGE_TYPE_ID_AMF3)
 		return ERR_NO_AMF3;
 
-	parse = AMF0::CParse::Create(payload->buf, payload->bufSize);
+	parse = AMF0::CParse::Create(payload.buf, payload.bufSize);
 	if (parse == NULL)
 		return ERR_AMF0_PARSE;
 

@@ -171,7 +171,7 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.h">
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -326,7 +326,7 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseM.cpp">
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
