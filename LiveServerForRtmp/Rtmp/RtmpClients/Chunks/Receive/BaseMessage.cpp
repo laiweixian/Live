@@ -61,3 +61,8 @@ CBaseMessage::Payload CBaseMessage::GetPayload()
 {
 	return m_Payload;
 }
+
+bool CBaseMessage::Legal()
+{
+	return (m_Payload.buf + m_Payload.bufSize == m_Payload.ptr);
+}

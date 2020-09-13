@@ -119,10 +119,7 @@ err:
 	return -1;
 }
 
-bool CAntiChunking::Legal()
-{
-	return (m_Payload.buf + m_Payload.bufSize == m_Payload.ptr);
-}
+
 
 void CAntiChunking::SetFirstChunk(CChunkHeader* pHead, uint8_t *chunkPayloadBuf, int chunkPayloadBufLen)
 {

@@ -34,7 +34,7 @@ protected:
 public:
 	Header GetHeader();
 	Payload GetPayload();
-
+	bool Legal();
 protected:
 	void SetHeader(uint8_t msgType, uint32_t payloadLength, uint32_t timestamp, uint32_t msid);
 	void SetPayload(uint8_t* buf, uint32_t bufLength);
