@@ -22,6 +22,7 @@ public:
 	~CChunkHeader() ;
 
 	static CChunkHeader* Parse(uint8_t* src,const int srcLength,int* outLength);
+	static uint8_t* Encode(Head head,uint32_t* outLength);
 	void CopyFrom(CChunkHeader* pSrc);
 	CChunkHeader::Head GetHead();
 

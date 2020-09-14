@@ -46,8 +46,8 @@ CChunkHeader* CChunkHeader::Parse(uint8_t* src, const int srcLength, int* outLen
 	//Basic Header
 	const uint8_t first = *ptr;
 	
-	csidBits = (first & 0x3f) ;
-	head.fmt = (first & 0xc0);
+	csidBits = ((first << 2) >> 2) ;
+	head.fmt = (first >> 6);
 	switch (csidBits)
 	{
 	case max6Bits:	//3 bytes
@@ -162,4 +162,125 @@ void CChunkHeader::CopyFrom(CChunkHeader* pSrc)
 CChunkHeader::Head CChunkHeader::GetHead()
 {
 	return m_Head;
+}
+
+uint8_t* CChunkHeader::Encode(Head head, uint32_t* outLength)
+{
+	uint8_t* buf = NULL,*ptr = NULL;
+	uint32_t bufLength = 0;
+
+	//csid
+	uint8_t *bufs[3] = { 0 };
+	uint32_t bufsLen[3] = { 0 };
+
+	//
+	uint32_t bigNumber32 = 0;
+	uint32_t bigNumber24 = 0;
+	uint16_t bigNumber16 = 0;
+
+	//
+	int i = 0;
+
+
+	//±àÂëCSID
+	if (head.csid >= 2 && head.csid <= 63)
+	{
+		bufsLen[0] = 1;
+		bufs[0] = new uint8_t[1];	memset(bufs[0], 0, 1);
+
+		bufs[0][0] = head.csid;
+	}
+	else if (head.csid >= 64 && head.csid <= 319)
+	{
+		bufsLen[0] = 2;
+		bufs[0] = new uint8_t[2];	memset(bufs[0], 0, 2);
+
+		//
+		bufs[0][0] = 0x00;
+		bufs[0][1] = head.csid - 64;
+	}
+	else if (head.csid >= 320 && head.csid <= 65599)
+	{
+		uint16_t num, bigNum;
+		
+		num = head.csid - 320;
+		bigNum = HostToBig16(num);
+
+		bufsLen[0] = 3;				memset(bufs[0], 0, 3);
+		bufs[0] = new uint8_t[3];
+
+		bufs[0][0] = 0x3f;
+		memcpy(bufs[0] + 1, &bigNum, 2);
+	}
+	//FMT
+	bufs[0][0] |= (head.fmt << 6);
+
+	//message header
+	switch (head.fmt)
+	{
+	case 0x00:
+		bufsLen[1] = 11;
+		bufs[1] = new uint8_t[11];
+
+		bigNumber24 = HostToBig24(head.timestamp);			memcpy(bufs[1],&bigNumber24,3);
+		bigNumber24 = HostToBig24(head.messageLength);		memcpy(bufs[1]+3, &bigNumber24, 3);
+															memcpy(bufs[1]+3+3,&head.messageTypeID,1);
+		bigNumber32 = HostToBig32(head.messageStreamID);	memcpy(bufs[1] + 3 + 3 + 1, &bigNumber32, 4);
+		break;
+	case 0x01:
+		bufsLen[1] = 7;
+		bufs[1] = new uint8_t[7];
+
+		bigNumber24 = HostToBig24(head.timestampDelta);		memcpy(bufs[1], &bigNumber24, 3);
+		bigNumber24 = HostToBig24(head.messageLength);		memcpy(bufs[1]+3, &bigNumber24, 3);
+															memcpy(bufs[1] + 3 + 3, &head.messageTypeID, 1);
+		break;
+	case 0x02:
+		bufsLen[1] = 3;
+		bufs[1] = new uint8_t[3];
+
+		bigNumber24 = HostToBig24(head.timestampDelta);	memcpy(bufs[1], &bigNumber24, 3);
+		break;
+	case 0x03:
+		bufsLen[1] = 0;
+		bufs[1] = NULL;
+		break;
+	default:
+		break;
+	}
+
+	//extendedTimestamp
+	if (head.extendedTimestamp != 0)
+	{
+		bufsLen[2] = 4;
+		bufs[2] = new uint8_t[4];
+		bigNumber32 = HostToBig32(head.extendedTimestamp);
+		memcpy(bufs[2], &bigNumber32, 4);
+	}
+	else
+	{
+		bufsLen[2] = 0;
+		bufs[2] = NULL;
+	}
+
+	for (i = 0; i < 3; i++)
+		bufLength += bufsLen[i];
+
+	buf = new uint8_t[bufLength];
+	ptr = buf;
+	for (i = 0; i < 3; i++)
+	{
+		memcpy(ptr,bufs[i],bufsLen[i]);
+		ptr += bufsLen[i];
+	}
+
+	for (i = 0; i < 3; i++)
+	{
+		if (bufs[i] != NULL) delete[] bufs[i];
+		bufs[i] = NULL;
+		bufsLen[i] = 0;
+	}
+	
+	*outLength = bufLength;
+	return buf;
 }
