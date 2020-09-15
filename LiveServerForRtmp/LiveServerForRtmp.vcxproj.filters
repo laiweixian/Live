@@ -174,16 +174,16 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\SendMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\Process\ConnectProcess.h">
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\ConnectMission.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\Process\PublishProcess.h">
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PlayMission.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\Process\PlayProcess.h">
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PublishMission.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\Process\BaseProcess.h">
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -339,6 +339,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\SendMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\ConnectMission.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\PlayMission.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\PublishMission.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

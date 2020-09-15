@@ -10,10 +10,12 @@ protected:
 protected:
 	CAntiChunking* Receive(uint8_t* src, const int srcLength,int *outChunkLength);
 	int Abort(uint32_t csid);
+	int ChangeChunkSize(uint32_t chunkSize);
 
 protected:
-	virtual uint32_t GetChunkSize() = 0;
+	
 	
 private:
 	CAntiChunking *m_Lastest;
+	uint32_t m_ReceiveChunkSize;
 };

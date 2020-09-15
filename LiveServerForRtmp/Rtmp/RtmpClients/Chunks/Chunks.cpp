@@ -3,8 +3,7 @@
 
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 	
-CChunks::CChunks(uint32_t chunkSize) : \
-				 m_ChunkSize(chunkSize)
+CChunks::CChunks() 
 {
 
 }
@@ -44,10 +43,6 @@ int CChunks::OnChunks(uint8_t* src, const int srcLength)
 	return totalLen;
 }
 
-uint32_t CChunks::GetChunkSize()
-{
-	return m_ChunkSize;
-}
 
 int CChunks::AbortMessageHandle(CAbortMessage::Object *pObj)
 {
@@ -58,7 +53,12 @@ int CChunks::AbortMessageHandle(CAbortMessage::Object *pObj)
 int CChunks::SetChunkSizeHandle(CSetChunkSize::Object *pObj)
 {
 	TRACE("Handle SetChunkSize\n");
-	m_ChunkSize = pObj->chunkSize;
+	ChangeChunkSize(pObj->chunkSize);
 	return 0;
+}
+
+int CChunks::SendMessage(CBaseMessage* pMsg)
+{
+	return -1;
 }
 

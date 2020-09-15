@@ -150,10 +150,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rtmp\Process\BaseProcess.h" />
-    <ClInclude Include="Rtmp\Process\ConnectProcess.h" />
-    <ClInclude Include="Rtmp\Process\PlayProcess.h" />
-    <ClInclude Include="Rtmp\Process\PublishProcess.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\ConnectMission.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PlayMission.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PublishMission.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.h" />
@@ -208,6 +208,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\ConnectMission.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\PlayMission.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\PublishMission.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\BaseMessage.cpp" />

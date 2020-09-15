@@ -149,18 +149,13 @@ int CReceiveMessage::WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize:
 
 int CReceiveMessage::CMConnectHandle(CCommandConnect::Object *pObj)
 {
-	
-
-	//Handle
-	//1.(Send)Window Acknowledgement Size
-	//2.(Send)Set Peer Bandwidth
-	//3.(Receive)Window Acknowledgement Size 
-	//4.(Send)User Control Message(StreamBegin) 
-	//5.(Send)Command Message(_result- connect response)
-
-
-	return -1;
+	int ret = -1;
+	CConnectMission::Active();
+	CConnectMission::SetReceiveCommandConnect(pObj);
+	ret = CConnectMission::Continue();
+	return ret;
 }
+
 int CReceiveMessage::CMCallHandle() { return -1; }
 int CReceiveMessage::CMCloseHandle() { return -1; }
 int CReceiveMessage::CMCloseStreamHandle() { return -1; }

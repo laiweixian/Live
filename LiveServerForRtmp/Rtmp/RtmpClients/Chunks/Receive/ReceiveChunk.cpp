@@ -3,7 +3,7 @@
 #include "ReceiveChunk.h"
 #define DELETE_PTR(ptr)	if(ptr){delete ptr; ptr = NULL;}
 
-CReceiveChunk::CReceiveChunk() :m_Lastest(NULL)
+CReceiveChunk::CReceiveChunk() :m_Lastest(NULL),m_ReceiveChunkSize(128)
 {
 
 }
@@ -15,7 +15,7 @@ CReceiveChunk::~CReceiveChunk()
 
 CAntiChunking* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChunkLength)
 {
-	const uint32_t chunkSize = GetChunkSize();
+	const uint32_t chunkSize = m_ReceiveChunkSize;
 	CAntiChunking *pMsg = NULL;
 	int chunkLen = 0;
 	int result = 0;
@@ -39,4 +39,10 @@ CAntiChunking* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChu
 int CReceiveChunk::Abort(uint32_t csid)
 {
 	return -1;
+}
+
+int CReceiveChunk::ChangeChunkSize(uint32_t chunkSize)
+{
+	m_ReceiveChunkSize = chunkSize;
+	return 0;
 }

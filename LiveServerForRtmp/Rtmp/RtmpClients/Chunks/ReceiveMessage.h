@@ -12,7 +12,13 @@
 #include "RtmpMessage/VideoMessage.h"
 #include "RtmpMessage/WindowAcknowledgementSize.h"
 
-class CReceiveMessage
+#include "Mission/ConnectMission.h"
+#include "Mission/PlayMission.h"
+#include "Mission/PublishMission.h"
+
+class CReceiveMessage : public CConnectMission,\
+						public CPlayMission,\
+						public CPublishMission
 {
 protected:
 	CReceiveMessage();
@@ -49,5 +55,4 @@ private:
 	int CMSeekHandle();
 	int CMPauseHandle();
 
-private:
 };

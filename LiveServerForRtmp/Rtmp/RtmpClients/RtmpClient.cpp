@@ -3,7 +3,7 @@
 #include "ClientManager.h"
 
 CRtmpClient::CRtmpClient(uint32_t chunkSize, CClientManager* pManager):\
-		m_Manager(pManager), CChunks(chunkSize)
+		m_Manager(pManager)
 {
 
 }
