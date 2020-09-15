@@ -141,9 +141,6 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Chunks.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\HandleMessage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -172,6 +169,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\ReceiveMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\SendMessage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -296,9 +299,6 @@
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Chunks.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\HandleMessage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\RtmpApp\RtmpInstance\AudioCodec.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -327,6 +327,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\TempBaseMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\ReceiveMessage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\SendMessage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,10 +2,10 @@
 
 #include "Receive/ReceiveChunk.h"
 #include "Send/SendChunk.h"
-#include "HandleMessage.h"
+#include "ReceiveMessage.h"
 
 class CChunks : public CReceiveChunk,
-				public CHandleMessage,
+				public CReceiveMessage,
 				public CSendChunk
 {
 protected:

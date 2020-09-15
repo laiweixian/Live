@@ -14,14 +14,15 @@
 
 
 
-class CHandleMessage
+class CReceiveMessage
 {
 protected:
-	CHandleMessage();
-	virtual ~CHandleMessage();
+	CReceiveMessage();
+	virtual ~CReceiveMessage();
 protected:
 	//处理RTMP协议的消息
 	int HandleMessage(CBaseMessage* pMsg);
+private:
 	int AcknowledgementHandle(CAcknowledgement::Object *pObj);
 	int AggregateMessageHandle(CAggregateMessage::Object *pObj);
 	int AudioMessageHandle();
@@ -49,4 +50,6 @@ protected:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
+
+private:
 };

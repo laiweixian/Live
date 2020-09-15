@@ -8,8 +8,7 @@ class CWindowAcknowledgementSize
 protected:
 	CWindowAcknowledgementSize();
 	 ~CWindowAcknowledgementSize();
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
+private:
 	static uint8_t* TranslatePayload(uint32_t winAckSize, uint32_t* outLength);
 
 public:

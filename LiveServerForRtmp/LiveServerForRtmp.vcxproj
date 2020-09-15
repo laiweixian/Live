@@ -170,6 +170,7 @@
     <ClInclude Include="Rtmp\Rtmp.h" />
     <ClInclude Include="Rtmp\Network\SocketClient.h" />
     <ClInclude Include="Rtmp\Network\SockEvent.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\SendMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\RtmpApp\RtmpApp.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AbortMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\Acknowledgement.h" />
@@ -177,7 +178,7 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AudioMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\CommandMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\DataMessage.h" />
-    <ClInclude Include="Rtmp\RtmpClients\Chunks\HandleMessage.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\ReceiveMessage.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetChunkSize.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SetPeerBandwidth.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\SharedObjectMessage.h" />
@@ -224,8 +225,9 @@
     <ClCompile Include="LiveServerForRtmp.cpp" />
     <ClCompile Include="Rtmp\Rtmp.cpp" />
     <ClCompile Include="Rtmp\Network\SocketClient.cpp" />
-    <ClCompile Include="Rtmp\RtmpClients\Chunks\HandleMessage.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\ReceiveMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Receive\ReceiveChunk.cpp" />
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\SendMessage.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Send\SendChunk.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\AMF\Parse0.cpp" />
     <ClCompile Include="Rtmp\RtmpClients\ClientManager.cpp" />
