@@ -98,7 +98,7 @@ int CReceiveMessage::AudioMessageHandle() { return -1; }
 int CReceiveMessage::CommandMessageHandle(CCommandMessage::Object *pObj) 
 {
 	const CommandType cType = pObj->cType;
-	CCommandConnect::Object *pObj0 = NULL;
+	CCommandConnect::Object* pObj0 = NULL;
 	int ret = 0;
 	
 	switch (cType)
@@ -107,7 +107,8 @@ int CReceiveMessage::CommandMessageHandle(CCommandMessage::Object *pObj)
 		break;
 
 	case CONNECT:
-		
+		pObj0 = (CCommandConnect::Object*)pObj->pCmdObj;
+		ret = CMConnectHandle(pObj0);
 		break; 
 	case CALL:
 		break; 
@@ -146,7 +147,7 @@ int CReceiveMessage::UserControlMessagesHandle() { return -1; }
 int CReceiveMessage::VideoMessageHandle() { return -1; }
 int CReceiveMessage::WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize::Object  *pObj) { return -1; }
 
-int CReceiveMessage::CMConnectHandle(CCommandConnect *pCmd)
+int CReceiveMessage::CMConnectHandle(CCommandConnect::Object *pObj)
 {
 	
 
@@ -156,6 +157,8 @@ int CReceiveMessage::CMConnectHandle(CCommandConnect *pCmd)
 	//3.(Receive)Window Acknowledgement Size 
 	//4.(Send)User Control Message(StreamBegin) 
 	//5.(Send)Command Message(_result- connect response)
+
+
 	return -1;
 }
 int CReceiveMessage::CMCallHandle() { return -1; }

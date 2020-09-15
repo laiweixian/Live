@@ -36,13 +36,11 @@ public:
 public:
 	CCommandConnect();
 	 ~CCommandConnect();
-public:
-	int SetConnect(AMF0::CParse *parse);
-	Object* GetObject();
-	static uint8_t* TranslatePayload(Object* pObj, uint32_t *outLenght);
+
+	 static Object* Decode(AMF0::CParse *parse);
+
 private:
-	int SetObject(AMF0::Data* pData, const char* key, Object *pObj, SetValue sVal);
-	
+	static void SetObject(AMF0::Data* pData, const char* key, Object *pObj, SetValue sVal);
 	static void SetApp(void* pObj, AMF0::Data* pValue);
 	static void SetFlashver(void* pObj, AMF0::Data* pValue);
 	static void SetSwfUrl(void* pObj, AMF0::Data* pValue);
@@ -53,7 +51,6 @@ private:
 	static void SetVideoFunction(void* pObj, AMF0::Data* pValue);
 	static void SetPageUrl(void* pObj, AMF0::Data* pValue);
 	static void SetObjectEncoding(void* pObj, AMF0::Data* pValue);
-protected:
-	Object* m_Obj;
+
 };
 

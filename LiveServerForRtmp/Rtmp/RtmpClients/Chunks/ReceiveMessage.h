@@ -35,7 +35,7 @@ private:
 	int WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize::Object  *pObj);
 
 	//CommandMessageHandle µÄchildren
-	int CMConnectHandle(CCommandConnect *pCmd);
+	int CMConnectHandle(CCommandConnect::Object *pObj);
 	int CMCallHandle();
 	int CMCloseHandle();
 	int CMCloseStreamHandle();

@@ -50,7 +50,7 @@ protected:
 	CCommandMessage();
 	 ~CCommandMessage() ;
 public:
-	struct Object { CommandType cType; void* pCommandObject; };
+	struct Object { CommandType cType; void* pCmdObj; };
 	static Object* Decode(CBaseMessage* pMsg);
 	static void FreeObject(Object** ppObj);
 

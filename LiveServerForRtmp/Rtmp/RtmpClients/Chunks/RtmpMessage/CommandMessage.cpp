@@ -21,8 +21,8 @@ CCommandMessage::Object* CCommandMessage::Decode(CBaseMessage* pMsg)
 	AMF0::Data *pData = NULL;
 	char commandName[1024] = { 0 };
 	int ret = 0;
-	CommandType cType;
-	void *pCls = NULL;
+	CommandType cType;	void* pCmdObj = NULL;
+	CCommandConnect::Object *pObj0 = NULL;
 
 	if (head.msgType == COMMAND_MESSAGE_TYPE_ID_AMF3)
 		return NULL;
@@ -37,9 +37,8 @@ CCommandMessage::Object* CCommandMessage::Decode(CBaseMessage* pMsg)
 	if (strcmp(commandName, CONNECT_COMMAND) == 0)
 	{
 		cType = CommandType::CONNECT;
-		CCommandConnect *pCmd = new CCommandConnect;
-		ret = pCmd->SetConnect(parse);
-		pCls = pCmd;
+		pObj0 = CCommandConnect::Decode(parse);
+		pCmdObj = pObj0;
 	}
 	else if (strcmp(commandName, CALL_COMMAND) == 0)
 	{
@@ -96,7 +95,7 @@ CCommandMessage::Object* CCommandMessage::Decode(CBaseMessage* pMsg)
 
 	pObj = new CCommandMessage::Object;
 	pObj->cType = cType;
-	pObj->pCommandObject = pCls;
+	pObj->pCmdObj = pCmdObj;
 	
 	return pObj;
 }

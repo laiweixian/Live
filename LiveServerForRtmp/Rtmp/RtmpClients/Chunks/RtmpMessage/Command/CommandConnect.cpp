@@ -2,7 +2,7 @@
 #include "CommandConnect.h"
 
 
-CCommandConnect::CCommandConnect():m_Obj(NULL)
+CCommandConnect::CCommandConnect()
 {
 }
 
@@ -11,17 +11,17 @@ CCommandConnect::~CCommandConnect()
 {
 }
 
-int CCommandConnect::SetConnect(AMF0::CParse *parse)
+CCommandConnect::Object* CCommandConnect::Decode(AMF0::CParse *parse)
 {
 	AMF0::Data* pCommandObject = NULL;
 	CCommandConnect::Object *pObj = NULL;
 
 	pCommandObject = parse->m_Datas.at(2);
-	
+
 	pObj = new CCommandConnect::Object;
 	memset(pObj, 0, sizeof(CCommandConnect::Object));
 
-	SetObject(pCommandObject, CONNECT_APP,pObj, CCommandConnect::SetApp);
+	SetObject(pCommandObject, CONNECT_APP, pObj, CCommandConnect::SetApp);
 	SetObject(pCommandObject, CONNECT_FLASHVER, pObj, CCommandConnect::SetFlashver);
 	SetObject(pCommandObject, CONNECT_SWFURL, pObj, CCommandConnect::SetSwfUrl);
 	SetObject(pCommandObject, CONNECT_TCURL, pObj, CCommandConnect::SetTcUrl);
@@ -31,12 +31,10 @@ int CCommandConnect::SetConnect(AMF0::CParse *parse)
 	SetObject(pCommandObject, CONNECT_VIDEOFUNCTION, pObj, CCommandConnect::SetVideoFunction);
 	SetObject(pCommandObject, CONNECT_PAGEURL, pObj, CCommandConnect::SetPageUrl);
 	SetObject(pCommandObject, CONNECT_OBJECTFUNCTION, pObj, CCommandConnect::SetObjectEncoding);
-
-	m_Obj = pObj;
-	return 0;
+	return pObj;
 }
 
-int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, CCommandConnect::Object *pObj,SetValue sVal)
+void CCommandConnect::SetObject(AMF0::Data* pData, const char* key, CCommandConnect::Object *pObj,SetValue sVal)
 {
 	int ret = 0;
 	AMF0::UTF8 *pKey = NULL;
@@ -54,8 +52,6 @@ int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, CCommandConne
 
 	AMF0::Utf8Free(&pKey);
 	AMF0::DataFree(&pValue);
-
-	return ret;
 }
 
 void CCommandConnect::SetApp(void* pObj, AMF0::Data* pValue)
@@ -134,12 +130,3 @@ void CCommandConnect::SetObjectEncoding(void* pObj, AMF0::Data* pValue)
 	cObj->objectEncoding = BigToHostDouble(src);
 }
 
-CCommandConnect::Object* CCommandConnect::GetObject()
-{
-	return m_Obj;
-}
-
-uint8_t* CCommandConnect::TranslatePayload(CCommandConnect::Object* pObj, uint32_t *outLenght)
-{
-	return NULL;
-}
