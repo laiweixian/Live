@@ -10,16 +10,19 @@ CAcknowledgement::~CAcknowledgement()
 
 }
 
-int CAcknowledgement::Handle(CBaseMessage* pMsg)
+CAcknowledgement::Object* CAcknowledgement::Decode(CBaseMessage* pMsg)
 {
-	uint8_t buf[4] = {0};
+	CAcknowledgement::Object* pObj = NULL;
+	uint8_t buf[4] = { 0 };
 	uint32_t sequenceNumber = 0;
 	CBaseMessage::Payload payload = pMsg->GetPayload();
 
 	memcpy(buf, payload.buf, payload.bufSize);
 	sequenceNumber = BigToHost32(buf);
 
-	return AcknowledgementHandle(sequenceNumber);
+	pObj = new CAcknowledgement::Object;
+	pObj->sequenceNumber = sequenceNumber;
+	return pObj;
 }
 
 uint8_t* CAcknowledgement::TranslatePayload(uint32_t sequenceNumber, uint32_t* outLength)

@@ -5,9 +5,9 @@ class CSetPeerBandwidth
 {
 protected:
 	CSetPeerBandwidth();
-	virtual ~CSetPeerBandwidth();
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
-protected:
-	virtual int SetPeerBandwidthHandle() = 0;
+	~CSetPeerBandwidth();
+public:
+	struct Object { uint32_t ackWinSize; uint8_t limitType; };
+	static Object* Decode(CBaseMessage* pMsg);
+	
 };

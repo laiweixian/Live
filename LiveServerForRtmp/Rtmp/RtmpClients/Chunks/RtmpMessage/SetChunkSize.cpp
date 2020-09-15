@@ -10,16 +10,7 @@ CSetChunkSize::~CSetChunkSize()
 
 }
 
-int CSetChunkSize::Handle(CBaseMessage* pMsg)
-{
-	uint8_t buf[4] = {0};
-	uint32_t chunkSize = 0;
-	CBaseMessage::Payload payload = pMsg->GetPayload();
 
-	memcpy(buf, payload.buf, payload.bufSize);
-	chunkSize = BigToHost32(buf);
-	return SetChunkSizeHandle(chunkSize);
-}
 
 uint8_t* CSetChunkSize::TranslatePayload(uint32_t chunkSize, uint32_t* outLength)
 {
@@ -36,4 +27,19 @@ uint8_t* CSetChunkSize::TranslatePayload(uint32_t chunkSize, uint32_t* outLength
 
 	*outLength = bufLength;
 	return buf;
+}
+
+CSetChunkSize::Object* CSetChunkSize::Decode(CBaseMessage* pMsg)
+{
+	CSetChunkSize::Object* pObj = NULL;
+	uint8_t buf[4] = { 0 };
+	uint32_t chunkSize = 0;
+	CBaseMessage::Payload payload = pMsg->GetPayload();
+
+	memcpy(buf, payload.buf, payload.bufSize);
+	chunkSize = BigToHost32(buf);
+
+	pObj = new CSetChunkSize::Object;
+	pObj->chunkSize = chunkSize;
+	return pObj;
 }

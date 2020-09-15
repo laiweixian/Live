@@ -34,6 +34,6 @@ protected:
 	CBaseMessage::Header m_MsgHeader;
 	
 	vector<Chunk> m_Chunks;
-
+	uint32_t m_DeltaTS;
 };
 

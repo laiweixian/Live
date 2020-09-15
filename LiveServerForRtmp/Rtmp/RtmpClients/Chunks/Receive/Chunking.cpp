@@ -2,7 +2,7 @@
 #include "Chunking.h"
 
 
-CChunking::CChunking()
+CChunking::CChunking():m_DeltaTS(0)
 {
 	memset(&m_MsgHeader, 0, sizeof(CBaseMessage::Header));
 }
@@ -131,37 +131,19 @@ uint8_t CChunking::CheckFirstHeader(CChunking* prev, CBaseMessage* curr)
 		prevChunkHeader = prev->m_ChunkHeads.at(0);
 		prevMsgHeader = prev->m_MsgHeader;
 
-		if (prevMsgHeader.msid == m_MsgHeader.msid)
+		if (prevMsgHeader.msgType == m_MsgHeader.msgType && prevMsgHeader.payloadLength == m_MsgHeader.payloadLength && prevMsgHeader.msid == m_MsgHeader.msid)
 		{
-			if (prevMsgHeader.msgType == m_MsgHeader.msgType)
+			//0x02 or 0x03
+			if (m_DeltaTS == 0)
 			{
-				if (prevMsgHeader.payloadLength == m_MsgHeader.payloadLength)
-				{
-					// 0x02 or 0x03
-					switch (prevChunkHeader.fmt)
-					{
-					case 0x00:
-						fType = 0x02;
-						break;
-					case 0x01:
-						fType = 0x03;
-						break;
-					case 0x02:
-						fType = 0x03;
-						break;
-					case 0x03:
-						fType = 0x03;
-						break;
-					default:
-						break;
-					}
-
-				}
-				else
-					fType = 0x01;
+				m_DeltaTS = m_MsgHeader.timestamp - prevMsgHeader.timestamp;
+				fType = 0x02;
 			}
 			else
-				fType = 0x01;
+			{
+				fType = 0x03;
+			}
+
 		}
 		else
 			fType = 0x00;
@@ -192,17 +174,8 @@ void CChunking::SetFirstChunk0(CChunking* prev, CBaseMessage* curr)
 
 void CChunking::SetFirstChunk1(CChunking* prev, CBaseMessage* curr)
 {
-	CChunkHeader::Head first = {0};
-	CChunkHeader::Head prevChunkHeader = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size() - 1);
-
-	first.fmt = 0x01;
-	first.csid = prevChunkHeader.csid + 1;
-
-	first.timestampDelta = this->m_MsgHeader.timestamp - prev->m_MsgHeader.timestamp;
-	first.messageLength = m_MsgHeader.payloadLength;
-	first.messageTypeID = m_MsgHeader.msgType;
-
-	m_ChunkHeads.push_back(first);
+	//标准rtmp协议的示例中没有使用
+	return;
 }
 
 void CChunking::SetFirstChunk2(CChunking* prev, CBaseMessage* curr)
@@ -213,7 +186,7 @@ void CChunking::SetFirstChunk2(CChunking* prev, CBaseMessage* curr)
 	first.fmt = 0x02;
 	first.csid = prevChunkHeader.csid + 1;
 
-	first.timestampDelta = this->m_MsgHeader.timestamp - prev->m_MsgHeader.timestamp;
+	first.timestampDelta = m_DeltaTS;
 
 	m_ChunkHeads.push_back(first);
 }

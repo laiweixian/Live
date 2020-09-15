@@ -5,11 +5,13 @@ class CAbortMessage
 {
 protected:
 	CAbortMessage();
-	virtual ~CAbortMessage();
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
+	 ~CAbortMessage();
+
 public:
+	struct Object { uint32_t csid; };
+	static Object* Decode(CBaseMessage* pMsg);
+private:
 	static uint8_t* TranslatePayload(uint32_t csid,uint32_t* outLength);
-protected:
-	virtual int AbortMessageHandle(uint32_t csid) = 0;
+
+
 };

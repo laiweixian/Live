@@ -10,7 +10,3 @@ CVideoMessage::~CVideoMessage()
 
 }
 
-int CVideoMessage::Handle(CBaseMessage* pMsg)
-{
-	return -1;
-}

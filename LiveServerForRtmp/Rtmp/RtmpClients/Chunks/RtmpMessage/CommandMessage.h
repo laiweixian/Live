@@ -36,7 +36,7 @@ static const char	*CONNECT_COMMAND = "connect",	\
 					*SEEK_COMMAND			= "seek",\
 					*PAUSE_COMMAND			= "pause";
 
-enum CommandEnum
+enum CommandType
 {
 	NONE, 
 	CONNECT, CALL,CLOSE,CLOSE_STREAM,CREATE_STREAM,
@@ -48,14 +48,15 @@ class CCommandMessage
 {
 protected:
 	CCommandMessage();
-	virtual ~CCommandMessage() ;
-
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
+	 ~CCommandMessage() ;
 public:
-	static uint8_t* TranslatePayload(CommandEnum cType, void *pCls,int *outLenght);
-protected:
-	virtual int CommandMessageHandle(CommandEnum cType,void *pCls) = 0;
+	struct Object { CommandType cType; void* pCommandObject; };
+	static Object* Decode(CBaseMessage* pMsg);
+
+
+private:
+	static uint8_t* TranslatePayload(CommandType cType, void *pCls,int *outLenght);
+
 
 };
 

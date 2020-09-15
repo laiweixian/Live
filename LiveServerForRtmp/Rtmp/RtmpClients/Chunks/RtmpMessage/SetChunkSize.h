@@ -4,11 +4,11 @@ class CSetChunkSize
 {
 protected:
 	CSetChunkSize();
-	virtual ~CSetChunkSize();
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
+	 ~CSetChunkSize();
 public:
-	static uint8_t* TranslatePayload(uint32_t chunkSize, uint32_t* outLength);
+	struct Object { uint32_t chunkSize; };
+	static Object* Decode(CBaseMessage* pMsg);
+
 protected:
-	virtual int SetChunkSizeHandle(uint32_t chunkSize) = 0;
+	static uint8_t* TranslatePayload(uint32_t chunkSize, uint32_t* outLength);	
 };

@@ -10,7 +10,3 @@ CDataMessage::~CDataMessage()
 	
 }
 
-int CDataMessage::Handle(CBaseMessage* pMsg)
-{
-	return -1;
-}

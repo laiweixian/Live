@@ -10,7 +10,8 @@ CSetPeerBandwidth::~CSetPeerBandwidth()
 
 }
 
-int CSetPeerBandwidth::Handle(CBaseMessage* pMsg)
+CSetPeerBandwidth::Object* CSetPeerBandwidth::Decode(CBaseMessage* pMsg)
 {
-	return -1;
+	return NULL;
 }
+

@@ -10,7 +10,3 @@ CSharedObjectMessage::~CSharedObjectMessage()
 
 }
 
-int CSharedObjectMessage::Handle(CBaseMessage* pMsg)
-{
-	return -1;
-}

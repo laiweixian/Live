@@ -12,41 +12,28 @@
 #include "RtmpMessage/VideoMessage.h"
 #include "RtmpMessage/WindowAcknowledgementSize.h"
 
-#include "Send/SendChunk.h"
 
-class CHandleMessage :public CSendChunk,
-					public CAbortMessage,\
-					public CAcknowledgement,\
-					public CAggregateMessage,\
-					public CAudioMessage,\
-					public CCommandMessage,\
-					public CDataMessage,\
-					public CSetChunkSize,\
-					public CSetPeerBandwidth,\
-					public CSharedObjectMessage,\
-					public CUserControlMessages,\
-					public CVideoMessage,\
-					public CWindowAcknowledgementSize
+
+class CHandleMessage
 {
 protected:
 	CHandleMessage();
 	virtual ~CHandleMessage();
-
 protected:
-	int HandleMessage(CBaseMessage* pMsg);
-	
-private:
 	//处理RTMP协议的消息
-	int AcknowledgementHandle(uint32_t sequenceNumber);
-	int AggregateMessageHandle(uint32_t sequenceNumber);
-	int AudioMessageHandle(CBaseMessage* pMsg);
-	int CommandMessageHandle(CommandEnum cType, void *pCls);
+	int HandleMessage(CBaseMessage* pMsg);
+	int AcknowledgementHandle(CAcknowledgement::Object *pObj);
+	int AggregateMessageHandle(CAggregateMessage::Object *pObj);
+	int AudioMessageHandle();
+	int CommandMessageHandle(CCommandMessage::Object *pObj);
+	virtual int AbortMessageHandle(CAbortMessage::Object *pObj) = 0;
+	virtual int SetChunkSizeHandle(CSetChunkSize::Object *pObj) = 0;
 	int DataMessageHandle();
-	int SetPeerBandwidthHandle();
+	int SetPeerBandwidthHandle(CSetPeerBandwidth::Object *pObj);
 	int SharedObjectMessageHandle();
 	int UserControlMessagesHandle();
 	int VideoMessageHandle();
-	int WindowAcknowledgementSizeHandle(uint32_t winAckSize);
+	int WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize::Object  *pObj);
 
 	//CommandMessageHandle 的children
 	int CMConnectHandle(CCommandConnect *pCmd);

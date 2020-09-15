@@ -10,15 +10,21 @@ CAbortMessage::~CAbortMessage()
 
 }
 
-int CAbortMessage::Handle(CBaseMessage* pMsg)
+
+
+CAbortMessage::Object* CAbortMessage::Decode(CBaseMessage* pMsg)
 {
-	uint8_t buf[4] = {0};
+	CAbortMessage::Object* pObj = NULL;
+	uint8_t buf[4] = { 0 };
 	uint32_t csid = 0;
 	CBaseMessage::Payload payload = pMsg->GetPayload();
 
 	memcpy(buf, payload.buf, payload.bufSize);
 	csid = BigToHost32(buf);
-	return AbortMessageHandle(csid);
+
+	pObj = new CAbortMessage::Object;
+	pObj->csid = csid;
+	return pObj;
 }
 
 uint8_t* CAbortMessage::TranslatePayload(uint32_t csid, uint32_t* outLength)

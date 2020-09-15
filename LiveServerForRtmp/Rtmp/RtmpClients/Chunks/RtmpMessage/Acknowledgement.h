@@ -5,11 +5,11 @@ class CAcknowledgement
 {
 protected:
 	CAcknowledgement();
-	virtual ~CAcknowledgement();
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
+	 ~CAcknowledgement();
+public:
+	struct Object { uint32_t sequenceNumber; };
+	static Object* Decode(CBaseMessage* pMsg);
 public:
 	static uint8_t* TranslatePayload(uint32_t sequenceNumber, uint32_t* outLength);
-protected:
-	virtual int AcknowledgementHandle(uint32_t sequenceNumber) = 0;
+
 };

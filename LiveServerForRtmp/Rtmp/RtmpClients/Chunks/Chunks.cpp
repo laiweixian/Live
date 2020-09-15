@@ -49,16 +49,16 @@ uint32_t CChunks::GetChunkSize()
 	return m_ChunkSize;
 }
 
-int CChunks::AbortMessageHandle(uint32_t csid)
+int CChunks::AbortMessageHandle(CAbortMessage::Object *pObj)
 {
 	TRACE("Handle AbortMessage\n");
-	return CReceiveChunk::Abort(csid);
+	return CReceiveChunk::Abort(pObj->csid);
 }
 
-int CChunks::SetChunkSizeHandle(uint32_t chunkSize)
+int CChunks::SetChunkSizeHandle(CSetChunkSize::Object *pObj)
 {
 	TRACE("Handle SetChunkSize\n");
-	m_ChunkSize = chunkSize;
+	m_ChunkSize = pObj->chunkSize;
 	return 0;
 }
 

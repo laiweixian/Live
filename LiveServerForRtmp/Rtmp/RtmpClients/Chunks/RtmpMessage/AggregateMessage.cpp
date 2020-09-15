@@ -10,9 +10,9 @@ CAggregateMessage::~CAggregateMessage()
 
 }
 
-int CAggregateMessage::Handle(CBaseMessage* pMsg)
+CAggregateMessage::Object* CAggregateMessage::Decode(CBaseMessage* pMsg)
 {
-	return -1;
+	return NULL;
 }
 
 uint8_t* CAggregateMessage::TranslatePayload(uint32_t sequenceNumber, uint32_t* outLength)

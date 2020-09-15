@@ -6,11 +6,7 @@ class CAudioMessage
 {
 protected:
 	CAudioMessage();
-	virtual ~CAudioMessage();
+	 ~CAudioMessage();
 
-protected:
-	virtual int Handle(CBaseMessage* pMsg) final;
 
-protected:
-	virtual int AudioMessageHandle(CBaseMessage* pMsg) = 0;
 };
