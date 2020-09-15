@@ -52,7 +52,7 @@ protected:
 public:
 	struct Object { CommandType cType; void* pCommandObject; };
 	static Object* Decode(CBaseMessage* pMsg);
-
+	static void FreeObject(Object** ppObj);
 
 private:
 	static uint8_t* TranslatePayload(CommandType cType, void *pCls,int *outLenght);

@@ -27,6 +27,12 @@ CAbortMessage::Object* CAbortMessage::Decode(CBaseMessage* pMsg)
 	return pObj;
 }
 
+void CAbortMessage::FreeObject(Object** ppObj)
+{
+	delete (*ppObj);
+	*ppObj = NULL;
+}
+
 uint8_t* CAbortMessage::TranslatePayload(uint32_t csid, uint32_t* outLength)
 {
 	uint8_t *buf = NULL;

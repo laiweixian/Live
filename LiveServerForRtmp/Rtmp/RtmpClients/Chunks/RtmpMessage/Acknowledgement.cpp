@@ -25,6 +25,12 @@ CAcknowledgement::Object* CAcknowledgement::Decode(CBaseMessage* pMsg)
 	return pObj;
 }
 
+void CAcknowledgement::FreeObject(Object** ppObj)
+{
+	delete (*ppObj);
+	*ppObj = NULL;
+}
+
 uint8_t* CAcknowledgement::TranslatePayload(uint32_t sequenceNumber, uint32_t* outLength)
 {
 	uint8_t *buf = NULL;

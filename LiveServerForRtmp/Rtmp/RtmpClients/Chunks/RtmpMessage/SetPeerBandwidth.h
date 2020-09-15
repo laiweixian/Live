@@ -9,5 +9,5 @@ protected:
 public:
 	struct Object { uint32_t ackWinSize; uint8_t limitType; };
 	static Object* Decode(CBaseMessage* pMsg);
-	
+	static void FreeObject(Object** ppObj);
 };

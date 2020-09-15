@@ -8,6 +8,7 @@ protected:
 public:
 	struct Object { uint32_t chunkSize; };
 	static Object* Decode(CBaseMessage* pMsg);
+	static void FreeObject(Object** ppObj);
 
 protected:
 	static uint8_t* TranslatePayload(uint32_t chunkSize, uint32_t* outLength);	

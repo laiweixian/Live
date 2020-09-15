@@ -14,12 +14,12 @@ CCommandConnect::~CCommandConnect()
 int CCommandConnect::SetConnect(AMF0::CParse *parse)
 {
 	AMF0::Data* pCommandObject = NULL;
-	ConnectObject *pObj = NULL;
+	CCommandConnect::Object *pObj = NULL;
 
 	pCommandObject = parse->m_Datas.at(2);
 	
-	pObj = new ConnectObject;
-	memset(pObj, 0, sizeof(ConnectObject));
+	pObj = new CCommandConnect::Object;
+	memset(pObj, 0, sizeof(CCommandConnect::Object));
 
 	SetObject(pCommandObject, CONNECT_APP,pObj, CCommandConnect::SetApp);
 	SetObject(pCommandObject, CONNECT_FLASHVER, pObj, CCommandConnect::SetFlashver);
@@ -36,7 +36,7 @@ int CCommandConnect::SetConnect(AMF0::CParse *parse)
 	return 0;
 }
 
-int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject *pObj,SetValue sVal)
+int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, CCommandConnect::Object *pObj,SetValue sVal)
 {
 	int ret = 0;
 	AMF0::UTF8 *pKey = NULL;
@@ -58,78 +58,88 @@ int CCommandConnect::SetObject(AMF0::Data* pData, const char* key, ConnectObject
 	return ret;
 }
 
-void CCommandConnect::SetApp(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetApp(void* pObj, AMF0::Data* pValue)
 {
-	memcpy(pObj->app,pValue->buf,pValue->len);
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
+	memcpy(cObj->app,pValue->buf,pValue->len);
 }
 
-void CCommandConnect::SetFlashver(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetFlashver(void* pObj, AMF0::Data* pValue)
 {
-	memcpy(pObj->flashver, pValue->buf, pValue->len);
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
+	memcpy(cObj->flashver, pValue->buf, pValue->len);
 }
 
-void CCommandConnect::SetSwfUrl(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetSwfUrl(void* pObj, AMF0::Data* pValue)
 {
-	memcpy(pObj->swfUrl, pValue->buf, pValue->len);
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
+	memcpy(cObj->swfUrl, pValue->buf, pValue->len);
 }
 
-void CCommandConnect::SetTcUrl(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetTcUrl(void* pObj, AMF0::Data* pValue)
 {
-	memcpy(pObj->tcUrl, pValue->buf, pValue->len);
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
+	memcpy(cObj->tcUrl, pValue->buf, pValue->len);
 }
 
-void CCommandConnect::SetFpad(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetFpad(void* pObj, AMF0::Data* pValue)
 {
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
 	if (*(pValue->buf) == 0)
-		pObj->fpad = false;
+		cObj->fpad = false;
 	else
-		pObj->fpad = true;
+		cObj->fpad = true;
 }
 
-void CCommandConnect::SetAudioCodecs(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetAudioCodecs(void* pObj, AMF0::Data* pValue)
 {
 	//8个字节的大端模式
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
 	double src = 0;
 
 	memcpy(&src,pValue->buf,pValue->len);
-	pObj->audioCodecs = BigToHostDouble(src);
+	cObj->audioCodecs = BigToHostDouble(src);
 }
 
-void CCommandConnect::SetVideoCodecs(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetVideoCodecs(void* pObj, AMF0::Data* pValue)
 {
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
 	double src = 0;
 
 	memcpy(&src, pValue->buf, pValue->len);
-	pObj->videoCodecs = BigToHostDouble(src);
+	cObj->videoCodecs = BigToHostDouble(src);
 }
 
-void CCommandConnect::SetVideoFunction(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetVideoFunction(void* pObj, AMF0::Data* pValue)
 {
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
 	double src = 0;
 
 	memcpy(&src, pValue->buf, pValue->len);
-	pObj->videoFunction = BigToHostDouble(src);
+	cObj->videoFunction = BigToHostDouble(src);
 }
 
-void CCommandConnect::SetPageUrl(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetPageUrl(void* pObj, AMF0::Data* pValue)
 {
-	memcpy(pObj->pageUrl, pValue->buf, pValue->len);
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
+	memcpy(cObj->pageUrl, pValue->buf, pValue->len);
 }
 
-void CCommandConnect::SetObjectEncoding(ConnectObject* pObj, AMF0::Data* pValue)
+void CCommandConnect::SetObjectEncoding(void* pObj, AMF0::Data* pValue)
 {
+	CCommandConnect::Object *cObj = (CCommandConnect::Object*)pObj;
 	double src = 0;
 
 	memcpy(&src, pValue->buf, pValue->len);
-	pObj->objectEncoding = BigToHostDouble(src);
+	cObj->objectEncoding = BigToHostDouble(src);
 }
 
-ConnectObject* CCommandConnect::GetObject()
+CCommandConnect::Object* CCommandConnect::GetObject()
 {
 	return m_Obj;
 }
 
-uint8_t* CCommandConnect::TranslatePayload(ConnectObject* pObj, uint32_t *outLenght)
+uint8_t* CCommandConnect::TranslatePayload(CCommandConnect::Object* pObj, uint32_t *outLenght)
 {
 	return NULL;
 }

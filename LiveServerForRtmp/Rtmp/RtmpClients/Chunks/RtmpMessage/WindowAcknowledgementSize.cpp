@@ -58,3 +58,9 @@ CBaseMessage* CWindowAcknowledgementSize::Encode(uint32_t timestamp, uint32_t ms
 
 	return pMsg;
 }
+
+void CWindowAcknowledgementSize::FreeObject(Object** ppObj)
+{
+	delete (*ppObj);
+	*ppObj = NULL;
+}

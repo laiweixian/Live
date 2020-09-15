@@ -43,3 +43,9 @@ CSetChunkSize::Object* CSetChunkSize::Decode(CBaseMessage* pMsg)
 	pObj->chunkSize = chunkSize;
 	return pObj;
 }
+
+void CSetChunkSize::FreeObject(Object** ppObj)
+{
+	delete (*ppObj);
+	*ppObj = NULL;
+}

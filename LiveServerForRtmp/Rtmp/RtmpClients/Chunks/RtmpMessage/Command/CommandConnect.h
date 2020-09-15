@@ -14,44 +14,46 @@
 #define CONNECT_PAGEURL					"pageUrl"
 #define CONNECT_OBJECTFUNCTION			"objectEncoding"
 
-struct ConnectObject
-{
-	char app[1024];
-	char flashver[1024];
-	char swfUrl[1024];
-	char tcUrl[1024];
-	bool fpad;
-	double audioCodecs;
-	double videoCodecs;
-	double videoFunction;
-	char pageUrl[1024];
-	double objectEncoding;
-};
 
-typedef void(*SetValue)(ConnectObject* pObj,AMF0::Data* pValue);
+
+typedef void(*SetValue)(void* pObj,AMF0::Data* pValue);
 
 class CCommandConnect
 {
 public:
+	struct Object {
+		char app[1024];
+		char flashver[1024];
+		char swfUrl[1024];
+		char tcUrl[1024];
+		bool fpad;
+		double audioCodecs;
+		double videoCodecs;
+		double videoFunction;
+		char pageUrl[1024];
+		double objectEncoding;
+	};
+public:
 	CCommandConnect();
-	virtual ~CCommandConnect();
+	 ~CCommandConnect();
 public:
 	int SetConnect(AMF0::CParse *parse);
-	ConnectObject* GetObject();
-	static uint8_t* TranslatePayload(ConnectObject* pObj, uint32_t *outLenght);
+	Object* GetObject();
+	static uint8_t* TranslatePayload(Object* pObj, uint32_t *outLenght);
 private:
-	int SetObject(AMF0::Data* pData, const char* key, ConnectObject *pObj, SetValue sVal);
-	static void SetApp(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetFlashver(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetSwfUrl(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetTcUrl(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetFpad(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetAudioCodecs(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetVideoCodecs(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetVideoFunction(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetPageUrl(ConnectObject* pObj, AMF0::Data* pValue);
-	static void SetObjectEncoding(ConnectObject* pObj, AMF0::Data* pValue);
+	int SetObject(AMF0::Data* pData, const char* key, Object *pObj, SetValue sVal);
+	
+	static void SetApp(void* pObj, AMF0::Data* pValue);
+	static void SetFlashver(void* pObj, AMF0::Data* pValue);
+	static void SetSwfUrl(void* pObj, AMF0::Data* pValue);
+	static void SetTcUrl(void* pObj, AMF0::Data* pValue);
+	static void SetFpad(void* pObj, AMF0::Data* pValue);
+	static void SetAudioCodecs(void* pObj, AMF0::Data* pValue);
+	static void SetVideoCodecs(void* pObj, AMF0::Data* pValue);
+	static void SetVideoFunction(void* pObj, AMF0::Data* pValue);
+	static void SetPageUrl(void* pObj, AMF0::Data* pValue);
+	static void SetObjectEncoding(void* pObj, AMF0::Data* pValue);
 protected:
-	ConnectObject* m_Obj;
+	Object* m_Obj;
 };
 

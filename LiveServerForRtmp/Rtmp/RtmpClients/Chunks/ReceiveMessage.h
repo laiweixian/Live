@@ -12,8 +12,6 @@
 #include "RtmpMessage/VideoMessage.h"
 #include "RtmpMessage/WindowAcknowledgementSize.h"
 
-
-
 class CReceiveMessage
 {
 protected:

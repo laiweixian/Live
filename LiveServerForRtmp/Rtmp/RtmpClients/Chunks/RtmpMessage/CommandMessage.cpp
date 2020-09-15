@@ -111,7 +111,7 @@ uint8_t* CCommandMessage::TranslatePayload(CommandType cType, void *pCls, int *o
 	case NONE:
 		break;
 	case CONNECT:
-		buf = CCommandConnect::TranslatePayload(static_cast<ConnectObject*>(pCls), &length);
+		
 		break;
 	case CALL:
 		break;
@@ -143,5 +143,10 @@ uint8_t* CCommandMessage::TranslatePayload(CommandType cType, void *pCls, int *o
 
 	*outLength = length;
 	return buf;
+}
+
+void CCommandMessage::FreeObject(Object** ppObj)
+{
+	return;
 }
 

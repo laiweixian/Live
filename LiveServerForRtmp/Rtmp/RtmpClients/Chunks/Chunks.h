@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Receive/ReceiveChunk.h"
-#include "Send/SendChunk.h"
 #include "ReceiveMessage.h"
+#include "SendMessage.h"
+
 
 class CChunks : public CReceiveChunk,
 				public CReceiveMessage,
-				public CSendChunk
+				public CSendMessage
 {
 protected:
 	CChunks(uint32_t chunkSize);
@@ -17,8 +18,6 @@ protected:
 
 private:
 	uint32_t GetChunkSize();
-
-	
 private:
 	 int AbortMessageHandle(CAbortMessage::Object *pObj) ;
 	 int SetChunkSizeHandle(CSetChunkSize::Object *pObj) ;
