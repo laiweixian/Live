@@ -151,7 +151,7 @@ int CReceiveMessage::CMConnectHandle(CCommandConnect::Object *pObj)
 {
 	int ret = -1;
 	CConnectMission::Active();
-	CConnectMission::SetReceiveCommandConnect(pObj);
+	CConnectMission::SetCommandConnect(pObj);
 	ret = CConnectMission::Continue();
 	return ret;
 }

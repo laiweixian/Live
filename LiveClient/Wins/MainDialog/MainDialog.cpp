@@ -12,6 +12,7 @@
 #include "Coder/Media.h"
 #include "Coder/ImageCapture.h"
 #include "Coder/VideoDecode.h"
+#include "Coder/PlayMedia.h"
 
 
 // CMainDialog 对话框
@@ -23,6 +24,7 @@ BEGIN_MESSAGE_MAP(CMainDialog, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_PAINT()
 	ON_WM_SYSCOMMAND()
+	ON_BN_CLICKED(IDC_BUTTON_PLAY, &CMainDialog::OnBnClickedButtonPlay)
 END_MESSAGE_MAP()
 
 CMainDialog::CMainDialog(CWnd* pParent /*=NULL*/)
@@ -38,6 +40,7 @@ CMainDialog::~CMainDialog()
 void CMainDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_BUTTON_PLAY, m_Play);
 }
 
 
@@ -224,3 +227,15 @@ int CMainDialog::EncodeAndSave(const char* src, const int srcLen)
 	CloseHandle(hFile);
 	return 0;
 }
+
+
+void CMainDialog::OnBnClickedButtonPlay()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CPlayMedia *play = NULL;
+
+	play = new CPlayMedia("E:\\av.mp4", this->GetDC()->GetSafeHdc());
+	play->Display();
+}
+
+

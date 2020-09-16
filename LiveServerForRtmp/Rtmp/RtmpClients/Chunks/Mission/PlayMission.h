@@ -23,8 +23,6 @@ protected:
 	CPlayMission();
 	virtual ~CPlayMission();
 
-	
-
 protected:
 	void Active();
 	void InActive();

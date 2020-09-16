@@ -32,6 +32,8 @@ CAntiChunking* CReceiveChunk::Receive(uint8_t* src, const int srcLen,int *outChu
 		chunkLen = m_Lastest->AppendChunk(src,srcLen);
 	}
 
+	write2file("play", src, chunkLen);
+
 	*outChunkLength = chunkLen;
 	return m_Lastest;
 }

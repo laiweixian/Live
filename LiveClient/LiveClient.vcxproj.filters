@@ -54,6 +54,9 @@
     <ClInclude Include="Coder\VideoDecode.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Coder\PlayMedia.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LiveClient.cpp">
@@ -78,6 +81,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Coder\VideoDecode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Coder\PlayMedia.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

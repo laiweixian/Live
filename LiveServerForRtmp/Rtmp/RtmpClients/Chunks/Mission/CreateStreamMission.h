@@ -7,10 +7,14 @@
 class CCreateStreamMission
 {
 public:
-	struct Object {};
+	struct Object { };
 protected:
 	CCreateStreamMission();
 	virtual ~CCreateStreamMission();
 
 protected:
+	void Active();
+	void InActive();
+	int Continue();
+	bool Complete();
 };

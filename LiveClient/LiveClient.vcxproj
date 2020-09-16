@@ -195,6 +195,7 @@
     <ClInclude Include="Coder\Media.h" />
     <ClInclude Include="Coder\Hardware.h" />
     <ClInclude Include="Coder\ImageCapture.h" />
+    <ClInclude Include="Coder\PlayMedia.h" />
     <ClInclude Include="Coder\SoundCapture.h" />
     <ClInclude Include="Coder\VideoDecode.h" />
     <ClInclude Include="LiveClient.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Coder\Media.cpp" />
     <ClCompile Include="Coder\Hardware.cpp" />
     <ClCompile Include="Coder\ImageCapture.cpp" />
+    <ClCompile Include="Coder\PlayMedia.cpp" />
     <ClCompile Include="Coder\VideoDecode.cpp" />
     <ClCompile Include="LiveClient.cpp" />
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />

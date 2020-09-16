@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 
@@ -38,6 +39,9 @@ public:
 private:
 	CMenu m_Menu;
 	
+	
 public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	afx_msg void OnBnClickedButtonPlay();
+	CButton m_Play;
 };

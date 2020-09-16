@@ -15,8 +15,12 @@
 #include "Mission/ConnectMission.h"
 #include "Mission/PlayMission.h"
 #include "Mission/PublishMission.h"
+#include "Mission/CreateStreamMission.h"
+
+
 
 class CReceiveMessage : public CConnectMission,\
+						public CCreateStreamMission,
 						public CPlayMission,\
 						public CPublishMission
 {
@@ -54,5 +58,8 @@ private:
 	int CMReceivePublishHandle();
 	int CMSeekHandle();
 	int CMPauseHandle();
+
+private:
+
 
 };
