@@ -12,5 +12,6 @@ protected:
 
 public:
 	struct Object { uint32_t streamID; uint32_t bufferLength; };
-	static Object Decode(CBaseMessage* pMsg);
+	static Object* Decode(CBaseMessage* pMsg);
+	static void FreeObject(Object** ppObj);
 };

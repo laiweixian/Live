@@ -14,5 +14,6 @@ protected:
 
 public:
 	struct Object { uint32_t timestamp; };
-	static Object Decode(CBaseMessage* pMsg);
+	static Object* Decode(CBaseMessage* pMsg);
+	static void FreeObject(Object** ppObj);
 };

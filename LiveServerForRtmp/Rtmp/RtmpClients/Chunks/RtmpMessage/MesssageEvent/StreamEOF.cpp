@@ -10,15 +10,21 @@ CStreamEOF::~CStreamEOF()
 
 }
 
-CStreamEOF::Object CStreamEOF::Decode(CBaseMessage* pMsg)
+CStreamEOF::Object* CStreamEOF::Decode(CBaseMessage* pMsg)
 {
-	Object obj = { 0 };
+	Object *obj = new Object ;
 	CBaseMessage::Payload payload = pMsg->GetPayload();
 	uint8_t num[4] = { 0 };
 
 	memcpy(num, payload.buf + 2, 4);
 
-	obj.streamID = ::BigToHost32(num);
+	obj->streamID = ::BigToHost32(num);
 	return obj;
+}
+
+void CStreamEOF::FreeObject(CStreamEOF::Object** ppObj)
+{
+	delete (*ppObj);
+	(*ppObj) = NULL;
 }
 

@@ -103,8 +103,8 @@ int CConnectMission::SendSetPeerBandwidth()
 
 int CConnectMission::SendUserControlMessage()
 {
-	CUserControlMessages::
-	return ;
+	
+	return -1;
 }
 
 int CConnectMission::SendConnectResponse()
