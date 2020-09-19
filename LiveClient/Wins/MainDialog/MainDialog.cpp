@@ -234,7 +234,11 @@ void CMainDialog::OnBnClickedButtonPlay()
 	// TODO: 在此添加控件通知处理程序代码
 	CPlayMedia *play = NULL;
 
-	play = new CPlayMedia("E:\\av.mp4", this->GetDC()->GetSafeHdc());
+
+
+	play = new CPlayMedia("E:\\media.flv", GetSafeHwnd());
+
+	
 	play->Display();
 }
 

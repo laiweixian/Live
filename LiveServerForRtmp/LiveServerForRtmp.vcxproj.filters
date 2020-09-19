@@ -186,6 +186,27 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamBegin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamEOF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamDry.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\SetBufferLength.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamIsRecorded.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\PingRequest.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\PingResponse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -351,6 +372,27 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamBegin.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamEOF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamDry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\SetBufferLength.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\StreamIsRecorded.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\PingRequest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\PingResponse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -78,6 +78,9 @@ extern "C"
 
 //ATL
 #include <atlbase.h>
+#include <vector>
+#include <algorithm>
+using namespace std;
 
 extern void PrintError(const char * format, ...);
 extern void PrintLog(const char * format, ...);

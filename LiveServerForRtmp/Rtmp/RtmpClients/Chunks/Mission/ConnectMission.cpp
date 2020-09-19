@@ -1,6 +1,10 @@
 #include "ConnectMission.h"
 
-CConnectMission::CConnectMission() :m_Active(false), m_Obj({0})
+#define WIN_ACK_SIZE_VALUE 1024000
+
+CConnectMission::CConnectMission() :m_Active(false), m_Obj({0}),\
+									m_SStat(CConnectMission::SendStat::S_NONE),
+									m_RStat(CConnectMission::ReceiveStat::R_NONE)
 {
 
 }
@@ -24,38 +28,83 @@ void CConnectMission::InActive()
 
 void CConnectMission::SetCommandConnect(CCommandConnect::Object *pObj)
 {
-	memcpy(m_Obj.rtmpUrl,pObj->tcUrl,1024);
+	if (m_RStat == CConnectMission::ReceiveStat::R_NONE)
+	{
+		memcpy(m_Obj.rtmpUrl, pObj->tcUrl, 1024);
+		m_RStat = CConnectMission::ReceiveStat::R_COMMAND_CONNENCT;
+	}
+	
 }
 
 void CConnectMission::SetWinAckSize(CWindowAcknowledgementSize::Object *pObj)
 {
 	//
+	if (m_RStat == CConnectMission::ReceiveStat::R_COMMAND_CONNENCT)
+	{
+		m_Obj.winAckSize = pObj->winAckSize;
+		m_RStat = CConnectMission::ReceiveStat::R_WIN_ACK_SIZE;
+	}
 	
 }
 
 int CConnectMission::Continue()
 {
-	return -1;
+	int ret = -1;
+	switch (m_RStat)
+	{
+	case CConnectMission::R_NONE:
+		ret = -1;
+		break;
+	case CConnectMission::R_COMMAND_CONNENCT:
+		ret += SendAckWinSize();
+		ret += SendSetPeerBandwidth();
+		break;
+	case CConnectMission::R_WIN_ACK_SIZE:
+		ret += SendUserControlMessage();
+		ret += SendConnectResponse();
+		break;
+	default:
+		ret = -1;
+		break;
+	}
+
+
+	return ret;
 }
 
 bool CConnectMission::Complete()
 {
-	return false;
+	const bool a = (m_RStat == CConnectMission::ReceiveStat::R_WIN_ACK_SIZE);
+	const bool b = (m_SStat == CConnectMission::SendStat::S_CONNECT_RESPONSE);
+	return( a&& b );
 }
 
 int CConnectMission::SendAckWinSize()
 {
-	return -1;
+	CBaseMessage* pMsg = NULL;
+	CWindowAcknowledgementSize::Object obj;
+	
+	obj.winAckSize = WIN_ACK_SIZE_VALUE;
+	pMsg = CWindowAcknowledgementSize::Encode(0, 0, obj);
+	return SendMessage(pMsg);
 }
 
 int CConnectMission::SendSetPeerBandwidth()
 {
-	return -1;
+	CBaseMessage* pMsg = NULL;
+	CSetPeerBandwidth::Object obj;
+
+	obj.ackWinSize = WIN_ACK_SIZE_VALUE;
+	obj.limitType = 1;
+	pMsg = CSetPeerBandwidth::Encode(0, 0, obj);
+
+	return SendMessage(pMsg);
 }
 
 int CConnectMission::SendUserControlMessage()
 {
-	return -1;
+	CUserControlMessages::
+	return ;
 }
 
 int CConnectMission::SendConnectResponse()

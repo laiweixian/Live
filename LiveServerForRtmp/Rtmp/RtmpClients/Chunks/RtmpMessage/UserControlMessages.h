@@ -12,5 +12,8 @@ protected:
 	CUserControlMessages();
 	 ~CUserControlMessages();
 public:
-
+	struct Object {};
+	static Object* Decode(CBaseMessage* pMsg);
+	static CBaseMessage* Encode(uint32_t timestamp, uint32_t msid, Object obj);
+	static void FreeObject(Object** ppObj);
 };

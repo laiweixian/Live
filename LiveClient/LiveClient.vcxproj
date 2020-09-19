@@ -116,7 +116,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)ffmpeg\headers\ffmpeg;$(SolutionDir)LiveClient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -199,6 +199,7 @@
     <ClInclude Include="Coder\SoundCapture.h" />
     <ClInclude Include="Coder\VideoDecode.h" />
     <ClInclude Include="LiveClient.h" />
+    <ClInclude Include="tools.h" />
     <ClInclude Include="Wins\EditDialog\InputDialog.h" />
     <ClInclude Include="Wins\MainDialog\MainDialog.h" />
     <ClInclude Include="Resource.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="Coder\PlayMedia.cpp" />
     <ClCompile Include="Coder\VideoDecode.cpp" />
     <ClCompile Include="LiveClient.cpp" />
+    <ClCompile Include="tools.cpp" />
     <ClCompile Include="Wins\EditDialog\InputDialog.cpp" />
     <ClCompile Include="Wins\MainDialog\MainDialog.cpp" />
     <ClCompile Include="stdafx.cpp">

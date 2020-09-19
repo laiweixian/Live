@@ -18,7 +18,6 @@
 #include "Mission/CreateStreamMission.h"
 
 
-
 class CReceiveMessage : public CConnectMission,\
 						public CCreateStreamMission,
 						public CPlayMission,\

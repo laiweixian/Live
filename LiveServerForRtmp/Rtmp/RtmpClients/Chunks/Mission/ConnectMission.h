@@ -13,19 +13,20 @@
 //4.(Send)User Control Message(StreamBegin) 
 //5.(Send)Command Message(_result- connect response)
 
+
+
 class CConnectMission
 {
 public:
 	CConnectMission();
 	~CConnectMission();
-
-	enum SendStep {NONE,WIN_ACK_SIZE,SET_PEER_BANDWIDTH,USER_CONTROL_MESSAGE,CONNECT_RESPONSE};
-	struct Object { char rtmpUrl[1024]; };
-	
-
+	enum SendStat {S_NONE, S_WIN_ACK_SIZE, S_SET_PEER_BANDWIDTH, S_USER_CONTROL_MESSAGE, S_CONNECT_RESPONSE};
+	enum ReceiveStat {
+		R_NONE, R_COMMAND_CONNENCT, R_WIN_ACK_SIZE
+	};
+	struct Object { char rtmpUrl[1024]; uint32_t winAckSize; };
 
 protected:
-	
 	void SetCommandConnect(CCommandConnect::Object *pObj);
 	void SetWinAckSize(CWindowAcknowledgementSize::Object *pObj);
 
@@ -42,6 +43,7 @@ private:
 	int SendConnectResponse();
 protected:
 	bool m_Active;
-	
+	SendStat m_SStat;
+	ReceiveStat m_RStat;
 	Object m_Obj;
 };
