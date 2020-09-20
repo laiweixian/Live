@@ -12,7 +12,7 @@ CSetChunkSize::~CSetChunkSize()
 
 
 
-uint8_t* CSetChunkSize::TranslatePayload(uint32_t chunkSize, uint32_t* outLength)
+uint8_t* CSetChunkSize::TranslatePayload(Object obj, uint32_t* outLength)
 {
 	uint8_t *buf = NULL;
 	uint32_t bufLength = 0;
@@ -22,7 +22,7 @@ uint8_t* CSetChunkSize::TranslatePayload(uint32_t chunkSize, uint32_t* outLength
 	buf = new uint8_t[bufLength];
 	memset(buf, 0, bufLength);
 
-	bNum = HostToBig32(chunkSize);
+	bNum = HostToBig32(obj.chunkSize);
 	memcpy(buf, &bNum, 4);
 
 	*outLength = bufLength;
@@ -48,4 +48,17 @@ void CSetChunkSize::FreeObject(Object** ppObj)
 {
 	delete (*ppObj);
 	*ppObj = NULL;
+}
+
+CBaseMessage* CSetChunkSize::Encode(uint32_t timestamp, uint32_t msid, CSetChunkSize::Object obj)
+{
+	CBaseMessage *pMsg = NULL;
+	uint8_t *payload = NULL;
+	uint32_t length = 0;
+
+	payload = TranslatePayload(obj, &length);
+	pMsg = new CBaseMessage(SET_CHUNK_SIZE_TYPE_ID,length,timestamp,msid,payload,length);
+	delete[] payload; payload = NULL;
+
+	return pMsg;
 }

@@ -61,7 +61,57 @@ CUserControlMessages::Object* CUserControlMessages::Decode(CBaseMessage* pMsg)
 
 CBaseMessage* CUserControlMessages::Encode(uint32_t timestamp, uint32_t msid, CUserControlMessages::Object obj)
 {
-	return NULL;
+	CBaseMessage* pMsg = NULL;
+	uint32_t length = 0;
+	uint8_t *payload = 0;
+
+	CStreamBegin::Object *pObj0 = NULL;
+	CStreamEOF::Object *pObj1 = NULL;
+	CStreamDry::Object *pObj2 = NULL;
+	CSetBufferLength::Object *pObj3 = NULL;
+	CStreamIsRecorded::Object *pObj4 = NULL;
+	CPingRequest::Object *pObj5 = NULL;
+	CPingResponse::Object *pObj6 = NULL;
+
+	switch (obj.eType)
+	{
+	case STREAM_BEGIN:
+		pObj0 = (CStreamBegin::Object*)obj.eData;
+		payload = CStreamBegin::TranslatePayload(*pObj0, &length);
+		break;
+	case STREAM_EOF: 
+		pObj1 = (CStreamEOF::Object*)obj.eData;
+		payload = CStreamEOF::TranslatePayload(*pObj1, &length);
+		break;
+	case STREAM_DRY: 
+		pObj2 = (CStreamDry::Object*)obj.eData;
+		payload = CStreamDry::TranslatePayload(*pObj2, &length);
+		break;
+	case SET_BUFFER_LENGTH: 
+		pObj3 = (CSetBufferLength::Object*)obj.eData;
+		payload = CSetBufferLength::TranslatePayload(*pObj3, &length);
+		break;
+	case STREAM_IS_RECORDED: 
+		pObj4 = (CStreamIsRecorded::Object*)obj.eData;
+		payload = CStreamIsRecorded::TranslatePayload(*pObj4, &length);
+		break;
+	case PING_REQUEST: 
+		pObj5 = (CPingRequest::Object*)obj.eData;
+		payload = CPingRequest::TranslatePayload(*pObj5, &length);
+		break;
+	case PING_RESPONSE: 
+		pObj6 = (CPingResponse::Object*)obj.eData;
+		payload = CPingResponse::TranslatePayload(*pObj6, &length);
+		break;
+	default:
+		break;
+	}
+
+	pMsg = new CBaseMessage(USER_CONTROL_MESSAGES_TYPE_ID,length,timestamp,msid,payload,length);
+
+	delete[] payload;
+	payload = NULL;
+	return pMsg;
 }
 
 void CUserControlMessages::FreeObject(CUserControlMessages::Object** ppObj)

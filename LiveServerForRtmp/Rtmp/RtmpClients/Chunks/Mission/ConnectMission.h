@@ -34,7 +34,8 @@ protected:
 	void InActive();
 	int Continue();
 	bool Complete();
-	virtual int SendMessage(CBaseMessage* pMsg) = 0;
+	virtual int Send2MySelf(CBaseMessage* pMsg) = 0;
+	virtual uint32_t GetStreamID() = 0;
 
 private:
 	int SendAckWinSize();

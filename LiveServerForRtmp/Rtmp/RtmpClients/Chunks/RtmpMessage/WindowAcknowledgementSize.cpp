@@ -25,7 +25,7 @@ CWindowAcknowledgementSize::Object* CWindowAcknowledgementSize::Decode(CBaseMess
 	return pObj;
 }
 
-uint8_t* CWindowAcknowledgementSize::TranslatePayload(uint32_t winAckSize, uint32_t* outLength)
+uint8_t* CWindowAcknowledgementSize::TranslatePayload(Object obj, uint32_t* outLength)
 {
 	uint8_t *buf = NULL;
 	uint32_t bufLength = 0;
@@ -35,7 +35,7 @@ uint8_t* CWindowAcknowledgementSize::TranslatePayload(uint32_t winAckSize, uint3
 	buf = new uint8_t[bufLength];
 	memset(buf, 0, bufLength);
 
-	bNum = HostToBig32(winAckSize);
+	bNum = HostToBig32(obj.winAckSize);
 	memcpy(buf, &bNum, 4);
 
 	*outLength = bufLength;
@@ -48,7 +48,7 @@ CBaseMessage* CWindowAcknowledgementSize::Encode(uint32_t timestamp, uint32_t ms
 	uint8_t *payload = NULL;
 	uint32_t payloadLen = 0;
 
-	payload = TranslatePayload(obj.winAckSize, &payloadLen);
+	payload = TranslatePayload(obj, &payloadLen);
 
 	pMsg = new CBaseMessage(WINDOW_ACKNOWLEDGEMENT_SIZE_TYPE_ID,payloadLen,timestamp,msid,payload,payloadLen);
 

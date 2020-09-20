@@ -27,3 +27,20 @@ void CPingResponse::FreeObject(CPingResponse::Object** ppObj)
 	delete (*ppObj);
 	(*ppObj) = NULL;
 }
+
+uint8_t* CPingResponse::TranslatePayload(CPingResponse::Object obj, uint32_t *outLen)
+{
+	uint16_t bigEventType = 0;
+	uint32_t bigEventData = 0;
+	const uint32_t length = 6;
+	uint8_t *payload = new uint8_t[length];
+
+	bigEventType = ::HostToBig16(E_T_PING_RESPONSE);
+	bigEventData = ::HostToBig32(obj.timestamp);
+
+	memcpy(payload, &bigEventType, 2);
+	memcpy(payload + 2, &bigEventData, 4);
+
+	*outLen = length;
+	return payload;
+}

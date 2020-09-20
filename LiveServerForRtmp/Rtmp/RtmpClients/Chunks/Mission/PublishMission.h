@@ -20,5 +20,5 @@ protected:
 	int Continue();
 	bool Complete();
 
-	virtual int SendMessage(CBaseMessage* pMsg) = 0;
+	virtual int Send2MySelf(CBaseMessage* pMsg) = 0;
 };

@@ -15,5 +15,5 @@ public:
 	struct Object { uint32_t timestamp; };
 	static Object* Decode(CBaseMessage* pMsg);
 	static void FreeObject(Object** ppObj);
-	static CBaseMessage* Encode();
+	static uint8_t* TranslatePayload(Object obj,uint32_t *outLen);
 };

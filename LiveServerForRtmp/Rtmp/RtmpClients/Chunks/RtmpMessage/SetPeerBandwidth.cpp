@@ -30,6 +30,9 @@ CBaseMessage* CSetPeerBandwidth::Encode(uint32_t timestamp, uint32_t msid, Objec
 	payload = CSetPeerBandwidth::TranslatePayload(obj, &payloadLength);
 
 	pMsg = new CBaseMessage(SET_PEER_BADNWIDTH_TYPE_ID,payloadLength,timestamp,msid,payload,payloadLength);
+	
+	delete[] payload;
+	payload = NULL;
 	return pMsg; 
 }
 

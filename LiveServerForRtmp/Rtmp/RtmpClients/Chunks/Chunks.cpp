@@ -57,8 +57,13 @@ int CChunks::SetChunkSizeHandle(CSetChunkSize::Object *pObj)
 	return 0;
 }
 
-int CChunks::SendMessage(CBaseMessage* pMsg)
+int CChunks::Send2MySelf(CBaseMessage* pMsg)
 {
-	return -1;
+	return CSendMessage::Send2MySelf(pMsg);
+}
+
+uint32_t CChunks::GetStreamID()
+{
+	return 0;
 }
 

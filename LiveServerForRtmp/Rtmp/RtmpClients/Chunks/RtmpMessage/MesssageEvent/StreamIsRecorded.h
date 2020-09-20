@@ -16,4 +16,6 @@ public:
 
 	static Object* Decode(CBaseMessage* pMsg);
 	static void FreeObject(Object** ppObj);
+
+	static uint8_t* TranslatePayload(Object obj, uint32_t *outLen);
 };

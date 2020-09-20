@@ -15,11 +15,9 @@ protected:
 
 protected:
 	int OnChunks(uint8_t* src, const int srcLength);
-
-
 private:
 	 int AbortMessageHandle(CAbortMessage::Object *pObj) ;
 	 int SetChunkSizeHandle(CSetChunkSize::Object *pObj) ;
-	 int SendMessage(CBaseMessage* pMsg);
-	
+	 int Send2MySelf(CBaseMessage* pMsg);
+	 uint32_t GetStreamID();
 };

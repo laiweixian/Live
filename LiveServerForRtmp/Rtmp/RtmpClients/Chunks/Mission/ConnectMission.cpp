@@ -86,7 +86,7 @@ int CConnectMission::SendAckWinSize()
 	
 	obj.winAckSize = WIN_ACK_SIZE_VALUE;
 	pMsg = CWindowAcknowledgementSize::Encode(0, 0, obj);
-	return SendMessage(pMsg);
+	return Send2MySelf(pMsg);
 }
 
 int CConnectMission::SendSetPeerBandwidth()
@@ -98,13 +98,23 @@ int CConnectMission::SendSetPeerBandwidth()
 	obj.limitType = 1;
 	pMsg = CSetPeerBandwidth::Encode(0, 0, obj);
 
-	return SendMessage(pMsg);
+	return Send2MySelf(pMsg);
 }
 
 int CConnectMission::SendUserControlMessage()
 {
+	CBaseMessage *pMsg = NULL;
+	CStreamBegin::Object obj;
+	CUserControlMessages::Object userObj;
 	
-	return -1;
+	obj.streamID = GetStreamID();
+	
+	userObj.eType = CUserControlMessages::STREAM_BEGIN;
+	userObj.eData = &obj;
+
+	pMsg = CUserControlMessages::Encode(0, 0, userObj);
+	
+	return Send2MySelf(pMsg);
 }
 
 int CConnectMission::SendConnectResponse()
