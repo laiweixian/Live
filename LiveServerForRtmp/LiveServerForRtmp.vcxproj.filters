@@ -207,6 +207,9 @@
     <ClInclude Include="Rtmp\RtmpClients\Chunks\RtmpMessage\MesssageEvent\PingResponse.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\IBaseMission.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

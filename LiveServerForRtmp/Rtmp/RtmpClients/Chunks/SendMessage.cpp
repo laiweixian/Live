@@ -19,13 +19,15 @@ int CSendMessage::Send2MySelf(CBaseMessage* pMsg)
 	CChunking *chunking = NULL;
 	int length = 0;
 	int ret = -1;
+	char name[200] = {0};
+	sprintf(name, "Send_Type_%d", pMsg->GetHeader().msgType);
 	
 	chunking = CChunking::Create(m_Prev,pMsg,chunkSize);
 	chunks = chunking->Encode(&chunksLength);
 	length = Send2Peer(chunks, chunksLength);
 	if (length != chunksLength)
 	{
-
+		ret = -1;
 	}
 	else
 	{
@@ -33,10 +35,9 @@ int CSendMessage::Send2MySelf(CBaseMessage* pMsg)
 		m_Prev = chunking;
 		ret = 0;
 		SendSuccess(pMsg);
-	}
 
-	
-	
+		write2file(name, chunks, length);
+	}
 	return ret;
 }
 

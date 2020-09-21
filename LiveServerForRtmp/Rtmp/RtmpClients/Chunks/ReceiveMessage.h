@@ -18,9 +18,9 @@
 #include "Mission/CreateStreamMission.h"
 
 
-class CReceiveMessage : public CConnectMission,\
+class CReceiveMessage : public CConnectMission, \
 						public CCreateStreamMission,
-						public CPlayMission,\
+						public CPlayMission, \
 						public CPublishMission
 {
 protected:

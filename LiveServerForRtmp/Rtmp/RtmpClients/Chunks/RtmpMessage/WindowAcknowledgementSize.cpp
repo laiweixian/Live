@@ -17,7 +17,7 @@ CWindowAcknowledgementSize::Object* CWindowAcknowledgementSize::Decode(CBaseMess
 	uint32_t winAckSize = 0;
 	CBaseMessage::Payload payload = pMsg->GetPayload();
 
-	memcpy(buf, payload.buf,payload.bufSize);
+	memcpy(buf, payload.buf,4);
 	winAckSize = BigToHost32(buf);
 	
 	pObj = new CWindowAcknowledgementSize::Object;

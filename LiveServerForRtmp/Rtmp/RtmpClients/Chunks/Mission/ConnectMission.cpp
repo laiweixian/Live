@@ -14,13 +14,16 @@ CConnectMission::~CConnectMission()
 
 }
 
-void CConnectMission::Active()
+void CConnectMission::Activate()
 {
 	if (!m_Active)
+	{
 		m_Active = true;
+	}
+		
 }
 
-void CConnectMission::InActive()
+void CConnectMission::InActivate()
 {
 	if (m_Active)
 		m_Active = false;
@@ -47,7 +50,7 @@ void CConnectMission::SetWinAckSize(CWindowAcknowledgementSize::Object *pObj)
 	
 }
 
-int CConnectMission::Continue()
+int CConnectMission::Run()
 {
 	int ret = -1;
 	switch (m_RStat)
@@ -56,8 +59,8 @@ int CConnectMission::Continue()
 		ret = -1;
 		break;
 	case CConnectMission::R_COMMAND_CONNENCT:
-		ret += SendAckWinSize();
-		ret += SendSetPeerBandwidth();
+		ret = SendAckWinSize();	
+		ret = SendSetPeerBandwidth(); 
 		break;
 	case CConnectMission::R_WIN_ACK_SIZE:
 		ret += SendUserControlMessage();
@@ -67,38 +70,46 @@ int CConnectMission::Continue()
 		ret = -1;
 		break;
 	}
-
-
 	return ret;
 }
 
-bool CConnectMission::Complete()
-{
-	const bool a = (m_RStat == CConnectMission::ReceiveStat::R_WIN_ACK_SIZE);
-	const bool b = (m_SStat == CConnectMission::SendStat::S_CONNECT_RESPONSE);
-	return( a&& b );
-}
+
 
 int CConnectMission::SendAckWinSize()
 {
 	CBaseMessage* pMsg = NULL;
+	CBaseMessage  *anti = NULL;
 	CWindowAcknowledgementSize::Object obj;
+	CWindowAcknowledgementSize::Object *obj2 = NULL;
+	
+	int ret = 0;
 	
 	obj.winAckSize = WIN_ACK_SIZE_VALUE;
-	pMsg = CWindowAcknowledgementSize::Encode(0, 0, obj);
-	return Send2MySelf(pMsg);
+	pMsg = CWindowAcknowledgementSize::Encode(2000, 1000, obj);
+
+	CChunking * chunk = CChunking::Create(NULL, pMsg, 128);
+	uint8_t *buf = NULL; uint32_t bufSize = 0; int chunLen = 0;
+	buf = chunk->Encode(&bufSize);
+	
+	anti = CAntiChunking::Create(NULL, 128, buf, bufSize,&chunLen);
+
+	obj2 = CWindowAcknowledgementSize::Decode(anti);
+	
+	return -1;
 }
 
 int CConnectMission::SendSetPeerBandwidth()
 {
 	CBaseMessage* pMsg = NULL;
 	CSetPeerBandwidth::Object obj;
+	int ret = 0;
 
-	obj.ackWinSize = WIN_ACK_SIZE_VALUE;
+	obj.ackWinSize = 0;
 	obj.limitType = 1;
 	pMsg = CSetPeerBandwidth::Encode(0, 0, obj);
 
-	return Send2MySelf(pMsg);
+	ret = Send2MySelf(pMsg);
+	return ret;
 }
 
 int CConnectMission::SendUserControlMessage()
@@ -106,7 +117,8 @@ int CConnectMission::SendUserControlMessage()
 	CBaseMessage *pMsg = NULL;
 	CStreamBegin::Object obj;
 	CUserControlMessages::Object userObj;
-	
+	int ret = -1;
+
 	obj.streamID = GetStreamID();
 	
 	userObj.eType = CUserControlMessages::STREAM_BEGIN;
@@ -114,7 +126,8 @@ int CConnectMission::SendUserControlMessage()
 
 	pMsg = CUserControlMessages::Encode(0, 0, userObj);
 	
-	return Send2MySelf(pMsg);
+	ret = Send2MySelf(pMsg);
+	return ret;
 }
 
 int CConnectMission::SendConnectResponse()

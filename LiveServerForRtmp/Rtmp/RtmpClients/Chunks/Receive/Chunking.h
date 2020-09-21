@@ -13,13 +13,14 @@ public:
 	static CChunking* Create(CChunking* prev,CBaseMessage* curr,uint32_t chunkSize);
 	void Destroy();
 
-	uint8_t* Encode(uint32_t* outLength);
+	uint8_t* GetChunksBuffer(uint32_t* outLength);
 	struct Buff { uint8_t* buf; uint32_t length; };
 	struct Chunk { Buff head; Buff payload; };
 
-protected:
+private:
 	void Set(CChunking* prev, CBaseMessage* curr, uint32_t chunkSize);
-	void Encode(CBaseMessage* curr,const uint32_t chunkSize);
+	void SetChunkHead(CChunking* prev);
+	void SetChunkPayload(CBaseMessage* curr, uint32_t chunkSize);
 private:
 	uint8_t CheckFirstHeader(CChunking* prev, CBaseMessage* curr);
 	void SetFirstChunk(CChunking* prev, CBaseMessage* curr);
@@ -30,9 +31,6 @@ private:
 	void SetChunk4(uint32_t count);
 	
 protected:
-	vector<CChunkHeader::Head> m_ChunkHeads;
-	CBaseMessage::Header m_MsgHeader;
-	
 	vector<Chunk> m_Chunks;
 	uint32_t m_DeltaTS;
 };

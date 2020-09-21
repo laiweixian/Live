@@ -14,11 +14,5 @@ protected:
 	CPublishMission();
 	virtual ~CPublishMission();
 
-protected:
-	void Active();
-	void InActive();
-	int Continue();
-	bool Complete();
 
-	virtual int Send2MySelf(CBaseMessage* pMsg) = 0;
 };

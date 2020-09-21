@@ -4,7 +4,7 @@
 
 CChunking::CChunking():m_DeltaTS(0)
 {
-	memset(&m_MsgHeader, 0, sizeof(CBaseMessage::Header));
+
 }
 
 
@@ -28,13 +28,12 @@ void CChunking::Destroy()
 	delete this;
 }
 
-uint8_t* CChunking::Encode(uint32_t* outLength)
+uint8_t* CChunking::GetChunksBuffer(uint32_t* outLength)
 {
 	auto it = m_Chunks.begin();
 	uint8_t *buf = NULL, *ptr = NULL;
 	uint32_t bufLength = 0;
 	
-
 	for (it = m_Chunks.begin(); it != m_Chunks.end(); it++)
 	{
 		bufLength += (*it).head.length;
@@ -86,11 +85,46 @@ void CChunking::Set(CChunking* prev, CBaseMessage* curr, uint32_t chunkSize)
 {
 	//分析每一个chunk头
 	const uint32_t chunkCount = ceil(curr->GetHeader().payloadLength / chunkSize);
+	Chunk chunk = {0};
+	int i = 0;
+
+	for (i = 0; i < chunkCount; i++)
+		m_Chunks.push_back(chunk);
 	
-	SetFirstChunk(prev, curr);
-	SetChunk4(chunkCount - 1);
-	Encode(curr, chunkSize);
+	SetChunkHead();
+	SetChunkPayload(curr, chunkSize);
 }
+
+void CChunking::SetChunkPayload(CBaseMessage* curr, uint32_t chunkSize)
+{
+	auto it = m_Chunks.begin();
+
+	CBaseMessage::Payload payload = curr->GetPayload();
+	uint8_t *ptr = payload.buf;
+	uint32_t totalLength = payload.bufSize;
+	uint32_t max = 0;
+
+	for (it = m_Chunks.begin(); it!= m_Chunks.end(); it++)
+	{
+		max = totalLength > chunkSize ? chunkSize : totalLength;
+		
+		it->payload.length = max;
+		it->payload.buf = new uint8_t[max];
+		memcpy(it->payload.buf,ptr,max);
+
+		totalLength -= max;
+		ptr += max;
+	}
+
+
+}
+
+void CChunking::SetChunkHead(CChunking* prev)
+{
+
+}
+
+
 
 
 
@@ -156,13 +190,19 @@ void CChunking::SetFirstChunk0(CChunking* prev, CBaseMessage* curr)
 {
 	//
 	CChunkHeader::Head first = {0};
-	CChunkHeader::Head prevChunkHeader = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size()-1);
+	CChunkHeader::Head prevChunkHeader;
 
 	first.fmt = 0x00;
 	if (prev == NULL)
+	{
 		first.csid = 2;
+	}
 	else
+	{
+		prevChunkHeader  = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size() - 1);
 		first.csid = prevChunkHeader.csid + 1;
+	}
+		
 	
 	first.timestamp = m_MsgHeader.timestamp;
 	first.messageLength = m_MsgHeader.payloadLength;

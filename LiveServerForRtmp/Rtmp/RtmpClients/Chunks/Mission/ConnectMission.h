@@ -1,9 +1,13 @@
 #pragma once
 
+#include "IBaseMission.h"
 #include "../RtmpMessage/CommandMessage.h"
 #include "../RtmpMessage/WindowAcknowledgementSize.h"
 #include "../RtmpMessage/SetPeerBandwidth.h"
 #include "../RtmpMessage/UserControlMessages.h"
+
+#include "../Receive/Chunking.h"
+#include "../Receive/AntiChunking.h"
 
 //Process
 //0.(Receive) Command Message(connect)
@@ -15,7 +19,7 @@
 
 
 
-class CConnectMission
+class CConnectMission : public IBaseMission
 {
 public:
 	CConnectMission();
@@ -27,13 +31,13 @@ public:
 	struct Object { char rtmpUrl[1024]; uint32_t winAckSize; };
 
 protected:
+	void Activate();
+	int  Run();
+	void InActivate();
 	void SetCommandConnect(CCommandConnect::Object *pObj);
 	void SetWinAckSize(CWindowAcknowledgementSize::Object *pObj);
 
-	void Active();
-	void InActive();
-	int Continue();
-	bool Complete();
+
 	virtual int Send2MySelf(CBaseMessage* pMsg) = 0;
 	virtual uint32_t GetStreamID() = 0;
 

@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\ConnectMission.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\CreateStreamMission.h" />
+    <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\IBaseMission.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PlayMission.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Mission\PublishMission.h" />
     <ClInclude Include="Rtmp\RtmpClients\Chunks\Receive\AntiChunking.h" />

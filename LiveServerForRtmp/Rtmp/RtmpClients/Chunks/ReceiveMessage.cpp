@@ -23,7 +23,6 @@ int CReceiveMessage::HandleMessage(CBaseMessage* pMsg)
 	CSetPeerBandwidth::Object *pObj4 = NULL;
 	CCommandMessage::Object *pObj6 = NULL;
 
-
 	header = pMsg->GetHeader();
 	switch (header.msgType)
 	{
@@ -91,12 +90,27 @@ int CReceiveMessage::HandleMessage(CBaseMessage* pMsg)
 	return ret;
 }
 
-int CReceiveMessage::AcknowledgementHandle(CAcknowledgement::Object *pObj) { return -1; }
-int CReceiveMessage::AggregateMessageHandle(CAggregateMessage::Object *pObj) { return -1; }
-int CReceiveMessage::AudioMessageHandle() { return -1; }
+int CReceiveMessage::AcknowledgementHandle(CAcknowledgement::Object *pObj) 
+{ 
+	TRACE("Handle Acknowledgement\n");
+	return -1; 
+}
+
+int CReceiveMessage::AggregateMessageHandle(CAggregateMessage::Object *pObj) 
+{ 
+	TRACE("Handle AggregateMessage\n");
+	return -1; 
+}
+
+int CReceiveMessage::AudioMessageHandle() 
+{ 
+	TRACE("Handle AudioMessage\n");
+	return -1; 
+}
 
 int CReceiveMessage::CommandMessageHandle(CCommandMessage::Object *pObj) 
 {
+	TRACE("Handle CommandMessage\n");
 	const CommandType cType = pObj->cType;
 	CCommandConnect::Object* pObj0 = NULL;
 	int ret = 0;
@@ -140,32 +154,122 @@ int CReceiveMessage::CommandMessageHandle(CCommandMessage::Object *pObj)
 
 	return ret;
 }
-int CReceiveMessage::DataMessageHandle() { return -1; }
-int CReceiveMessage::SetPeerBandwidthHandle(CSetPeerBandwidth::Object *pObj) { return -1; }
-int CReceiveMessage::SharedObjectMessageHandle() { return -1; }
-int CReceiveMessage::UserControlMessagesHandle() { return -1; }
-int CReceiveMessage::VideoMessageHandle() { return -1; }
-int CReceiveMessage::WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize::Object  *pObj) { return -1; }
+
+int CReceiveMessage::DataMessageHandle() 
+{
+	TRACE("Handle DataMessage\n");
+	return -1; 
+}
+
+int CReceiveMessage::SetPeerBandwidthHandle(CSetPeerBandwidth::Object *pObj) 
+{ 
+	TRACE("Handle SetPeerBandwidth\n");
+	return -1; 
+}
+
+int CReceiveMessage::SharedObjectMessageHandle() 
+{ 
+	TRACE("Handle SharedObjectMessage\n");
+	return -1; 
+}
+
+int CReceiveMessage::UserControlMessagesHandle() 
+{ 
+	TRACE("Handle UserControlMessages\n");
+	return -1; 
+}
+
+int CReceiveMessage::VideoMessageHandle() 
+{ 
+	TRACE("Handle VideoMessage\n");
+	return -1; 
+}
+
+int CReceiveMessage::WindowAcknowledgementSizeHandle(CWindowAcknowledgementSize::Object  *pObj) 
+{ 
+	TRACE("Handle WindowAcknowledgementSize\n");
+	return -1; 
+}
 
 int CReceiveMessage::CMConnectHandle(CCommandConnect::Object *pObj)
 {
+	TRACE("Handle CMConnect\n");
 	int ret = -1;
-	CConnectMission::Active();
+	CConnectMission::Activate();
 	CConnectMission::SetCommandConnect(pObj);
-	ret = CConnectMission::Continue();
+	ret = CConnectMission::Run();
 	return ret;
 }
 
-int CReceiveMessage::CMCallHandle() { return -1; }
-int CReceiveMessage::CMCloseHandle() { return -1; }
-int CReceiveMessage::CMCloseStreamHandle() { return -1; }
-int CReceiveMessage::CMCreateStreamHandle() { return -1; }
-int CReceiveMessage::CMPlayHandle() { return -1; }
-int CReceiveMessage::CMPlay2Handle() { return -1; }
-int CReceiveMessage::CMDeleteStreamHandle() { return -1; }
-int CReceiveMessage::CMReceiveAudioHandle() { return -1; }
-int CReceiveMessage::CMReceiveVideoHandle() { return -1; }
-int CReceiveMessage::CMReceivePublishHandle() { return -1; }
-int CReceiveMessage::CMSeekHandle() { return -1; }
-int CReceiveMessage::CMPauseHandle() { return -1; }
+int CReceiveMessage::CMCallHandle() 
+{ 
+	TRACE("Handle CMCall\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMCloseHandle() 
+{ 
+	TRACE("Handle CMClose\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMCloseStreamHandle() 
+{ 
+	TRACE("Handle CMCloseStream\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMCreateStreamHandle()
+{ 
+	TRACE("Handle CMCreateStream\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMPlayHandle() 
+{ 
+	TRACE("Handle CMPlay\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMPlay2Handle() 
+{ 
+	TRACE("Handle CMPlay2\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMDeleteStreamHandle() 
+{ 
+	TRACE("Handle CMDeleteStream\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMReceiveAudioHandle() 
+{ 
+	TRACE("Handle CMReceiveAudio\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMReceiveVideoHandle() 
+{
+	TRACE("Handle CMReceiveVideo\n");
+	return -1; 
+}
+
+int CReceiveMessage::CMReceivePublishHandle() 
+{ 
+	TRACE("Handle CMReceivePublish\n");
+	return -1;
+}
+
+int CReceiveMessage::CMSeekHandle() 
+{ 
+	TRACE("Handle CMSeek\n");
+	return -1;
+}
+
+int CReceiveMessage::CMPauseHandle() 
+{ 
+	TRACE("Handle :CMPause\n");
+	return -1; 
+}
 
