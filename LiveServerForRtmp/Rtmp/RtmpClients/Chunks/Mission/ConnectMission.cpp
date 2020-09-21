@@ -85,16 +85,20 @@ int CConnectMission::SendAckWinSize()
 	int ret = 0;
 	
 	obj.winAckSize = WIN_ACK_SIZE_VALUE;
-	pMsg = CWindowAcknowledgementSize::Encode(2000, 1000, obj);
+	uint32_t ts = 0x112233, csid = 0x12345678;
+	pMsg = CWindowAcknowledgementSize::Encode(ts, csid, obj);
 
 	CChunking * chunk = CChunking::Create(NULL, pMsg, 128);
 	uint8_t *buf = NULL; uint32_t bufSize = 0; int chunLen = 0;
-	buf = chunk->Encode(&bufSize);
+	buf = chunk->GetChunksBuffer(&bufSize);
+
+	write2file("encode_win_ack_size", buf, bufSize);
 	
+	/*
 	anti = CAntiChunking::Create(NULL, 128, buf, bufSize,&chunLen);
 
 	obj2 = CWindowAcknowledgementSize::Decode(anti);
-	
+	*/
 	return -1;
 }
 

@@ -2,7 +2,7 @@
 #include "Chunking.h"
 
 
-CChunking::CChunking():m_DeltaTS(0)
+CChunking::CChunking() :m_DeltaTS(0) , m_MsgHeader({0}),m_Csid(2)
 {
 
 }
@@ -36,62 +36,38 @@ uint8_t* CChunking::GetChunksBuffer(uint32_t* outLength)
 	
 	for (it = m_Chunks.begin(); it != m_Chunks.end(); it++)
 	{
-		bufLength += (*it).head.length;
-		bufLength += (*it).payload.length;
+		bufLength += it->head.length;
+		bufLength += it->payload.length;
 	}
 
 	buf = new uint8_t[bufLength];
 	ptr = buf;
 	for (it = m_Chunks.begin(); it != m_Chunks.end(); it++)
 	{
-		memcpy(ptr, (*it).head.buf, (*it).head.length); ptr += (*it).head.length;
-		memcpy(ptr, (*it).payload.buf, (*it).payload.length); ptr += (*it).payload.length;
+		memcpy(ptr, it->head.buf, it->head.length); ptr += it->head.length;
+		memcpy(ptr, it->payload.buf, it->payload.length); ptr += it->payload.length;
 	}
 
 	*outLength = bufLength;
 	return buf;
 }
 
-void CChunking::Encode(CBaseMessage* curr, const uint32_t chunkSize)
-{
-	uint32_t totalLength = curr->GetHeader().payloadLength,length = 0;
-	auto it = m_ChunkHeads.begin();
-	CChunkHeader::Head head;
-	uint8_t *ptr = curr->GetPayload().buf;
-	Chunk chunk = {0};
 
-	for (it = m_ChunkHeads.begin(); it != m_ChunkHeads.end(); it++)
-	{
-		head = *it;
-
-		//header
-		chunk.head.buf = CChunkHeader::Encode(head, &chunk.head.length);
-
-		//
-		length = totalLength > chunkSize ? chunkSize : totalLength;
-		chunk.payload.buf = new uint8_t[length];
-		chunk.payload.length = length;
-		memcpy(chunk.payload.buf,ptr,length);
-
-		ptr += length;
-		totalLength -= length;
-
-		m_Chunks.push_back(chunk);
-	}
-	
-}
 
 void CChunking::Set(CChunking* prev, CBaseMessage* curr, uint32_t chunkSize)
 {
 	//分析每一个chunk头
-	const uint32_t chunkCount = ceil(curr->GetHeader().payloadLength / chunkSize);
+	const float fC = chunkSize;
+	const float fP = curr->GetHeader().payloadLength;
+	const uint32_t chunkCount = ceil(fP/fC);
 	Chunk chunk = {0};
 	int i = 0;
 
 	for (i = 0; i < chunkCount; i++)
 		m_Chunks.push_back(chunk);
+	m_MsgHeader = curr->GetHeader();
 	
-	SetChunkHead();
+	SetChunkHead(prev);
 	SetChunkPayload(curr, chunkSize);
 }
 
@@ -121,142 +97,102 @@ void CChunking::SetChunkPayload(CBaseMessage* curr, uint32_t chunkSize)
 
 void CChunking::SetChunkHead(CChunking* prev)
 {
-
+	SetFirstChunkHead(prev);
+	SetOtherChunkHead();
 }
 
-
-
-
-
-void CChunking::SetFirstChunk(CChunking* prev, CBaseMessage* curr)
+void CChunking::SetFirstChunkHead(CChunking* prev)
 {
-	m_MsgHeader = curr->GetHeader();
-	const uint8_t fType = CheckFirstHeader(prev, curr);
-	switch (fType)
+	uint8_t fmt = 0x00;
+	uint32_t deltaTimestamp = 0;
+	CChunkHeader::Head head = {0};
+	uint8_t *headBuf = NULL; uint32_t headBufLength = 0;
+	auto it = m_Chunks.begin();
+
+	//message first chunk
+	if (prev == NULL)
+		fmt = 0x00;
+	else
+	{
+		if (prev->m_MsgHeader.msgType == m_MsgHeader.msgType)
+		{
+			deltaTimestamp = m_MsgHeader.timestamp = prev->m_MsgHeader.timestamp;
+			if (prev->m_DeltaTS == deltaTimestamp)
+				fmt = 0x03;
+			else
+				fmt = 0x02;
+			m_DeltaTS = deltaTimestamp;
+		}
+		else
+		{
+			fmt = 0x00;
+		}
+	}
+
+	head.fmt = fmt;
+	head.csid = GetNextCsid();
+
+	//设置第一个chunk head
+	switch (fmt)
 	{
 	case 0x00:
-		SetFirstChunk0(prev,curr);
+		head.timestamp = m_MsgHeader.timestamp;
+		head.messageLength = m_MsgHeader.payloadLength;
+		head.messageTypeID = m_MsgHeader.msgType;
+		head.messageStreamID = m_MsgHeader.msid;
 		break;
 	case 0x01:
-		SetFirstChunk1(prev, curr);
 		break;
 	case 0x02:
-		SetFirstChunk2(prev, curr);
+		head.timestampDelta = m_DeltaTS;
 		break;
 	case 0x03:
-		SetFirstChunk3(prev, curr);
 		break;
 	default:
 		break;
 	}
-	
+
+	headBuf = CChunkHeader::Encode(head, &headBufLength);
+	it->head.buf = headBuf;
+	it->head.length = headBufLength;
 }
 
-uint8_t CChunking::CheckFirstHeader(CChunking* prev, CBaseMessage* curr)
+void CChunking::SetOtherChunkHead()
 {
-	CBaseMessage::Header prevMsgHeader;
-	CChunkHeader::Head prevChunkHeader;
-	uint8_t fType = 0xff;
+	auto it = m_Chunks.begin();
+	CChunkHeader::Head head = { 0 };
+	const int count = m_Chunks.size();
+	uint8_t *headBuf = NULL; uint32_t headBufLength = 0;
 
-	if (prev == NULL)
-		fType = 0x00;
-	else
-	{
-		prevChunkHeader = prev->m_ChunkHeads.at(0);
-		prevMsgHeader = prev->m_MsgHeader;
-
-		if (prevMsgHeader.msgType == m_MsgHeader.msgType && prevMsgHeader.payloadLength == m_MsgHeader.payloadLength && prevMsgHeader.msid == m_MsgHeader.msid)
-		{
-			//0x02 or 0x03
-			if (m_DeltaTS == 0)
-			{
-				m_DeltaTS = m_MsgHeader.timestamp - prevMsgHeader.timestamp;
-				fType = 0x02;
-			}
-			else
-			{
-				fType = 0x03;
-			}
-
-		}
-		else
-			fType = 0x00;
-	}
-
-	return fType;
-}
-
-void CChunking::SetFirstChunk0(CChunking* prev, CBaseMessage* curr)
-{
-	//
-	CChunkHeader::Head first = {0};
-	CChunkHeader::Head prevChunkHeader;
-
-	first.fmt = 0x00;
-	if (prev == NULL)
-	{
-		first.csid = 2;
-	}
-	else
-	{
-		prevChunkHeader  = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size() - 1);
-		first.csid = prevChunkHeader.csid + 1;
-	}
-		
-	
-	first.timestamp = m_MsgHeader.timestamp;
-	first.messageLength = m_MsgHeader.payloadLength;
-	first.messageTypeID = m_MsgHeader.msgType;
-	first.messageStreamID = m_MsgHeader.msid;
-	
-	m_ChunkHeads.push_back(first);
-}
-
-void CChunking::SetFirstChunk1(CChunking* prev, CBaseMessage* curr)
-{
-	//标准rtmp协议的示例中没有使用
-	return;
-}
-
-void CChunking::SetFirstChunk2(CChunking* prev, CBaseMessage* curr)
-{
-	CChunkHeader::Head first = { 0 };
-	CChunkHeader::Head prevChunkHeader = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size() - 1);
-
-	first.fmt = 0x02;
-	first.csid = prevChunkHeader.csid + 1;
-
-	first.timestampDelta = m_DeltaTS;
-
-	m_ChunkHeads.push_back(first);
-}
-
-void CChunking::SetFirstChunk3(CChunking* prev, CBaseMessage* curr)
-{
-	CChunkHeader::Head first = { 0 };
-	CChunkHeader::Head prevChunkHeader = prev->m_ChunkHeads.at(prev->m_ChunkHeads.size() - 1);
-
-	first.fmt = 0x03;
-	first.csid = prevChunkHeader.csid + 1;
-
-	m_ChunkHeads.push_back(first);
-}
-
-void CChunking::SetChunk4(uint32_t count)
-{
-	CChunkHeader::Head first = { 0 };
-	uint32_t csid = m_ChunkHeads.at(0).csid;
-	int i = 0;
-
-	if (count == 0)
+	if (count == 1)
 		return;
 
-	for (i=0;i<count;i++)
+	head.fmt = 0x03;
+	head.csid = GetNextCsid();
+	headBuf = CChunkHeader::Encode(head, &headBufLength);
+
+	it++;
+	for (;it<m_Chunks.end();it++)
 	{
-		first.fmt = 0x03;
-		first.csid = csid + 1;
-		csid++;
-		m_ChunkHeads.push_back(first);
+		it->head.length = headBufLength;
+		it->head.buf = new uint8_t[headBufLength];
+		memcpy(it->head.buf,headBuf,headBufLength);
 	}
 	
+	delete[] headBuf;
+	headBuf = NULL;
 }
+
+
+uint32_t CChunking::GetNextCsid()
+{
+	const uint32_t csid = m_Csid;
+	m_Csid++;
+	return csid;
+}
+
+
+
+
+
+

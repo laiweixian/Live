@@ -166,7 +166,8 @@ CChunkHeader::Head CChunkHeader::GetHead()
 
 uint8_t* CChunkHeader::Encode(Head head, uint32_t* outLength)
 {
-	uint8_t* buf = NULL,*ptr = NULL;
+	uint8_t* buf = NULL,*ptr = NULL ;
+	char *tempPtr = NULL;
 	uint32_t bufLength = 0;
 
 	//csid
@@ -222,8 +223,8 @@ uint8_t* CChunkHeader::Encode(Head head, uint32_t* outLength)
 		bufsLen[1] = 11;
 		bufs[1] = new uint8_t[11];
 
-		bigNumber24 = HostToBig24(head.timestamp);			memcpy(bufs[1],&bigNumber24,3);
-		bigNumber24 = HostToBig24(head.messageLength);		memcpy(bufs[1]+3, &bigNumber24, 3);
+		bigNumber24 = HostToBig24(head.timestamp);	 tempPtr = (char*)(&bigNumber24); memcpy(bufs[1], tempPtr +1, 3);
+		bigNumber24 = HostToBig24(head.messageLength); tempPtr = (char*)(&bigNumber24);	memcpy(bufs[1]+3, tempPtr + 1, 3);
 															memcpy(bufs[1]+3+3,&head.messageTypeID,1);
 		bigNumber32 = HostToBig32(head.messageStreamID);	memcpy(bufs[1] + 3 + 3 + 1, &bigNumber32, 4);
 		break;
@@ -231,15 +232,15 @@ uint8_t* CChunkHeader::Encode(Head head, uint32_t* outLength)
 		bufsLen[1] = 7;
 		bufs[1] = new uint8_t[7];
 
-		bigNumber24 = HostToBig24(head.timestampDelta);		memcpy(bufs[1], &bigNumber24, 3);
-		bigNumber24 = HostToBig24(head.messageLength);		memcpy(bufs[1]+3, &bigNumber24, 3);
+		bigNumber24 = HostToBig24(head.timestampDelta); tempPtr = (char*)(&bigNumber24); memcpy(bufs[1], tempPtr+1, 3);
+		bigNumber24 = HostToBig24(head.messageLength);	tempPtr = (char*)(&bigNumber24); memcpy(bufs[1]+3, tempPtr + 1, 3);
 															memcpy(bufs[1] + 3 + 3, &head.messageTypeID, 1);
 		break;
 	case 0x02:
 		bufsLen[1] = 3;
 		bufs[1] = new uint8_t[3];
 
-		bigNumber24 = HostToBig24(head.timestampDelta);	memcpy(bufs[1], &bigNumber24, 3);
+		bigNumber24 = HostToBig24(head.timestampDelta); tempPtr = (char*)(&bigNumber24);	memcpy(bufs[1], tempPtr+1, 3);
 		break;
 	case 0x03:
 		bufsLen[1] = 0;

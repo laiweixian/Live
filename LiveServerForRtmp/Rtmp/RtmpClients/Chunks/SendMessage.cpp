@@ -23,7 +23,7 @@ int CSendMessage::Send2MySelf(CBaseMessage* pMsg)
 	sprintf(name, "Send_Type_%d", pMsg->GetHeader().msgType);
 	
 	chunking = CChunking::Create(m_Prev,pMsg,chunkSize);
-	chunks = chunking->Encode(&chunksLength);
+	chunks = chunking->GetChunksBuffer(&chunksLength);
 	length = Send2Peer(chunks, chunksLength);
 	if (length != chunksLength)
 	{

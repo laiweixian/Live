@@ -21,17 +21,15 @@ private:
 	void Set(CChunking* prev, CBaseMessage* curr, uint32_t chunkSize);
 	void SetChunkHead(CChunking* prev);
 	void SetChunkPayload(CBaseMessage* curr, uint32_t chunkSize);
-private:
-	uint8_t CheckFirstHeader(CChunking* prev, CBaseMessage* curr);
-	void SetFirstChunk(CChunking* prev, CBaseMessage* curr);
-	void SetFirstChunk0(CChunking* prev, CBaseMessage* curr);
-	void SetFirstChunk1(CChunking* prev, CBaseMessage* curr);
-	void SetFirstChunk2(CChunking* prev, CBaseMessage* curr);
-	void SetFirstChunk3(CChunking* prev, CBaseMessage* curr);
-	void SetChunk4(uint32_t count);
+	void SetFirstChunkHead(CChunking* prev);
+	void SetOtherChunkHead();
+	uint32_t GetNextCsid();
+
 	
 protected:
 	vector<Chunk> m_Chunks;
 	uint32_t m_DeltaTS;
+	uint32_t m_Csid;
+	CBaseMessage::Header m_MsgHeader;
 };
 
