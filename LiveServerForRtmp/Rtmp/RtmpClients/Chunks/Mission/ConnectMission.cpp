@@ -78,28 +78,14 @@ int CConnectMission::Run()
 int CConnectMission::SendAckWinSize()
 {
 	CBaseMessage* pMsg = NULL;
-	CBaseMessage  *anti = NULL;
 	CWindowAcknowledgementSize::Object obj;
-	CWindowAcknowledgementSize::Object *obj2 = NULL;
-	
 	int ret = 0;
-	
+	uint32_t ts = ::GetTimestamp();
+
 	obj.winAckSize = WIN_ACK_SIZE_VALUE;
-	uint32_t ts = 0x112233, csid = 0x12345678;
-	pMsg = CWindowAcknowledgementSize::Encode(ts, csid, obj);
-
-	CChunking * chunk = CChunking::Create(NULL, pMsg, 128);
-	uint8_t *buf = NULL; uint32_t bufSize = 0; int chunLen = 0;
-	buf = chunk->GetChunksBuffer(&bufSize);
-
-	write2file("encode_win_ack_size", buf, bufSize);
-	
-	/*
-	anti = CAntiChunking::Create(NULL, 128, buf, bufSize,&chunLen);
-
-	obj2 = CWindowAcknowledgementSize::Decode(anti);
-	*/
-	return -1;
+	pMsg = CWindowAcknowledgementSize::Encode(0, 0, obj);
+	ret = Send2MySelf(pMsg);
+	return ret;
 }
 
 int CConnectMission::SendSetPeerBandwidth()
@@ -108,7 +94,7 @@ int CConnectMission::SendSetPeerBandwidth()
 	CSetPeerBandwidth::Object obj;
 	int ret = 0;
 
-	obj.ackWinSize = 0;
+	obj.ackWinSize = WIN_ACK_SIZE_VALUE;
 	obj.limitType = 1;
 	pMsg = CSetPeerBandwidth::Encode(0, 0, obj);
 

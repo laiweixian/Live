@@ -20,6 +20,7 @@ CAntiChunking* CAntiChunking::Create(CAntiChunking* prev, uint32_t chunkSize, ui
 	bool newMsg = false;
 	int msgLength = 0;
 
+	const uint8_t f = *chunkBuf;
 	pHead = CChunkHeader::Parse(chunkBuf, chunkBufLen, &headerLen);
 	if (pHead == NULL)
 		goto shortData;
@@ -44,7 +45,7 @@ CAntiChunking* CAntiChunking::Create(CAntiChunking* prev, uint32_t chunkSize, ui
 			newMsg = true;
 			pHead->CopyFrom(prev->m_Header);
 		}
-		else
+		else 
 		{
 			newMsg = false;
 		}

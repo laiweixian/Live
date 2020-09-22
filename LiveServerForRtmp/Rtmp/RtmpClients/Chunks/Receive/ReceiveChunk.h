@@ -8,7 +8,7 @@ protected:
 	virtual ~CReceiveChunk();
 
 protected:
-	CAntiChunking* Receive(uint8_t* src, const int srcLength,int *outChunkLength);
+	CBaseMessage* Receive(uint8_t* src, const int srcLength,int *outChunkLength);
 	int Abort(uint32_t csid);
 	int ChangeChunkSize(uint32_t chunkSize);
 

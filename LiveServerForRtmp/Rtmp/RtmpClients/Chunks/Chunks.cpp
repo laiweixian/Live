@@ -15,15 +15,15 @@ CChunks::~CChunks()
 
 int CChunks::OnChunks(uint8_t* src, const int srcLength)
 {
-	CAntiChunking* pMsg = NULL;
+	CBaseMessage* pMsg = NULL;
 	int totalLen = 0, chunkLen = 0;
 	int result = 0;
 
-
+	write2file("chunk", src, srcLength);
 	while (totalLen < srcLength)
 	{
 		chunkLen = 0;
-		pMsg = Receive(src + totalLen, srcLength - totalLen, &chunkLen);
+		pMsg = CReceiveChunk::Receive(src + totalLen, srcLength - totalLen, &chunkLen);
 		if (pMsg == NULL)
 		{
 			TRACE("Receive Chunk is Null\n");

@@ -38,6 +38,8 @@ int CSendMessage::Send2MySelf(CBaseMessage* pMsg)
 
 		write2file(name, chunks, length);
 	}
+
+	TRACE("%s,%d\n", name,ret);
 	return ret;
 }
 

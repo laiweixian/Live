@@ -18,7 +18,10 @@ CChunking* CChunking::Create(CChunking* prev, CBaseMessage* curr, uint32_t chunk
 {
 	CChunking* pChunk = NULL;
 	pChunk = new CChunking;
-
+	if (prev)
+	{
+		pChunk->m_Csid = prev->m_Csid;
+	}
 	pChunk->Set(prev, curr, chunkSize);
 	return pChunk;
 }
