@@ -2,7 +2,7 @@
 
 #define  DEFALUT_APP_NAME  "live"
 #define  DEFALUT_IP			"127.0.0.1"
-#define  DEFALUT_PORT		1937
+#define  DEFALUT_PORT		1935
 #define  DEFALUT_CHUNK_SIZE 128
 
 

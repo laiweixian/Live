@@ -2,7 +2,7 @@
 #include "afxwin.h"
 
 
-
+#include "Coder/PlayMedia.h"
 
 // CMainDialog ¶Ô»°¿ò
 
@@ -35,7 +35,11 @@ public:
 	afx_msg void OnPaint();
 	BOOL OnCommand( WPARAM wParam, LPARAM lParam );
 
-
+	static void ShowPicture(void *ctx, AVFrame *pRGB);
+	static void PlayMusic(void *ctx, AVFrame *pPCM);
+	
+protected:
+	BITMAPINFO GetBmpInfo();
 private:
 	CMenu m_Menu;
 	
@@ -44,4 +48,6 @@ public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnBnClickedButtonPlay();
 	CButton m_Play;
+
+	
 };

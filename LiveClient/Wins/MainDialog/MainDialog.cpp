@@ -12,7 +12,7 @@
 #include "Coder/Media.h"
 #include "Coder/ImageCapture.h"
 #include "Coder/VideoDecode.h"
-#include "Coder/PlayMedia.h"
+
 
 
 // CMainDialog 对话框
@@ -232,14 +232,197 @@ int CMainDialog::EncodeAndSave(const char* src, const int srcLen)
 void CMainDialog::OnBnClickedButtonPlay()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CPlayMedia *play = NULL;
-
-
-
-	play = new CPlayMedia("E:\\media.flv", GetSafeHwnd());
-
 	
-	play->Display();
+	PlayContext *pCtx;
+	pCtx = new PlayContext;
+	pCtx->ctx = this;
+	pCtx->play = CMainDialog::PlayMusic;
+	pCtx->renderer = CMainDialog::ShowPicture;
+
+	CPlayMedia *pm = NULL;
+	
+
+	pm = new CPlayMedia("E:\\media.flv", pCtx);
+	pm->Play();
+}
+
+
+static void WriteBMP(LPCTSTR lpFileName,int w, int h, uint8_t* data, int size)
+{
+	int ret = 0;
+	HANDLE hFile = NULL;
+	BITMAP bmp;
+	BITMAPINFO pbmi;
+	WORD    cClrBits;
+	BITMAPFILEHEADER hdr;
+	DWORD dwTmp;
+	
+
+	hFile = CreateFile(lpFileName, GENERIC_WRITE, \
+		FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	pbmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	pbmi.bmiHeader.biWidth = w;
+	pbmi.bmiHeader.biHeight = h;
+	pbmi.bmiHeader.biPlanes = 1;
+	pbmi.bmiHeader.biBitCount = 24;
+	pbmi.bmiHeader.biCompression = BI_RGB;
+	pbmi.bmiHeader.biSizeImage = size;
+	pbmi.bmiHeader.biXPelsPerMeter = 0;
+	pbmi.bmiHeader.biYPelsPerMeter = 0;
+	pbmi.bmiHeader.biClrUsed = 0;
+	pbmi.bmiHeader.biClrImportant = 0;
+
+	hdr.bfType = 0x4d42;
+	hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
+		pbmi.bmiHeader.biSize + pbmi.bmiHeader.biClrUsed
+		* sizeof(RGBQUAD) + pbmi.bmiHeader.biSizeImage);
+	hdr.bfReserved1 = 0;
+	hdr.bfReserved2 = 0;
+
+	hdr.bfOffBits = (DWORD) sizeof(BITMAPFILEHEADER) +
+		pbmi.bmiHeader.biSize + pbmi.bmiHeader.biClrUsed
+		* sizeof(RGBQUAD);
+
+	//header 0
+	if (!WriteFile(hFile, (LPVOID)&hdr, sizeof(BITMAPFILEHEADER),
+		(LPDWORD)&dwTmp, NULL))
+	{
+		//errhandler("WriteFile", hwnd);
+	}
+
+	//header 1
+	if (!WriteFile(hFile, (LPVOID)&pbmi.bmiHeader, sizeof(BITMAPINFOHEADER)
+		+ pbmi.bmiHeader.biClrUsed * sizeof(RGBQUAD),
+		(LPDWORD)&dwTmp, (NULL)))
+	{
+		//errhandler("WriteFile", hwnd);
+	}
+		
+	//body
+
+	if (!WriteFile(hFile, (LPSTR)data, (int)size, (LPDWORD)&dwTmp, NULL))
+	{
+		//errhandler("WriteFile", hwnd);
+	}
+
+
+
+
+	CloseHandle(hFile);
+}
+
+
+static uint8_t* ScaleToRGB(AVFrame* image, int* outSize,int *outW,int *outH)
+{
+	uint8_t* data[4] = { 0 };
+	uint8_t *buf = NULL;
+	int line_size[4] = { 0 };
+	AVPixelFormat dstFmt = AV_PIX_FMT_BGR24;
+	SwsContext *ctx = NULL;
+	int ret = -1;
+	int dataSize = 0;
+	
+	ctx = sws_getContext(image->width, image->height, (AVPixelFormat)image->format, \
+		image->width, image->height, dstFmt, \
+		SWS_BICUBIC, NULL, NULL, NULL);
+	ret = av_image_alloc(data, line_size, image->width, image->height, dstFmt, 1);
+	dataSize = ret;
+
+	ret = sws_scale(ctx,\
+		image->data, image->linesize,0, \
+		image->height, data, line_size);
+
+	//WriteBMP(TEXT("E:\\log\\1.BMP"),image->width,image->height,data[0],dataSize);
+
+	sws_freeContext(ctx);
+	
+	
+	buf = new uint8_t[dataSize];
+	memcpy(buf,data[0],dataSize);
+	av_freep(&data[0]);
+
+	*outW = image->width;
+	*outH = image->height;
+	*outSize = dataSize;
+	return buf;
+}
+
+
+
+void CMainDialog::ShowPicture(void *ctx, AVFrame *pRGB)
+{
+	CMainDialog* dlg =(CMainDialog*) ctx;
+	int ret;
+	HDC dstDC = NULL , hMem = NULL;
+	HBITMAP hBmp = NULL;
+	RECT rect;
+	
+	dstDC = dlg->GetDC()->GetSafeHdc();
+	hMem = CreateCompatibleDC(dstDC);
+	dlg->GetClientRect(&rect);
+
+
+	//
+	uint8_t *data = NULL;
+	int dataSize = 0;
+	int dstWidth, dstHeight;
+	data = ScaleToRGB(pRGB, &dataSize,&dstWidth,&dstHeight);
+
+	BITMAPINFO info;
+	info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	info.bmiHeader.biWidth = dstWidth;
+	info.bmiHeader.biHeight = dstHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = 24;
+	info.bmiHeader.biCompression = BI_RGB;
+	info.bmiHeader.biSizeImage = dataSize;
+	info.bmiHeader.biXPelsPerMeter = 0;
+	info.bmiHeader.biYPelsPerMeter = 0;
+	info.bmiHeader.biClrUsed = 0;
+	info.bmiHeader.biClrImportant = 0;
+	
+	hBmp = CreateDIBitmap(dstDC, &info.bmiHeader, CBM_INIT,data,&info, DIB_RGB_COLORS);
+	HBITMAP hold = (HBITMAP)SelectObject(hMem, hBmp);
+	
+	SetStretchBltMode(dstDC, HALFTONE);
+	ret = ::StretchBlt(dstDC,0,0,rect.right-rect.left,rect.bottom-rect.top,\
+		hMem,0,0, dstWidth,dstHeight, SRCCOPY);
+	
+	SelectObject(hMem, hold);
+	DeleteObject(hBmp);
+	DeleteDC(hMem);
+	delete[] data;
+}
+
+BITMAPINFO CMainDialog::GetBmpInfo()
+{
+	BITMAPINFO info;
+	RECT rect;
+	GetWindowRect(&rect);
+	
+	const int wWidth = rect.right - rect.left, \
+		wHeight = rect.bottom - rect.top;
+	
+	info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	info.bmiHeader.biWidth = wWidth;
+	info.bmiHeader.biHeight = wHeight;
+	info.bmiHeader.biPlanes = 1;
+	info.bmiHeader.biBitCount = 24;
+	info.bmiHeader.biCompression = BI_RGB;
+	info.bmiHeader.biSizeImage = wWidth * wHeight;
+	info.bmiHeader.biXPelsPerMeter = 0;
+	info.bmiHeader.biYPelsPerMeter = 0;
+	info.bmiHeader.biClrUsed = 0;
+	info.bmiHeader.biClrImportant = 0;
+
+	return info;
+}
+
+void CMainDialog::PlayMusic(void *ctx, AVFrame *pPCM)
+{
+	CMainDialog* dlg = (CMainDialog*)ctx;
+
 }
 
 

@@ -34,7 +34,7 @@
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
 
-#include <afxsock.h>            // MFC 套接字扩展
+
 
 
 
@@ -52,37 +52,24 @@
 #endif
 #endif
 
-#include <string.h>
-#include <string>
-#include <iostream>
-#include <stdint.h>
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-#include <list>
-using namespace std;
-
 extern "C"
 {
-	#include "libavcodec/avcodec.h"
-	#include "libavformat/avformat.h"
-	#include "libavutil/avutil.h"
-	#include "libswscale/swscale.h"
-	#include "libavutil/imgutils.h"
-	#include "libswresample/swresample.h"
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/avutil.h"
+#include "libswscale/swscale.h"
+#include "libavutil/imgutils.h"
+#include "libswresample/swresample.h"
 }
-#include "resource.h"
 
-#include "Wins/Wins.h"
-//DirectShow
-#include <dshow.h>
-
-//ATL
-#include <atlbase.h>
+#include <string>
+#include <string.h>
+#include <iostream>
 #include <vector>
 #include <algorithm>
+#include <queue>
+#include <time.h>
+#include <iterator>
 using namespace std;
 
-extern void PrintError(const char * format, ...);
-extern void PrintLog(const char * format, ...);
-int InitFFMpeg();
+

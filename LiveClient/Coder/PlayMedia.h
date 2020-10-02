@@ -4,38 +4,65 @@
 #include "../stdafx.h"
 #include "tools.h"
 
+typedef void (*PlayVideo)(void *ctx, AVFrame *pRGB);
+typedef void (*PlayAudio)(void *ctx, AVFrame *pPCM);
+
+struct PlayContext
+{
+	void *ctx;
+	PlayVideo renderer;
+	PlayAudio play;
+};
+
+
 class CPlayMedia
 {
 public:
-	CPlayMedia(string mediaUrl,HWND hwn);
+	CPlayMedia(string url , PlayContext* play);
 	~CPlayMedia();
 
 public:
-	void Display();
-	
+	struct VideoContext
+	{
+		AVCodecContext *decode;
+		int streamIdx;
+		AVFrame *raw;
+		AVFrame *rgb;
+		SwsContext *swsCtx;
+	};
 
+	struct AudioContext
+	{
+		AVCodecContext *decode;
+		int streamIdx;
+		AVFrame *raw;
+		AVFrame *pcm;
+		SwrContext *swrCtx;
+	};
+
+	void Play();
+	
 public:
 	static DWORD WINAPI ThreadProc(LPVOID lpParameter);
-
+private:
+	int PlayMedia();
+	void FlushVideo(AVFrame* image);
+	void FlushAudio(AVFrame* sound);
 
 private:
-	void Init();
-	void Play();
-	void Render(AVFrame* yuv);
+	void InitFormatCtx();
+	void InitCodec();
+	void InitVideoCtx();
+	void InitAudioCtx();
+	static int open_codec_context(AVFormatContext* fmtCtx, AVMediaType mType, int* outStreamIdx,AVCodecContext **outCodecCtx);
+	static AVFrame* decode_pkt(AVCodecContext* codecCtx,AVPacket* pkt);
 
 protected:
 	string m_Url;
-	HWND m_Display;
+	PlayContext *m_PlayCtx;
+
 	AVFormatContext *m_Format;
-	AVCodecContext *m_DecodeVideo;
-	AVCodecContext *m_DecodeAudio;
-	AVFrame *m_VideoFrame;
-	AVFrame *m_AudioFrame;
-
-	int m_VideoStreamIndex;
-	int m_AudioStreamIndex;
-
-	
-	
+	VideoContext m_Video;
+	AudioContext m_Audio;
 
 };
