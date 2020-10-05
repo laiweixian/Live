@@ -51,23 +51,16 @@ END_MESSAGE_MAP()
 
 
 CPlayerDlg::CPlayerDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(IDD_PLAYER_DIALOG, pParent)
+	: CDialogEx(IDD_PLAYER_DIALOG, pParent), m_PlayCtx(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	m_PlayCtx.ctx = this;
-	m_PlayCtx.pa = CPlayerDlg::AudioCallback;
-	m_PlayCtx.pv = CPlayerDlg::VideoCallback;
-	m_PlayCtx.ps = CPlayerDlg::SubtitleCallback;
-
-	string path("E:\\media.flv");
-
-	m_PlayMedia = CPlayFile::Create(path, &m_PlayCtx);
+	
 }
 
 CPlayerDlg::~CPlayerDlg()
 {
-	if (m_PlayMedia) m_PlayMedia->Destory();
+	
 }
 
 void CPlayerDlg::DoDataExchange(CDataExchange* pDX)
@@ -123,8 +116,9 @@ BOOL CPlayerDlg::OnInitDialog()
 
 void CPlayerDlg::OnBnClickedButtonPlay()
 {
-	if (m_PlayMedia)
-		m_PlayMedia->Play();
+	string path("E:\\media.flv");
+	m_PlayCtx = new CPlayContext(path,this);
+	m_PlayCtx->Play();
 }
 
 void CPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -191,13 +185,29 @@ HDC& CPlayerDlg::GetRendererTarget(int* outLeft, int* outRight, int* outBottom, 
 	return hdc;
 }
 
-void CPlayerDlg::VideoCallback(void* ctx, AVFrame* bgr24)
+
+
+void CPlayerDlg::OnSound(AVFrame* pcm)
 {
-	CPlayerDlg* pdl = (CPlayerDlg*)ctx;
-	pdl->SendMessage(WM_RENDERER_BITMAP, 0, (LPARAM)bgr24);
+	int i = 0;
+	i = -1;
 }
 
-void CPlayerDlg::AudioCallback(void* ctx, AVFrame* pcm)
+void CPlayerDlg::OnImage(AVFrame* bgr24)
+{
+	int i = 0;
+	i = -1;
+}
+
+/*
+
+void CPlayerDlg::VideoCallback(void* ctx, BGR24* pBmp)
+{
+	CPlayerDlg* pdl = (CPlayerDlg*)ctx;
+	pdl->SendMessage(WM_RENDERER_BITMAP, 0, (LPARAM)pBmp);
+}
+
+void CPlayerDlg::AudioCallback(void* ctx, PCM* pPcm)
 {
 	CPlayerDlg* pdl = (CPlayerDlg*)ctx;
 }
@@ -206,13 +216,9 @@ void CPlayerDlg::SubtitleCallback(void* ctx, AVFrame* raw)
 {
 	CPlayerDlg* pdl = (CPlayerDlg*)ctx;
 }
+*/
 
 LRESULT CPlayerDlg::OnRendererBitmap(WPARAM wParam, LPARAM lParam)
 {
-	int t = wParam;
-	AVFrame* bgr24 = (AVFrame*)lParam;
-
-	av_freep(&(bgr24->data[0]));
-	av_frame_free(&bgr24);
 	return 0;
 }

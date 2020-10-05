@@ -11,5 +11,5 @@ protected:
 	virtual HDC& GetRendererTarget(int* outLeft,int* outRight, int* outBottom ,int *outTop) = 0;
 
 protected:
-	void Renderer(AVFrame* rgb24);
+	void Renderer(const int width, const int height,void* bits, const int bitsSize);
 };

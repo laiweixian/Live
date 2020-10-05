@@ -1,7 +1,29 @@
 #include "stdafx.h"
 #include "PlayFile.h"
 
-const int MAX_CACHE_FRAME =  100;
+#define AUDIO_MUTEX	"audio_mutex"
+#define VIDEO_MUTEX "video_mutex"
+
+const int MAX_CACHE_FRAME = 20;
+
+void DeletePCM(PCM** ppObj)
+{
+	PCM *pObj = *ppObj;
+	if (pObj->bits) delete[] pObj->bits; 
+	pObj->bits = NULL;
+
+	delete (*ppObj);
+	*ppObj = NULL;
+}
+void DeleteBGR24(BGR24** ppObj)
+{
+	BGR24 *pObj = *ppObj;
+	if (pObj->bits) delete[] pObj->bits;
+	pObj->bits = NULL;
+
+	delete (*ppObj);
+	*ppObj = NULL;
+}
 
 int open_codec_context(AVFormatContext* fmtCtx, AVMediaType mType, int* outStreamIdx, AVCodecContext **outCodecCtx)
 {
@@ -185,7 +207,7 @@ int CPlayFile::InitAudioCtx()
 	if (ret != 0)
 		goto fail;
 
-	mutex = CreateMutex(NULL,false,NULL);
+	mutex = CreateMutex(NULL,false,TEXT(AUDIO_MUTEX));
 	m_MediaCtx.audio.mutex = mutex;
 	return 0;
 fail:
@@ -217,7 +239,15 @@ int CPlayFile::InitVideoCtx()
 		goto fail;
 
 	m_MediaCtx.vConvert.vCtx = ctx;
-	mutex = CreateMutex(NULL, false, NULL);
+	m_MediaCtx.vConvert.bgr.width = decode->width;
+	m_MediaCtx.vConvert.bgr.height = decode->height;
+
+	ret = av_image_get_buffer_size(AV_PIX_FMT_BGR24, decode->width,decode->height,1);
+	m_MediaCtx.vConvert.bgr.size = ret;
+	m_MediaCtx.vConvert.bgr.bits = new uint8_t[ret];
+	
+
+	mutex = CreateMutex(NULL, false, TEXT(VIDEO_MUTEX));
 	m_MediaCtx.video.mutex = mutex;
 
 	return 0;
@@ -246,6 +276,7 @@ DWORD  CPlayFile::DecodeProc(LPVOID lpParameter)
 	CPlayFile *ppf = (CPlayFile*)lpParameter;
 	ppf->DecodeThread();
 	ExitThread(0);
+	CloseHandle(ppf->m_HDecode);
 	ppf->m_HDecode = NULL;
 }
 
@@ -259,14 +290,25 @@ void CPlayFile::DecodeThread()
 	const int vIndex = m_MediaCtx.video.streamIdx, \
 		aIndex = m_MediaCtx.audio.streamIdx;
 
+	int open_mutext = false;
+
 	av_init_packet(&pkt);
 	while (true)
 	{
-		if (FrameCacheFull())
+		if (FrameCacheFull() && open_mutext)
 		{
-			Sleep(2000);
+			CloseDecodeMutex();
+			Sleep(100);
 			continue;
 		}
+		
+		if (open_mutext == false)
+		{
+			open_mutext = OpenDecodeMutex();
+			Sleep(100);
+			continue;
+		}
+			
 
 		ret = av_read_frame(fmtCtx, &pkt);
 		if (!(ret >= 0))
@@ -280,6 +322,55 @@ void CPlayFile::DecodeThread()
 			ret = 0;
 		av_packet_unref(&pkt);
 	}
+}
+
+bool CPlayFile::OpenDecodeMutex()
+{
+	const bool openv = OpenVideoMutex();
+	const bool opena = OpenVideoMutex();
+
+	return (openv && opena);
+}
+
+bool CPlayFile::CloseDecodeMutex()
+{
+	if (OpenDecodeMutex())
+		return (CloseAudiaMutex() && CloseVideoMutex());
+	else
+		return false;
+	
+}
+
+bool CPlayFile::OpenAudioMutex()
+{
+	HANDLE hMutex = NULL;
+	hMutex = OpenMutex(MUTEX_ALL_ACCESS, true, TEXT(AUDIO_MUTEX));
+	return (hMutex != NULL);
+}
+
+bool CPlayFile::OpenVideoMutex()
+{
+	HANDLE hMutex = NULL;
+	hMutex = OpenMutex(MUTEX_ALL_ACCESS, true, TEXT(VIDEO_MUTEX));
+	return (hMutex != NULL);
+}
+
+bool CPlayFile::CloseAudiaMutex()
+{
+	HANDLE hMutex = NULL;
+	hMutex = OpenMutex(MUTEX_ALL_ACCESS, true, TEXT(AUDIO_MUTEX));
+	if (hMutex == NULL)
+		return false;
+	return ReleaseMutex(hMutex);
+}
+
+bool CPlayFile::CloseVideoMutex()
+{
+	HANDLE hMutex = NULL;
+	hMutex = OpenMutex(MUTEX_ALL_ACCESS, true, TEXT(VIDEO_MUTEX));
+	if (hMutex == NULL)
+		return false;
+	return ReleaseMutex(hMutex);
 }
 
 
@@ -328,6 +419,7 @@ DWORD  CPlayFile::PlayAudioProc(LPVOID lpParameter)
 	CPlayFile *ppf = (CPlayFile*)lpParameter;
 	ppf->PlayAudioThread();
 	ExitThread(0);
+	CloseHandle(ppf->m_HPlayAudio);
 	ppf->m_HPlayAudio = NULL;
 }
 
@@ -336,32 +428,37 @@ DWORD  CPlayFile::PlayVideoProc(LPVOID lpParameter)
 	CPlayFile *ppf = (CPlayFile*)lpParameter;
 	ppf->PlayVideoThread();
 	ExitThread(0);
+	CloseHandle(ppf->m_HPlayVideo);
 	ppf->m_HPlayVideo = NULL;
 }
 
 
 void CPlayFile::PlayBackVideo(AVFrame* raw)
 {
-
+	return;
 	int ret = -1;
 	SwsContext *ctx = m_MediaCtx.vConvert.vCtx;
-	AVFrame *frame = av_frame_alloc();
+	
+	uint8_t* data[4] = { 0 };
+	int linesize[4] = {0};
+	BGR24 * bgr24 = &m_MediaCtx.vConvert.bgr;
 
-	frame->width = raw->width;
-	frame->height = raw->height;
-	frame->format = AV_PIX_FMT_BGR24;
-
-	av_image_alloc(frame->data, frame->linesize, frame->width, frame->height, AV_PIX_FMT_BGR24, 1);
+	
+	ret = av_image_alloc(data, linesize, \
+		bgr24->width, bgr24->height, AV_PIX_FMT_BGR24, 1);
 	ret = sws_scale(ctx, \
 		raw->data, raw->linesize, \
-		0, frame->height, frame->data, frame->linesize);
+		0, bgr24->height, data, linesize);
 
-	m_Ctx->pv(m_Ctx->ctx,frame);
+	memcpy(bgr24->bits,data[0], bgr24->size);
+
+	av_freep(&(data[0]));
+	m_Ctx->pv(m_Ctx->ctx, bgr24);
 }
 
 void CPlayFile::PlayBackAudio(AVFrame* raw)
 {
-	m_Ctx->pa(m_Ctx->ctx,raw);
+	
 }
 
 bool CPlayFile::FrameCacheFull()
@@ -393,16 +490,10 @@ bool CPlayFile::FrameCacheFull()
 
 void CPlayFile::PlayVideoThread()
 {
-	time_t sysTime = 0,lastTime = 0;
-	
 	Frames *frame = NULL;
-	Frames::iterator it;
-	AVFrame* f = NULL;
-	const uint64_t msDelta =100;
-
 	while (true)
 	{
-		frame = m_MediaCtx.video.pQueue;
+		frame = ConsumeVideo();
 		if (frame == NULL && m_HDecode == NULL)
 			break;	
 		if (frame == NULL)
@@ -411,36 +502,52 @@ void CPlayFile::PlayVideoThread()
 			continue;
 		}
 
-		frame = m_MediaCtx.video.pQueue;
-		m_MediaCtx.video.pQueue = NULL;
-
-		for (it=frame->begin();it!=frame->end();it++)
-		{
-			f = *it;
-			PlayBackVideo(f);
+		PlaySequenceVideo(frame);
 		
-			av_frame_free(&f);
-			*it = NULL;
-			Sleep(100);
-		}
-
-		frame->clear();
 		delete frame;
+		frame = NULL;
+	}
+}
+
+
+CPlayFile::Frames* &CPlayFile::ConsumeVideo()
+{
+	bool openMutex = false;
+	Frames* fs = NULL;
+
+	openMutex = OpenVideoMutex();
+	if (openMutex == false)
+		return fs;
+
+	fs =  m_MediaCtx.video.pQueue;
+	m_MediaCtx.video.pQueue = NULL;
+
+	CloseVideoMutex();
+	return fs;
+}
+
+void CPlayFile::PlaySequenceVideo(Frames* freams)
+{
+	auto it = freams->begin();
+	AVFrame* f = NULL;
+
+	for (it = freams->begin(); it != freams->end(); it++)
+	{
+		f = *it;
+		PlayBackVideo(f);
+		av_frame_free(&f);
+		*it = NULL;
+
+		Sleep(100);
 	}
 }
 
 void CPlayFile::PlayAudioThread()
 {
-	time_t sysTime = 0, lastTime = 0;
-
 	Frames *frame = NULL;
-	Frames::iterator it;
-	AVFrame* f = NULL;
-	const uint64_t msDelta = 100;
-
 	while (true)
 	{
-		frame = m_MediaCtx.audio.pQueue;
+		frame = ConsumeAudio();
 		if (frame == NULL && m_HDecode == NULL)
 			break;
 		if (frame == NULL)
@@ -449,18 +556,40 @@ void CPlayFile::PlayAudioThread()
 			continue;
 		}
 
-		frame = m_MediaCtx.audio.pQueue;
-		m_MediaCtx.audio.pQueue = NULL;
-
-		for (it = frame->begin(); it != frame->end(); it++)
-		{
-			f = *it;
-			av_frame_free(&f);
-			*it = NULL;
-		}
+		PlaySequenceAudio(frame);
 
 		frame->clear();
 		delete frame;
+		frame = NULL;
+	}
+}
+
+CPlayFile::Frames* &CPlayFile::ConsumeAudio()
+{
+	bool openMutex = false;
+	Frames* fs = NULL;
+
+	openMutex = OpenAudioMutex();
+	if (openMutex == false)
+		return fs;
+
+	fs = m_MediaCtx.audio.pQueue;
+	m_MediaCtx.audio.pQueue = NULL;
+
+	CloseAudiaMutex();
+	return fs;
+}
+
+void CPlayFile::PlaySequenceAudio(Frames* freams)
+{
+	auto it = freams->begin();
+	AVFrame* f = NULL;
+
+	for (it = freams->begin(); it != freams->end(); it++)
+	{
+		f = *it;
+		av_frame_free(&f);
+		*it = NULL;
 	}
 }
 

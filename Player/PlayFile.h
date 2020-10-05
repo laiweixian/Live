@@ -2,8 +2,23 @@
 
 #include "stdafx.h"
 
-typedef void (*PlayVideo)(void* ctx,AVFrame* bgr24);
-typedef void (*PlayAudio)(void* ctx, AVFrame* pcm);
+typedef struct tagBmp
+{
+	uint8_t *bits;
+	int size;
+	int width;
+	int height;
+}BGR24;
+
+typedef struct tagPCM
+{
+	uint8_t *bits;
+	int size;
+}PCM;
+
+
+typedef void (*PlayVideo)(void* ctx, BGR24* pBmp);
+typedef void (*PlayAudio)(void* ctx, PCM* pPcm);
 typedef void (*PlaySubtitle)(void* ctx, AVFrame* raw);
 
 typedef struct tagPlayContext
@@ -27,12 +42,15 @@ public:
 		int streamIdx;
 		Frames *pQueue;
 		HANDLE mutex;
+
+		
 	};
 
 	struct Convert
 	{
 		SwsContext *vCtx;
-	
+		BGR24 bgr;
+		PCM   pcm;
 	};
 
 	struct MediaContext
@@ -74,9 +92,21 @@ protected:
 	bool FrameCacheFull();
 
 	void PlayVideoThread();
-	void PlayAudioThread();
+	Frames* &ConsumeVideo();
+	void PlaySequenceVideo(Frames* freams);
 	void PlayBackVideo(AVFrame* raw);
+
+	void PlayAudioThread();
+	Frames* &ConsumeAudio();
+	void PlaySequenceAudio(Frames* freams);
 	void PlayBackAudio(AVFrame* raw);
+
+	bool OpenDecodeMutex();
+	bool CloseDecodeMutex();
+	bool OpenAudioMutex();
+	bool OpenVideoMutex();
+	bool CloseAudiaMutex();
+	bool CloseVideoMutex();
 
 	static time_t GetTime();
 	

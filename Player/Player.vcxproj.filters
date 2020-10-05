@@ -42,6 +42,27 @@
     <ClInclude Include="Loudspeaker.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DecodeThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DecodeFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FormatContext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayAudioThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayVideoThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayContext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Player.cpp">
@@ -60,6 +81,24 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Loudspeaker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeFrrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FormatContext.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayContext.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayAudioThread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayVideoThread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

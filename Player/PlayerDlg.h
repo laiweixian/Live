@@ -5,6 +5,7 @@
 #pragma once
 
 #include "PlayFile.h"
+#include "PlayContext.h"
 #include "Renderer.h"
 #include "Loudspeaker.h"
 
@@ -15,7 +16,8 @@
 // CPlayerDlg 对话框
 class CPlayerDlg : public CDialogEx,\
 				   public CRenderer,\
-				   public CLoudspeaker
+				   public CLoudspeaker,\
+				   public IMediaEvent
 {
 // 构造
 public:
@@ -49,10 +51,14 @@ protected:
 	HDC& GetRendererTarget(int* outLeft, int* outRight, int* outBottom, int *outTop);
 
 public:
-	static void VideoCallback(void* ctx, AVFrame* bgr24);
-	static void AudioCallback(void* ctx, AVFrame* pcm);
+	/*
+	static void VideoCallback(void* ctx, BGR24* pBmp);
+	static void AudioCallback(void* ctx, PCM* pPcm);
 	static void SubtitleCallback(void* ctx, AVFrame* raw);
+	*/
+	void OnSound(AVFrame* pcm) ;
+	void OnImage(AVFrame* bgr24) ;
 private:
-	CPlayFile* m_PlayMedia;
-	PlayContext m_PlayCtx;
+
+	CPlayContext *m_PlayCtx;
 };

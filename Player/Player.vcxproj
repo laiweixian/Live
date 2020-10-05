@@ -109,7 +109,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -188,20 +188,33 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DecodeFrame.h" />
+    <ClInclude Include="DecodeThread.h" />
+    <ClInclude Include="FormatContext.h" />
     <ClInclude Include="Loudspeaker.h" />
+    <ClInclude Include="MediaEvent.h" />
+    <ClInclude Include="PlayAudioThread.h" />
+    <ClInclude Include="PlayContext.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerDlg.h" />
     <ClInclude Include="PlayFile.h" />
+    <ClInclude Include="PlayVideoThread.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DecodeFrrame.cpp" />
+    <ClCompile Include="DecodeThread.cpp" />
+    <ClCompile Include="FormatContext.cpp" />
     <ClCompile Include="Loudspeaker.cpp" />
+    <ClCompile Include="PlayAudioThread.cpp" />
+    <ClCompile Include="PlayContext.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerDlg.cpp" />
     <ClCompile Include="PlayFile.cpp" />
+    <ClCompile Include="PlayVideoThread.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
